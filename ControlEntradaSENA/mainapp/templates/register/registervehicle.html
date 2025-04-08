@@ -1,0 +1,125 @@
+{% extends 'layouts/layout.html' %}
+{% load static %}
+{% block title %} {{title}} {% endblock %}
+
+{% block content %}
+
+{% if not vehicle %}
+<article id="ingreso" class="register-select">
+    <section class="card">
+        <header class="card-header">
+            <a class="back-button" href="#" role="button" onclick="goBack()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-arrow-left-circle" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"/>
+                  </svg>
+            </a>
+            <h1 class="card-title">Elegir tipo</h1>
+        </header>
+        <div class="card-body">
+            <div class="row">
+                {% if users.rol.idrol == 1 or users.rol.idrol == 4 %}
+                <ul class="col">
+                    <a role="button" href="?vehicle=1">
+                        <img src="{% static "assets/icons/car.png" %}" alt="">
+                        <span>Carro</span>
+                    </a>
+                </ul>
+                {% endif %}
+                <ul class="col">
+                    <a role="button" href="?vehicle=2">
+                        <img src="{% static "assets/icons/motorbike.png" %}" alt="">
+                        <span>Moto</span>
+                    </a>
+                </ul>
+                <ul class="col">
+                    <a role="button" href="?vehicle=3">
+                        <img src="{% static "assets/icons/bike.png" %}" alt="">
+                        <span>Bicicleta</span>
+                    </a>
+                </ul>
+            </div>
+        </div>
+    </section>
+</article>
+
+{% else %}
+<article id="ingreso" class="register form">
+    <section class="card">
+        <header class="card-header">
+            <a class="back-button" href="#" role="button" onclick="goBack()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-arrow-left-circle" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"/>
+                  </svg>
+            </a>
+            <h1 class="card-title">
+                {% if vehicle == "1"%}
+                Registrar Carro
+                {% elif vehicle == "2"%}
+                Registrar Moto
+                {% else %}
+                Registrar Bicicleta
+                {% endif %}
+            </h1>
+        </header>
+        <div class="card-body">
+            {% comment %} Si existen errores en el formulario {% endcomment %}
+            {% if form.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {% for field, errors in form.errors.items %}
+                        <strong>{{ field }}:</strong>
+                        {% for error in errors %}
+                            {{ error }}<br>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}                        
+                {{form.usuario}}                
+                <input type="hidden" name="tipo" value="{{vehicle}}">
+                <div class="form-group row">
+                    <div class="col">
+                        {{form.tipo}}                            
+                    </div>
+                    <div class="col">
+                        {% comment %} Si no es bicicleta {% endcomment %}
+                        {% if vehicle != "3"%}
+                        <div class="input-box">
+                            {{form.placa}}
+                            <label>{{form.placa.label}}</label>
+                        </div>
+                        {% else %}
+                        <div class="col">
+                            {{form.marca}}                      
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% comment %} Si es bicicleta {% endcomment %}
+                {% if vehicle != "3" %}
+                <div class="form-group row">
+                    <div class="col">
+                        {{form.marca}}                      
+                    </div>
+                    <div class="col">
+                        {{form.modelo}}
+                    </div>
+                </div>
+                {% endif %}
+                <div class="form-group row">
+                    <div class="col">
+                        <label>{{form.imagen.label}}</label>                           
+                        {{form.imagen}}
+                    </div>
+                </div>
+                <div class="form-submit">
+                    <button class="form-btn btn btn-primary" type="submit">Enviar</button>
+                </div>
+            </form>
+        </div>
+    </section>
+</article>
+{% endif %}
+
+{% endblock %}

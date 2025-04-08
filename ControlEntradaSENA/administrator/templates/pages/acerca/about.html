@@ -1,0 +1,41 @@
+{% extends 'layouts/layout_admin.html' %}
+{% load static %}
+
+{% block title %} Acerca de {% endblock %}
+
+{%block content %}
+<div class="about">
+
+    <div class="about-button">
+        <a class="about-btn btn btn-primary" href="#" role="button">
+            <div class="about-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="44" height="44" fill="currentColor" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <circle cx="12" cy="12" r="9" />
+                    <line x1="12" y1="8" x2="12.01" y2="8" />
+                    <polyline points="11 12 12 12 12 16 13 16" />
+                  </svg>
+            </div>
+            <div class="about-title"><span>Informacion de aplicacion</span></div>
+        </a>
+    </div>
+    
+    <div class="about-button">
+        <a class="about-btn btn btn-primary" href="#" role="button">
+            <div class="about-icon">
+                <img src="{% static 'assets/icons/programmer.png' %}" alt"" width="44">
+            </div>
+            <div class="about-title"><span>Integrantes del grupo</span></div>
+        </a>
+    </div>
+
+    <div class="about-button">
+        <a class="about-btn btn btn-primary" href="#" role="button">
+            <div class="about-icon">
+                <img src="{% static 'assets/icons/leader.png' %}" alt"" width="44">
+            </div>
+            <div class="about-title"><span>Lideres del proyecto</span></div>
+        </a>
+    </div>
+</div>
+{% endblock %}

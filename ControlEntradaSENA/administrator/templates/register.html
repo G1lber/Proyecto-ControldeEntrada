@@ -1,0 +1,51 @@
+{% extends 'layouts/layout.html' %}
+{% load static %}
+{% block title %}  {{title}} {% endblock %}
+
+{%block content %}
+<div id="register">
+    <section class="card">
+        <header class="card-header">
+            <h1 class="card-title">Registro</h1>
+        </header>
+        <div class="card-body">            
+            <div class="card-form">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-danger" role="alert">
+                        {{message}}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% if form.data %}
+                {{ form.errors }}
+                {% endif %}
+                <form method="post">  
+                  {% csrf_token %}  
+                    <div class="form-group">               
+                        <div class="input-box">
+                            {{form.username}}
+                            <label>Usuario</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-box">
+                            {{form.password1}}
+                            <label>Contraseña</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-box">
+                            {{form.password2}}
+                            <label>Repetir Contraseña</label>
+                        </div>
+                    </div>
+                    <div class="form-submit">
+                        <button class="form-btn btn btn-primary" type="submit">Registrarse</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

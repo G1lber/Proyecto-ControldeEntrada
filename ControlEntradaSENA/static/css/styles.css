@@ -1,0 +1,1553 @@
+:root {
+    --bgcolor: rgba(78, 142, 55);
+    --bgcolor-clare: rgba(96, 215, 67, 1);
+    --hovercolor: rgba(60, 109, 42, 1);
+    --hovercolorclare: rgba(202, 255, 182, 0.144);
+    --text-color: rgba(140, 223, 120, 1);
+    --header-height: 70px;
+}
+
+/* Fuentes */
+@font-face {
+    font-family: Zurich;
+    src: url(../assets/fonts/Zurich/Zurich.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: ZurichBlack;
+    src: url(../assets//fonts/Zurich/Zurich\ Black\ BT.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: Nunito;
+    src: url(../assets/fonts/Nunito/static/Nunito-Regular.ttf) format('truetype');
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    height: 100%;
+}
+
+html {
+    height: 100%;
+}
+
+/*=====================================================================================*/
+
+/* 
+    CONTENEDOR MAIN
+*/
+main {
+    min-height: calc(100vh - var(--header-height));
+    padding: 80px 40px
+}
+
+/*=====================================================================================*/
+
+/* 
+    HEADER 
+*/
+header.layout {
+    background-color: var(--bgcolor);
+    font-family: 'ZurichBlack', Helvetica, sans-serif;
+    width: 100%;
+    height: var(--header-height);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 20px;
+}
+
+header.layout * {
+    color: white;
+    margin: 0;
+}
+
+/* Icono Admin */
+header.layout .header-admin {
+    width: 40px;
+    position: absolute;
+    right: 50px;
+    border-radius: 15px;
+    border: 2px solid white;
+    padding: 8px;
+}
+
+header.layout .header-admin img {
+    width: 100%;
+}
+
+/*=====================================================================================*/
+
+/*
+    GENERALES   
+*/
+
+/* KEYBOARD */
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700&display=swap');
+
+.container-keyboard {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.keyboard {
+    display: none;
+    max-width: 1020px;
+    max-height: 360px;
+    width: 100%;
+    background-color: #e7e7e7;
+    overflow: hidden;
+    padding: 0px 14px;
+    position: absolute;
+}
+
+.keyboard_bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.keyboard.active {
+    display: block;
+    animation: keyboard_animation 1.5s forwards;
+}
+
+.keyboard .text {
+    max-width: 1008px;
+    width: 100%;
+    height: 90px;
+    margin-bottom: 30px;
+    border: none;
+    outline: none;
+    font-size: 26px;
+    background-color: #f7f7f7;
+    padding-left: 10px;
+    transition: .2s;
+    pointer-events: none;
+}
+
+.keyboard .text.active {
+    background-color: #2b2b2b;
+    color: #fff;
+}
+
+@keyframes keyboard_animation {
+    0% {
+        height: 0;
+    }
+
+    100% {
+        height: 55%;
+    }
+}
+
+.keyboard .keys {
+    width: 60px;
+    height: 60px;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 4px;
+    transition: .2s;
+    z-index: 5;
+    cursor: pointer;
+    pointer-events: all;
+}
+
+.keyboard .keys.active {
+    background-color: #333;
+    color: #fff;
+}
+
+.keyboard .keys.remove {
+    animation: keys_animation 0.5s forwards;
+}
+
+.keyboard .backspace_key {
+    width: 120px;
+}
+
+.keyboard .tab_key {
+    width: 90px;
+}
+
+.keyboard .slash_key {
+    width: 90px;
+}
+
+.keyboard .caps_lock_key {
+    width: 128px;
+}
+
+.keyboard .enter_key {
+    width: 120px;
+}
+
+.keyboard .shift_key {
+    width: 124px;
+}
+
+.keyboard .space_key {
+    max-width: 600px;
+    width: 100%;
+}
+
+@keyframes keys_animation {
+    0% {
+        background-color: #333;
+        color: #fff;
+    }
+
+    100% {
+        background-color: #fff;
+        color: #000;
+    }
+}
+
+
+/* CARD */
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 85%;
+    height: auto;
+    margin: 60px auto;
+    padding: 30px 50px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.card .card-header {
+    background-color: white;
+    border: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.card .card-header .card-title {
+    font-size: 2rem;
+    text-align: center;
+    font-weight: normal;
+    color: var(--text-color);
+}
+
+.card .card-body {
+    width: 100%;
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card .card-footer {
+    background-color: white;
+    border: none;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+
+/* FORMULARIO */
+/* Margen entre filas */
+.form-group {
+    padding: 18px 0;
+    align-items: center;
+}
+
+/* Cuerpo input */
+.input-box {
+    width: 100%;
+    height: 50px;
+    position: relative;
+    border: 2px solid rgb(141, 194, 121);
+    border-radius: 20px;
+}
+
+/* Label */
+.input-box label {
+    top: 50%;
+    left: 20px;
+    background-color: white;
+    font-size: 1rem;
+    font-weight: 300;
+    color: #807e7e;
+    position: absolute;
+    pointer-events: none;
+    transition: .5s;
+    transform: translateY(-50%);
+}
+
+/* Input */
+.input-box input {
+    margin-left: 10px;
+    width: 95%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+}
+
+/*Al estar activo cambiar posicion de label*/
+.input-box input:focus~label,
+.input-box input:valid~label,
+.input-box input:read-only~label {
+    top: -3px;
+}
+
+/* Check formulario */
+.form-check {
+    font-size: 1rem;
+}
+
+.form-check-input:checked[type=checkbox] {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
+}
+
+.form-check-input:checked {
+    background-color: var(--bgcolor);
+    border: 1px solid white;
+}
+
+/* Seccion boton form */
+.form-submit {
+    text-align: center;
+    margin: 50px 0 0 0;
+}
+
+/* Boton form */
+.form-submit .form-btn {
+    font-size: 1.1rem;
+    width: 150px;
+    height: 40px;
+    background: var(--bgcolor);
+    border: #fff;
+    transition: width 1s;
+    color: white;
+}
+
+.form-submit .form-btn:hover {
+    width: 100%;
+    background: rgb(92, 187, 58);
+}
+
+/* Boton verde */
+.btn-green {
+    background-color: var(--bgcolor-clare);
+    color: white;
+    font-weight: bold;
+}
+
+.btn-green:hover {
+    background-color: rgb(92, 187, 58) !important;
+    color: white !important;
+}
+
+
+/* OTROS */
+
+/* Boton verde - atras */
+.back-button {
+    position: absolute;
+    left: 70px;
+    color: var(--text-color);
+}
+
+.back-button:hover {
+    color: var(--bgcolor);
+}
+
+/* Boton cancelar */
+.btn.cancel {
+    background-color: red;
+    color: white;
+}
+
+.btn.cancel:hover {
+    background-color: rgb(179, 42, 42);
+    color: white;
+}
+
+/* Boton aceptar */
+.btn.accept {
+    background-color: var(--bgcolor-clare);
+    color: white;
+}
+
+.btn.accept:hover {
+    background-color: var(--text-color);
+    color: white;
+}
+
+.alert {
+    margin-bottom: 20px;
+}
+
+/*=====================================================================================*/
+
+/*
+    INDEX
+*/
+
+/* GENERALES */
+#ingreso header .header-title {
+    text-align: center;
+    color: var(--text-color);
+    font-weight: bolder;
+}
+
+#ingreso .card .card-footer>* {
+    margin: 0 40px;
+}
+
+/* REGISTRO - ELECCION TIPO */
+
+
+#ingreso.register-select .card {
+    width: 80%;
+}
+
+/* Lista */
+#ingreso.register-select .card .card-body ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Items */
+#ingreso.register-select .card .card-body a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: var(--text-color);
+}
+
+#ingreso.register-select .card .card-body a img {
+    width: 50%;
+}
+
+#ingreso.register-select .card .card-body a span {
+    font-weight: 500;
+    font-size: 1.5rem;
+}
+
+/* REGISTRO - FORMULARIO */
+#ingreso.register .card {
+    width: 70%;
+}
+
+#ingreso.form .card .card-body form {
+    width: 90%;
+}
+
+
+/* ESCANEO CARNET */
+
+/* Modal botones ingreso/salida */
+#ingreso.scan .btn-zone .modal-dialog {
+    max-width: 90%;
+}
+
+/* Card escaneo */
+#ingreso.scan .card {
+    width: 35%;
+}
+
+/* Card escaneo: Seccion escaneo */
+#ingreso.scan .card .card-code {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #ddd;
+    border-radius: 10px;
+    height: 250px;
+    width: 80%;
+}
+
+#ingreso.scan .card .card-code img {
+    width: 15%;
+    opacity: .5;
+    position: absolute;
+}
+
+/* Card escaneo: Barra scan */
+#ingreso.scan .card .card-barra {
+    width: 80%;
+    height: 7px;
+    background-color: #8cdf78;
+    border-radius: 100px;
+    animation: barra 5s infinite;
+    z-index: 1;
+    position: relative;
+    box-shadow: 2px 2px 5px;
+}
+
+@keyframes barra {
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(250px);
+
+    }
+
+    100% {
+        transform: translateY(0);
+
+    }
+}
+
+/* Card footer */
+#ingreso.scan .card .card-footer .row {
+    margin: 0;
+}
+
+/* Card escaneo: input */
+#ingreso.scan .card .card-footer input {
+    width: 100%;
+    height: 20px;
+    border: 1px solid var(--bgcolor-clare);
+    border-radius: 20px;
+    padding: 15px;
+}
+
+#ingreso.scan .card .card-footer input:hover {
+    border: 1px solid var(--bgcolor);
+}
+
+#ingreso.scan .card .card-footer input:focus {
+    box-shadow: 0 0 0 0.25rem rgb(127 255 116 / 25%);
+}
+
+/* Boton camara*/
+.smallCamera {
+    width: 12%;
+    padding: 0 5px;
+}
+
+
+/* CONSULTA USUARIO */
+
+/* CARD */
+
+/* Card header */
+#ingreso.consulta .card .card-header {
+    justify-content: space-between;
+}
+
+#ingreso.consulta .card .card-header .card-title {
+    font-weight: bolder;
+    flex: 1;
+    margin: 0 30px 0 130px;
+}
+
+#ingreso.consulta .card .card-header .card-hour {
+    position: absolute;
+    left: 30px;
+    font-size: 20px;
+    color: var(--text-color);
+    font-weight: bold;
+}
+
+#ingreso.consulta .card .card-header .card-header-element .btn {
+    border: 2px solid #ddd;
+    background-color: white;
+    color: var(--bgcolor-clare);
+}
+
+#ingreso.consulta .card .card-header .card-header-element .btn:hover {
+    border: 2px solid var(--bgcolor-clare);
+    background-color: var(--bgcolor-clare);
+    color: white;
+}
+
+/* Card body */
+#ingreso.consulta .card .card-body {
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+/* Imagen usuario */
+#ingreso.consulta .card .card-body .card-image {
+    display: flex;
+    flex-direction: column;
+}
+
+#ingreso.consulta .card .card-body .card-image img {
+    border: 1px solid var(--bgcolor-clare);
+    border-radius: 50px;
+    width: 300px;
+    height: 410px;
+}
+
+
+/* INGRESO TOMAR FOTO */
+
+/* Boton tomar foto */
+#ingreso.consulta #user-picture-btn {
+    width: 15%;
+}
+
+/* Modal camara */
+.cam-modal .modal-dialog {
+    max-width: 90%;
+    margin: 40px auto;
+}
+
+#camaraModal .modal-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Video */
+#camaraModal #user-cam {
+    width: 70%;
+    border-radius: 100px;
+    margin-top: 30px;
+}
+
+/* Canvas */
+#camaraModal #user-picture {
+    width: 70%;
+    border-radius: 100px;
+    margin-top: 30px;
+    display: none;
+}
+
+/* Botones */
+#camaraModal .btn-zone {
+    margin: 50px 0;
+}
+
+#camaraModal .btn-zone form {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+#camaraModal .btn-zone form .btn-picture {
+    width: 15%;
+    margin: 0px 40px;
+}
+
+#camaraModal .btn-picture {
+    width: 35%;
+    display: block;
+    margin: 0 auto;
+    padding: 20px;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+}
+
+#camaraModal #user-repeatpicture-btn,
+#camaraModal #user-savepicture-btn {
+    display: none;
+    margin-bottom: 10px;
+}
+
+/* Datos usuario */
+#ingreso.consulta .card .card-body .card-info {
+    width: 100%;
+    margin-left: 20px;
+}
+
+#ingreso.consulta .card .card-body .card-info>* {
+    margin: 20px;
+    font-size: 18px;
+}
+
+#ingreso.consulta .card .card-body .card-info label {
+    color: var(--text-color);
+    font-weight: bold;
+}
+
+/* Card footer */
+#ingreso.consulta .card .card-footer .btn {
+    width: 65%;
+}
+
+#ingreso.consulta .card .card-footer .btn-success {
+    background-color: var(--text-color);
+    border-color: var(--text-color);
+}
+
+
+/* Select vehiculo y dispositivos */
+
+#ingreso.consulta .card .select-form {
+    position: relative;
+    max-width: 350px;
+    width: 100%;
+}
+
+/* SELECT CERRADO */
+#ingreso.consulta .card .select-form .select-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 55px;
+    padding: 0 20px;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    box-shadow: 0 5px 10px rgb(0 0 0 / 25%);
+    background-color: #fff;
+}
+
+/* Select texto */
+#ingreso.consulta .card .select-form .select-btn .btn-text {
+    font-size: 16px;
+    font-weight: 400;
+    color: #333;
+}
+
+/* Select cerrado: Flecha abajo */
+#ingreso.consulta .card .select-form .select-btn .arrow-dwn {
+    display: flex;
+    height: 21px;
+    width: 21px;
+    color: #fff;
+    font-size: 14px;
+    border-radius: 50%;
+    background: var(--bgcolor-clare);
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+}
+
+/* Select lista */
+#ingreso.consulta .card .select-form .list-items {
+    display: none;
+    position: relative;
+    margin-top: 15px;
+    padding: 16px;
+    border: 1px solid rgba(221, 221, 221, 0.3);
+    border-radius: 8px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+/* SELECT ABIERTO */
+
+/* Select abierto: Flecha arriba*/
+#ingreso.consulta .card .select-form .select-btn.open .arrow-dwn {
+    transform: rotate(-180deg);
+}
+
+/* Select lista abierta */
+#ingreso.consulta .card .select-form .select-btn.open~.list-items {
+    display: block;
+}
+
+/* Items */
+#ingreso.consulta .card .select-form .list-items .item {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    height: 50px;
+    padding: 0 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#ingreso.consulta .card .select-form .list-items .item:hover {
+    background-color: rgba(126, 241, 98, 0.2);
+}
+
+#ingreso.consulta .card .select-form .list-items .item-text {
+    font-size: 16px;
+    font-weight: 400;
+    color: #333;
+}
+
+/* Item checkbox */
+#ingreso.consulta .card .select-form .item .checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 20px;
+    width: 20px;
+    margin-right: 12px;
+    border: 1.5px solid #c0c0c0;
+    border-radius: 10px;
+    transition: all 0.3s ease-in-out;
+}
+
+#ingreso.consulta .card .select-form .checkbox .check-icon {
+    color: #fff;
+    font-size: 11px;
+    transform: scale(0);
+    transition: all 0.2s ease-in-out;
+}
+
+
+/* Cuando tiene check */
+#ingreso.consulta .card .select-form .item.checked .checkbox {
+    background-color: var(--bgcolor);
+    border-color: var(--bgcolor);
+}
+
+#ingreso.consulta .card .select-form .item.checked .check-icon {
+    transform: scale(1);
+}
+
+/* INGRESO: REGISTRO USUARIO FORM*/
+#ingreso.register-user .card .card-body form {
+    width: 100%;
+}
+
+
+
+/* -------------------------------------------------------------------------------------------------------------------------------*/
+:root {
+    --width: 250px;
+    --padding: 10px;
+    --bgcolor:
+        rgba(78, 142, 55);
+    --hovercolor:
+        rgb(60, 109, 42);
+    --hovercolorclare:
+        rgba(202, 255, 182, 0.144);
+    --width-collapsed: 50px;
+    --gradient: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 0%, rgba(0, 212, 255, 1) 100%);
+    --text-color: #8cdf78;
+}
+
+body {
+    background-color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.1rem;
+    margin: 0;
+    transition: .2s ease-in-out;
+}
+
+.body-collapsed {
+    margin-left: var(--width-collapsed);
+}
+
+.body-expanded {
+    margin-left: var(--width);
+}
+
+#main-container {
+    color: rgb(255, 255, 255);
+}
+
+/* 
+        MENU
+*/
+#sidemenu {
+    background-color: var(--bgcolor);
+    color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    position: fixed;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    transition: width .2s ease-in-out;
+}
+
+#sidemenu a {
+    color: white;
+    text-decoration: none;
+}
+
+/*
+        HEADER
+*/
+#sidemenu #header {
+    box-sizing: border-box;
+    max-height: 50px;
+    overflow: hidden;
+}
+
+#sidemenu #header #title {
+    box-sizing: border-box;
+    overflow: hidden;
+    font-size: .9rem;
+    font-weight: 800;
+}
+
+#sidemenu #header #title,
+#sidemenu #header #menu-btn {
+    vertical-align: middle;
+}
+
+#sidemenu #header #menu-btn {
+    display: inline-block;
+}
+
+#sidemenu #header #menu-btn {
+    cursor: pointer;
+    padding: 10px;
+    width: var(--width-collapsed);
+    box-sizing: border-box;
+}
+
+#sidemenu #header #menu-btn:hover {
+    background-color: var(--hovercolor);
+}
+
+#sidemenu #header #menu-btn .btn-hamburger {
+    background-color: #fff;
+    width: 100%;
+    height: 2px;
+    margin: 5px 0;
+}
+
+/* 
+        PROFILE
+*/
+
+#sidemenu #profile {
+    padding: var(--padding) 0;
+    text-align: center;
+}
+
+#sidemenu #profile #photo {
+    box-sizing: border-box;
+
+    margin: 0 auto;
+}
+
+#sidemenu #profile #photo img {
+    border-radius: 70%;
+    width: 50%;
+}
+
+/*
+        ITEMS
+*/
+#sidemenu #menu-items {
+    padding-top: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+#sidemenu #menu-items .item {
+    display: block;
+    transition: .5s;
+    width: calc(var(--width) + 30px);
+    margin-top: 8px;
+}
+
+#sidemenu #menu-items .item .icon {
+    display: inline-block;
+    box-sizing: border-box;
+    padding: var(--padding);
+}
+
+#sidemenu #menu-items .item .icon>* {
+    width: 100%;
+}
+
+#sidemenu #menu-items .item .title {
+    padding: var(--padding) 0;
+}
+
+#sidemenu #menu-items .item .icon,
+#sidemenu #menu-items .item .title {
+    font-size: 1rem;
+    font-weight: bold;
+    vertical-align: middle;
+    overflow: hidden;
+    display: inline-block;
+}
+
+#sidemenu #menu-items .down {
+    margin-top: auto;
+}
+
+/*
+        MENU EXPANDED
+*/
+.menu-expanded {
+    width: var(--width);
+}
+
+.menu-expanded #header #title {
+    display: inline-block;
+    overflow: hidden;
+    width: 199px;
+    margin-right: -5px;
+    padding: var(--padding);
+}
+
+.menu-expanded #header #title span {
+    min-width: 30px;
+    overflow: hidden;
+}
+
+.menu-expanded #profile #photo {
+    width: 200px;
+}
+
+.menu-expanded #profile #name {
+    width: 100%;
+}
+
+.menu-expanded #menu-items {
+    height: 80%;
+}
+
+.menu-expanded #menu-items .item:hover {
+    margin-left: 15px;
+    border-radius: 50px;
+    border: 2px solid white;
+}
+
+.active-item {
+    margin-left: 15px;
+    border-radius: 50px;
+    border: 2px solid white;
+    color: none;
+    background-color: white;
+}
+
+.active-item .title {
+    color: var(--bgcolor-clare)
+}
+
+.active-item .icon {
+    color: var(--bgcolor-clare);
+}
+
+.menu-expanded #menu-items .item .icon {
+    margin-left: 15px;
+    width: 50px;
+}
+
+/* 
+        MENU COLLAPSED
+*/
+
+.menu-collapsed {
+    width: var(--width-collapsed);
+
+}
+
+.menu-collapsed #header #title {
+    display: none;
+}
+
+.menu-collapsed #profile #photo {
+    width: 100%;
+}
+
+.menu-collapsed #profile #name {
+    display: none;
+}
+
+.menu-collapsed #menu-items {
+    height: 85%;
+}
+
+.menu-collapsed #menu-items .item:hover {
+    margin-left: 5px;
+    border-radius: 50px;
+    border: 2px solid white;
+}
+
+.menu-collapsed .active-item {
+    margin-left: 8px;
+}
+
+.menu-collapsed #menu-items .item .icon {
+    margin-left: 5px;
+    width: 40px;
+}
+
+.header .header_items .right {
+    position: absolute;
+    right: 30px;
+    font-size: 2rem;
+}
+
+
+/* 
+        GENERALES ADMIN
+*/
+
+#container-admin #main {
+    width: 100%;
+}
+
+/* Select */
+#container-admin #select .card-body {
+    flex-direction: row;
+}
+
+#container-admin #select .card-body ul {
+    padding: 0;
+}
+
+#container-admin #select .card-body a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: var(--text-color);
+}
+
+#container-admin #select .card-body a img {
+    width: 50%;
+}
+
+#container-admin #select .card-body a span {
+    font-weight: 500;
+    font-size: 1.5rem;
+}
+
+/* Container */
+#container-admin {
+    min-height: 75vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Card */
+#container-admin .card {
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    transition: .5s ease;
+}
+
+#container-admin .card .card-header {
+    text-align: initial;
+    justify-content: center;
+}
+
+#container-admin .card .card-body {
+    margin: 10px 0;
+}
+
+/* SEARCH */
+
+#container-admin .card-search {
+    display: flex;
+    justify-content: center;
+}
+
+/* Grupo */
+#container-admin .input-box.search {
+    border: 2px solid var(--bgcolor-clare);
+    width: 30%;
+}
+
+/* Input */
+#container-admin .input-box.search input {
+    margin-left: 50px;
+    width: 80%;
+}
+
+/* Icono campo formulario */
+#container-admin .input-box.search .icon {
+    position: absolute;
+    left: 11px;
+    bottom: 11px;
+    width: 25px;
+    opacity: .5;
+    color: var(--bgcolor-clare);
+}
+
+#container-admin .alert {
+    margin: 20px 0 0 0;
+}
+
+/* SECCION BOTONES */
+#container-admin .card-table-buttons {
+    visibility: hidden;
+    transition: .3s linear;
+}
+
+#container-admin .card-table-buttons.active {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin: 20px 0;
+    visibility: visible;
+    transition: .3s ease;
+}
+
+#container-admin .card-table-buttons>* {
+    margin-right: 15px;
+}
+
+.btn-delete {
+    width: 45px;
+}
+
+
+.btn-actions {
+    width: 25px;
+    padding: 2px;
+}
+
+.icon-dropdown-item {
+    width: 15px;
+    position: absolute;
+    right: 12px;
+    margin: 4px 0 0 0;
+}
+
+/* ESTILOS TABLA */
+.card-table {
+    overflow-x: auto;
+    overflow-y: auto;
+    justify-content: normal;
+    align-items: normal;
+}
+
+.table {
+    width: auto;
+    white-space: nowrap;
+}
+
+/* Bordes tabla */
+tr td,
+th {
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+th:first-child {
+    border-top-left-radius: 10px;
+}
+
+th:last-child {
+    border-top-right-radius: 10px;
+}
+
+tr:last-child td:first-child {
+    border-bottom-left-radius: 10px;
+}
+
+tr:last-child td:last-child {
+    border-bottom-right-radius: 10px;
+}
+
+/* Filas tabla */
+.table tbody tr:hover {
+    background-color: var(--hovercolorclare);
+}
+
+/* ------------------------------------------------------------------ */
+
+/* LOGIN */
+
+#login .card {
+    width: 100%;
+    margin: 0;
+}
+
+#login .card .card-body {
+    padding: 0;
+    flex-direction: row;
+    margin: 60px 0;
+}
+
+#login .card .card-body .card-image {
+    margin-right: 10px;
+    width: 60%;
+}
+
+#login .card .card-body .card-image img {
+    width: 100%;
+}
+
+#login .card .card-body .card-form {
+    margin: 0 auto;
+    width: 30%;
+}
+
+#login .card .card-body .card-form .card-header {
+    display: block;
+}
+
+#login .card .card-body .card-form .card-header .card-title {
+    font-size: 2.5rem;
+}
+
+#login .login-register {
+    position: absolute;
+    right: 30px;
+    color: var(--text-color);
+}
+
+#login .login-register:hover {
+    color: var(--bgcolor);
+}
+
+
+/*
+        ADMIN PANEL | HOME
+*/
+
+#container-admin.adminpanel {
+    text-align: center;
+}
+
+#container-admin.adminpanel .title {
+    font-family: 'ZurichBlack';
+    font-size: 4rem;
+    color: var(--bgcolor);
+    font-style: italic;
+}
+
+
+/*
+    ADMIN PANEL | USERS 
+*/
+
+/* Boton registrar */
+#container-admin .add {
+    position: absolute;
+    right: 30px;
+}
+
+/* Intercambio de vista */
+
+/* Vista tabla */
+#container-admin.users #main {
+    transition: .5s ease;
+}
+
+#container-admin.users.select #main {
+    transition: none;
+    transform: translateX(-120%);
+}
+
+/* Vista select */
+#container-admin.users #select {
+    position: absolute;
+    transition: none;
+    transform: translateX(300%);
+}
+
+#container-admin.users.select #select {
+    transition: .5s ease;
+    transform: translateX(0);
+    width: 100%;
+}
+
+#container-admin.users.select .card {
+    min-height: 10px;
+    place-content: center;
+}
+
+#container-admin.users.select .card .card-body {
+    justify-content: center;
+}
+
+/* Vista formulario */
+#container-admin.users.form form {
+    width: 70%;
+}
+
+
+/*
+    ACERCA DE
+*/
+.about {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.about .about-button {
+    margin: 20px;
+}
+
+.about .about-button .about-btn {
+    background-color: var(--bgcolor);
+    border-color: var(--bgcolor);
+}
+
+.about .about-button .about-btn:hover {
+    background-color: var(--hovercolor);
+    border-color: var(--hovercolor);
+}
+
+.about .about-button .about-title,
+.about .about-button .about-icon {
+    font-size: 1rem;
+    font-weight: bold;
+    vertical-align: middle;
+    overflow: hidden;
+    display: inline-block;
+    margin-left: 5px;
+}
+
+
+/*=============================================================================================================*/
+/*===============================================  MEDIA QUERIES  =============================================*/
+
+/*Totem y pc*/
+@media (max-width: 1200px) and (max-height: 1920px) {
+    main {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    /* GENERALES */
+
+    /* Card de registro */
+    #ingreso.register .card {
+        width: 80%;
+    }
+
+    /* Keyboard */
+    .keyboard {
+        max-height: 500px;
+    }
+
+
+    /*
+        INDEX
+    */
+
+    /* CARD SCAN */
+    #ingreso.scan .card {
+        width: 45%;
+    }
+
+    /* CONSULTA USUARIO */
+
+    /* Card body */
+    #ingreso.consulta .card .card-body {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Imagen */
+    #ingreso.consulta .card .card-body .card-image {
+        margin: 20px 0 40px 0;
+    }
+
+    #ingreso.consulta .card .card-body .card-image img {
+        width: 450px;
+        height: 500px;
+    }
+
+    /* Boton tomar foto */
+    #ingreso.consulta #user-picture-btn {
+        width: 10%;
+    }
+
+}
+
+/* Portatil */
+@media (max-width: 992px) {
+
+    /*
+        INDEX
+    */
+
+    /* CARD SCAN */
+    #ingreso.scan .card {
+        width: 60%;
+    }
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+
+    /*
+        INDEX
+    */
+
+    /* CARD SCAN */
+    #ingreso.scan .card {
+        width: 75%;
+    }
+}
+
+/* Celular */
+@media (max-width: 576px) {
+
+    /*
+        INDEX
+    */
+
+    /* CARD SCAN */
+    #ingreso.scan .card {
+        width: 70%;
+        padding: 30px 10px;
+    }
+
+    #ingreso.scan .card .card-header .card-title {
+        font-size: 1.3rem;
+    }
+
+    #ingreso.scan .card .card-body {
+        margin: 0 0 20px 0;
+    }
+
+    #ingreso.scan .card .card-code {
+        height: 130px;
+        width: 90%;
+    }
+
+    #ingreso.scan .card .card-barra {
+        width: 95%;
+    }
+
+    @keyframes barra {
+        0% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(135px);
+
+        }
+
+        100% {
+            transform: translateY(0);
+
+        }
+    }
+
+}
+
+@media (max-width: 400px){
+
+    /*
+        INDEX
+    */
+
+    /* CARD SCAN */
+    #ingreso.scan .card {
+        width: 100%;
+        padding: 30px 10px;
+    }
+}

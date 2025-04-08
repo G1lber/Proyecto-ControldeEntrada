@@ -1,0 +1,11 @@
+<form enctype="multipart/form-data" method="post">
+    {% csrf_token %}
+    {% for campo in formulario %}
+      <div class="mb-3">
+        <label for="{{ campo.id_for_label }}" class="form-label">{{ campo.label }}</label>
+        <div class="col-12 text-danger">{{ campo.errors }}</div>
+        {{ campo }}
+      </div>
+    {% endfor %}
+    <input name="" id="" class="btn btn-outline-success d-flex mx-auto" type="submit" value="Guardar Cambios">
+</form>

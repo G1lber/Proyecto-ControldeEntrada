@@ -1,0 +1,85 @@
+<nav id="sidemenu" class="menu-expanded">
+    <!-- MENU -->
+        <!-- HEADER -->
+        <div id="header">
+            <div id="title"><span>Control Entrada Sena V2.0</span></div>
+            <div id="menu-btn">
+                <div class="btn-hamburger"></div>
+                <div class="btn-hamburger"></div>
+                <div class="btn-hamburger"></div>
+            </div>
+        </div>
+
+        <!-- PROFILE -->
+        <div id="profile">
+            <a role="button" href="{% url 'home' %}">
+                <div id="photo"><img src="{% static 'assets/logos/logo-sena white.png'%}" alt=""></div>
+            </a>
+        </div>
+
+        <!-- ITEMS -->
+        <div id="menu-items">
+
+            <!-- Lista de usuarios -->
+            <div class="item">
+                <a role="button" href="{% url 'users'%}">
+                    <div class="icon"><img src="{% static 'assets/icons/user white.png' %}" alt=""></div>
+                    <div class="title"><span>Lista de usuarios</span></div>
+                </a>
+            </div>
+
+            <!-- Lista de dispositivos -->
+            <div class="item">
+                <a role="button" href="">
+                    <div class="icon"><img src="{% static 'assets/icons/dispositivo white.png' %}" alt=""></div>
+                    <div class="title"><span>Lista de dispositivos</span></div>
+                </a>
+            </div>
+
+            <!-- Lista de vehiculos -->
+            <div class="item">
+                <a role="button" href="">
+                    <div class="icon"><img src="{% static 'assets/icons/trafico white.png' %}" alt=""></div>
+                    <div class="title"><span>Lista de vehiculos</span></div>
+                </a>
+            </div>
+
+            <!-- Multas / Sanciones -->
+            <div class="item">
+                <a role="button" href="">
+                    <div class="icon"><img src="{% static 'assets/icons/multa white.png' %}" alt=""></div>
+                    <div class="title"><span>Multas / Sanciones</span></div>
+                </a>
+            </div>
+
+            <!-- Acerca de -->
+            <div class="item">
+                <a role="button" href="">
+                    <div class="icon"><img src="{% static 'assets/icons/acerca-de white.png' %}" alt=""></div>
+                    <div class="title"><span>Acerca de</span></div>
+                </a>
+            </div>
+
+            <!-- Menu inferior -->
+            <div class="down">
+
+                <!-- Añadir administrador -->
+                <div class="item">
+                    <a role="button" href="">
+                        <div class="icon"><img src="{% static 'assets/icons/admin white.png' %}" alt=""></div>
+                        <div class="title"><span>Añadir administrador</span></div>
+                    </a>
+                </div>
+
+                <!-- Salir -->
+                <div class="item">
+                    <a role="button" href="{% url 'logout' %}">
+                        <div class="icon"><img src="{% static 'assets/icons/log-out white.png' %}" alt=""></div>
+                        <div class="title"><span>Salir</span></div>
+                    </a>
+                </div>
+            </div>
+        </div>
+</nav>
+{% endblock %}
+

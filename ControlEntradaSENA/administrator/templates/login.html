@@ -1,0 +1,58 @@
+{% extends 'layouts/layout.html' %}
+{% load static %}
+{% block title %}  {{title}} {% endblock %}
+
+{%block content %}
+<div id="login">
+    <section class="card">
+        <header class="card-header">
+            <a href="{% url 'registeradmin' %}" role="button" class="btn login-register">
+                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
+                </svg>
+            </a>
+            <a class="back-button" href="{% url 'index' %}" role="button" onclick="goBack()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-arrow-left-circle" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"/>
+                  </svg>
+            </a>
+        </header>
+        <div class="card-body">
+            <div class="card-image">
+                <img src="{% static 'assets/images/paisaje.jpg' %}" Alt="">                
+            </div>
+            <div class="card-form">
+                <header class="card-header">
+                    <h1 class="card-title">Iniciar Sesion</h1>
+                </header>
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-danger" role="alert">
+                        {{message}}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {{form.errors}}
+                <form method="post">  
+                  {% csrf_token %}  
+                    <div class="form-group">               
+                        <div class="input-box">
+                            <input type="text" name="username" required>
+                            <label>Usuario</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-box">
+                            <input type="password" name="password" required>
+                            <label>Contraseña</label>
+                        </div>
+                    </div>
+                    <div class="form-submit">
+                        <button class="form-btn btn btn-primary" type="submit">Iniciar Sesión</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

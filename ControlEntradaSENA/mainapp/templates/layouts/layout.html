@@ -1,0 +1,144 @@
+{% load static %}
+<!Doctype html>
+<html lang="es">
+<head>
+    <title>{% block title %} {% endblock %} | Control Entrada Sena V2.0.1</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!--Favicon-->
+    <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+    <!-- Bootstrap CSS v5.3.0 -->
+    <link href="{% static 'bootstrap-5.3.0\css\bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Fontawesome CDN Link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <!-- Mi CSS -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- Alertas - SweetAlert -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.22/dist/sweetalert2.min.css" rel="stylesheet">
+    <!-- Select con busqueda -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.rtl.min.css" />
+</head>
+
+<body>
+    <header class="layout">
+        <h1 class="header-title">SENA</h1>
+        <a href="{% url 'login' %}" class="header-admin">
+            <img src="{% static "assets/icons/admin_white.png"%}" alt="Login administrador">
+        </a>
+    </header>
+
+    <main>
+        {% block content %}
+
+        {% endblock %}
+    </main>
+
+    <footer>
+        <!-- Teclado -->
+        <div class="container-keyboard">
+            <div class="keyboard">
+                <div class="keyboard-bg"></div>
+                <div class="keyboard_keys">
+                    <div class="row">
+                        <div class="keys">@</div>
+                        <div class="keys">1</div>
+                        <div class="keys">2</div>
+                        <div class="keys">3</div>
+                        <div class="keys">4</div>
+                        <div class="keys">5</div>
+                        <div class="keys">6</div>
+                        <div class="keys">7</div>
+                        <div class="keys">8</div>
+                        <div class="keys">9</div>
+                        <div class="keys">0</div>
+                        <div class="keys disabled">\</div>
+                        <div class="keys disabled">=</div>
+                        <div class="keys backspace_key special_key">Borrar</div>
+                    </div>
+                    <div class="row">
+                        <div class="keys tab_key special_key">Tab</div>
+                        <div class="keys">q</div>
+                        <div class="keys">w</div>
+                        <div class="keys">e</div>
+                        <div class="keys">r</div>
+                        <div class="keys">t</div>
+                        <div class="keys">y</div>
+                        <div class="keys">u</div>
+                        <div class="keys">i</div>
+                        <div class="keys">o</div>
+                        <div class="keys">p</div>
+                        <div class="keys disabled">{</div>
+                        <div class="keys disabled">}</div>
+                        <div class="keys disabled">^</div>
+                    </div>
+                    <div class="row">
+                        <div class="keys caps_lock_key special_key">Bloq Mayus</div>
+                        <div class="keys">a</div>
+                        <div class="keys">s</div>
+                        <div class="keys">d</div>
+                        <div class="keys">f</div>
+                        <div class="keys">g</div>
+                        <div class="keys">h</div>
+                        <div class="keys">j</div>
+                        <div class="keys">k</div>
+                        <div class="keys">l</div>
+                        <div class="keys">ñ</div>
+                        <div class="keys disabled">"</div>
+                        <div class="keys enter_key special_key">Enter</div>
+                    </div>
+                    <div class="row">
+                        <div class="keys shift_key shift_left special_key">Shift</div>
+                        <div class="keys">z</div>
+                        <div class="keys">x</div>
+                        <div class="keys">c</div>
+                        <div class="keys">v</div>
+                        <div class="keys">b</div>
+                        <div class="keys">n</div>
+                        <div class="keys">m</div>
+                        <div class="keys disabled">,</div>
+                        <div class="keys disabled">;</div>
+                        <div class="keys disabled">.</div>
+                        <div class="keys disabled">:</div>
+                        <div class="keys shift_key shift_right special_key">Shift</div>
+                    </div>
+                    <div class="row">
+                        <div class="keys special_key">Ctrl</div>
+                        <div class="keys special_key">Win</div>
+                        <div class="keys special_key">Alt</div>
+                        <div class="keys space_key special_key"></div>
+                        <div class="keys special_key">Alt</div>
+                        <div class="keys special_key">Fn</div>
+                        <div class="keys special_key">Ctrl</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>    
+
+    <!-- JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Bootstrap JavaScript Libraries -->
+    <script src="{% static 'bootstrap-5.3.0\js\bootstrap.bundle.min.js' %}" ></script>    
+    <!-- Alertas - SweetAlert-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.22/dist/sweetalert2.all.min.js"></script>
+    <!-- Quagga2 Escaner codigo de barras con camara-->
+    <script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2/dist/quagga.js"></script>
+    <!-- Select con busqueda -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script> 
+    <!--Mi Script-->
+    <script src="{% static 'js/script.js'%}"></script>  
+    <script>
+    //Select con busqueda
+    $( '#single-select-field' ).select2( {
+        theme: "bootstrap-5",
+        width: $( this ).data( 'width' ) ? $( this ).data( 'width' ) : $( this ).hasClass( 'w-100' ) ? '100%' : 'style',
+        placeholder: $( this ).data( 'placeholder' ),
+        dir: 'ltr'
+    } );
+    </script>
+</body>
+
+</html>
