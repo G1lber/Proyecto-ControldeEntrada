@@ -1,6 +1,6 @@
 :root {
-    --bgcolor: rgba(78, 142, 55);
-    --bgcolor-clare: rgba(96, 215, 67, 1);
+    --bgcolor: #39A900;
+    --bgcolor-clare: #39A900;
     --hovercolor: rgba(60, 109, 42, 1);
     --hovercolorclare: rgba(202, 255, 182, 0.144);
     --text-color: rgba(140, 223, 120, 1);
@@ -475,19 +475,21 @@ header.layout .header-admin img {
     border-radius: 10px;
     height: 250px;
     width: 80%;
+    background-color: #e6e5e5;
 }
 
 #ingreso.scan .card .card-code img {
     width: 15%;
     opacity: .5;
     position: absolute;
+    background-color: #e6e5e5;
 }
 
 /* Card escaneo: Barra scan */
 #ingreso.scan .card .card-barra {
     width: 80%;
     height: 7px;
-    background-color: #8cdf78;
+    background-color: #39A900;
     border-radius: 100px;
     animation: barra 5s infinite;
     z-index: 1;
