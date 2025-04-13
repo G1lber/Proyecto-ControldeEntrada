@@ -72,7 +72,7 @@ class RegisterDevice(ModelForm):
     tipo = forms.ModelChoiceField(queryset=DispositivosTipo.objects.all(), widget=forms.Select(attrs={'class': 'form-select', 'id': 'tipo'}), label="", empty_label="Tipo de dispositivo")
     marca = forms.ModelChoiceField(queryset=DispositivosMarca.objects.all(), widget=forms.Select(attrs={'class': 'form-select', 'id': 'single-select-field'}), label="", empty_label="Marca")
     documento = forms.FileField(widget=forms.FileInput(attrs={'class': 'form-control', 'accept': '.pdf'}))
-    imagen = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control'}), required=False)
+    imagen = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control', 'id': 'device-file'}), required=False)
 
     #Validacion de imagen
     def clean_imagen(self):

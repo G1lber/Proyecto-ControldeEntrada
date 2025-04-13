@@ -359,7 +359,7 @@ if (camaraModal) {
     dataTransfer.items.add(file);
 
     // Simular una selección de archivo para el campo de entrada de tipo "file"
-    const fileInput = document.getElementById('user-file');
+    const fileInput = document.getElementById('device-file') || document.getElementById('user-file');
 
     // Asignar el DataTransfer al campo de entrada de tipo "file"
     fileInput.files = dataTransfer.files;
