@@ -115,7 +115,7 @@ class RegisterVehicle(ModelForm):
     placa = forms.CharField(widget=forms.TextInput(attrs={'maxlength': 7, 'autofocus': True, 'onkeyup': 'Upper(this)'}))
     marca = forms.ModelChoiceField(queryset=VehiculosMarca.objects.all(), widget=forms.Select(attrs={'class': 'form-select', 'id': 'single-select-field'}), label="", empty_label="Marca")
     modelo = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-select'}), label="", choices=YEAR_CHOICES)
-    imagen = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control'}), required=False)
+    imagen = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control', 'id': 'vehicle-file'}), required=False)
 
     #Validacion de imagen
     def clean_imagen(self):
