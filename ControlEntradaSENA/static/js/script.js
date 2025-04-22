@@ -345,29 +345,47 @@ if (camaraModal) {
   }
 
   function saveImage() {
-    // Obtener la imagen en formato base64
+    // Verifica que canvas exista
+    if (!canvas) {
+      console.error('No se encontró el canvas.');
+      return;
+    }
+  
+    // Obtener la imagen en formato base64 desde el canvas
     const imageData = canvas.toDataURL('image/png');
-    const capturedImage = imageData
-
-    // Generar un archivo a partir de la imagen base64
+    const capturedImage = imageData;
+  
+    // Generar un archivo desde la imagen base64
     const file = dataURLtoFile(capturedImage, 'captured_image.png');
-
+  
     // Crear una instancia de DataTransfer
     const dataTransfer = new DataTransfer();
-
-    // Agregar el archivo al DataTransfer
     dataTransfer.items.add(file);
-
-    // Simular una selección de archivo para el campo de entrada de tipo "file"
-    const fileInput = document.getElementById('user-file');
-
-    // Asignar el DataTransfer al campo de entrada de tipo "file"
-    fileInput.files = dataTransfer.files;
-
-    // Disparar un evento de cambio en el campo de entrada de tipo "file"
-    const changeEvent = new Event('change');
-    fileInput.dispatchEvent(changeEvent);
+  
+    // Lista de posibles IDs de campos file
+    const fileIds = ['device-file', 'user-file', 'vehicle-file'];
+  
+    let applied = false;
+  
+    fileIds.forEach(id => {
+      const fileInput = document.getElementById(id);
+      if (fileInput) {
+        fileInput.files = dataTransfer.files;
+  
+        // Disparar evento de cambio para activar cualquier lógica asociada
+        const changeEvent = new Event('change');
+        fileInput.dispatchEvent(changeEvent);
+  
+        console.log(`Imagen asignada a ${id}`);
+        applied = true;
+      }
+    });
+  
+    if (!applied) {
+      console.warn('⚠️ No se encontró ningún input file válido.');
+    }
   }
+  
 }
 
 //SELECT DISPOSITIVOS Y VEHICULOS

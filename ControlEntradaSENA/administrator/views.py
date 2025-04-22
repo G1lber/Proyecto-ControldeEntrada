@@ -200,7 +200,7 @@ def vehicles(request):
 def edit_vehiculo(request, id):
     instance=Vehiculos.objects.get(idvehiculo=id)
 
-    form = RegisterVehicles(request.POST or None, request.FILES or None, instance= instance)
+    form = RegisterVehicle(request.POST or None, request.FILES or None, instance= instance)
     if request .method == "POST" :
         if form.is_valid():
             form.save()

@@ -54,15 +54,23 @@
                 </div>
                 {% endif %}
                 <div class="form-group row">
-                    <div class="col">
+                    <!-- Campo imagen -->
+                    <div class="col-10">
                         <label>{{form.imagen.label}}</label>
                         {{form.imagen}}
                     </div>
-                </div>
+                    <!-- Boton tomar foto --> 
+                    <div class="col mt-4">
+                        <button class="btn btn-green" type="button" id="user-picture-btn" data-bs-toggle="modal" data-bs-target="#camaraModal">Tomar foto</button>
+                    </div>
+                    
+                </div> 
                 <div class="form-submit">
                     <button class="form-btn btn btn-primary" type="submit">Enviar</button>
                 </div>
             </form>
+             <!-- Modal Camara -->
+             {% include '../includes/modalCamara.html' %}
         </div>
     </section>
 </article>

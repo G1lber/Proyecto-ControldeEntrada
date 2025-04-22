@@ -39,12 +39,7 @@
                         <span>Visitante</span>
                     </a>
                 </li>
-                <li class="col">
-                    <a role="button" href="?rol=4">
-                        <img src="{% static "assets/icons/administrativo.png" %}" alt="">
-                        <span>Administrativo</span>
-                    </a>
-                </li>
+
             </ul>
         </div>
     </section>
@@ -202,13 +197,14 @@
                     <div class="col mt-4">
                         <button class="btn btn-green" type="button" id="user-picture-btn" data-bs-toggle="modal" data-bs-target="#camaraModal">Tomar foto</button>
                     </div>
-                    <!-- Modal Camara -->
-                    {% include '../includes/modalCamara.html' %}
+                    
                 </div>                
                 <div class="form-submit">
                     <button class="form-btn btn btn-primary" type="submit">Enviar</button>
                 </div>
             </form>
+            <!-- Modal Camara -->
+            {% include '../includes/modalCamara.html' %}
         </div>
     </section>
 </article>
