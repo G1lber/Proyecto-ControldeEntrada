@@ -122,7 +122,7 @@ def edit_user(request, id):
 def dispositivo(request):
     devices = Dispositivos.objects.all()
 
-    form = RegisterDevices(request.POST or None, request.FILES or None)
+    form = RegisterDevice(request.POST or None, request.FILES or None)
 
     if request.method == 'POST':
         if form.is_valid():
