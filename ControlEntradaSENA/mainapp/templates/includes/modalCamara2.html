@@ -1,0 +1,47 @@
+<div class="modal fade cam-modal" id="camaraModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Tomar Foto</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <!-- Video -->
+            <video id="user-cam"></video>
+            <!-- Canvas-->
+            <canvas id="user-picture"></canvas>
+            <div class="btn-zone">
+                <!-- Boton tomar foto -->
+                <button type="button" class="btn btn-green btn-picture" id="user-takepicture-btn" onclick="captureImage()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="100%" fill="currentColor" class="bi bi-camera-fill" viewBox="0 0 16 16">
+                        <path d="M10.5 8.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                        <path d="M2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2zm.5 2a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zm9 2.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0z"/>
+                      </svg>
+                </button>
+                <!-- Form enviar file foto -->
+                <form id="form-access" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="file" name="imagen" id="user-file" style="display: none">    
+                    <!-- Boton guardar foto -->                       
+                    <button type="submit" class="btn btn-green btn-picture" id="user-savepicture-btn" onclick="saveImage()" data-bs-dismiss="modal">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="100%" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                            <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
+                          </svg>
+                    </button>
+                    <!-- Boton repetir foto -->
+                    <button type="button" class="btn btn-green btn-picture" id="user-repeatpicture-btn" onclick="repeatImage()">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="100%" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
+                          <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
+                          <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
+                      </svg>
+                    </button>
+                </form>
+                
+            </div>                                
+        </div>
+        <div class="modal-footer">
+          <button type="button" onclick="" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+</div>
