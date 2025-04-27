@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -150,7 +150,7 @@ def dispositivo(request):
 def edit_dispositivo(request, id):
     instance = Dispositivos.objects.get(iddispositivo=id)
 
-    form = RegisterDevices(request.POST or None, request.FILES or None, instance= instance)
+    form = RegisterDevice(request.POST or None, request.FILES or None, instance= instance)
     if request .method == "POST" :
         if form.is_valid():
             form.save()
@@ -162,7 +162,10 @@ def edit_dispositivo(request, id):
         'form': form
     })
 
-
+def delete_dispotivos(request, id):
+        device = get_object_or_404(Dispositivos, iddispositivo=id)
+        device.delete()
+        return redirect("devices")
 
 ###
 
