@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.core.files.storage",
     "mainapp",
+    'django_select2',
     "administrator"
 ]
 VERSION = "Control Entrada Sena V2.0"

@@ -5,7 +5,8 @@ from django.core.exceptions import ValidationError
 #Fecha y hora
 from datetime import datetime
 date = datetime.now().strftime("%Y-%m-%d")
-
+#Para convertir un select en un buscar
+from django_select2.forms import Select2Widget
 
 #Formulario para registro de usuario
 class RegisterUser(ModelForm):
@@ -67,7 +68,7 @@ class RegisterDevice(ModelForm):
         fields = "__all__"
 
     #Campos
-    usuario = forms.ModelChoiceField(queryset=Usuarios.objects.all(), widget=forms.Select(attrs={'class': 'form-select'}))
+    usuario = forms.ModelChoiceField(queryset=Usuarios.objects.all(), widget=Select2Widget(attrs={'class': 'form-control', 'data-placeholder': 'Buscar usuario...'}))
     sn = forms.CharField(widget=forms.TextInput(attrs={'maxlength': 50, 'autofocus': True, 'onkeyup': 'Upper(this)'}), label="Serial Number")
     tipo = forms.ModelChoiceField(queryset=DispositivosTipo.objects.all(), widget=forms.Select(attrs={'class': 'form-select', 'id': 'tipo'}), label="", empty_label="Tipo de dispositivo")
     marca = forms.ModelChoiceField(queryset=DispositivosMarca.objects.all(), widget=forms.Select(attrs={'class': 'form-select', 'id': 'single-select-field'}), label="", empty_label="Marca")
