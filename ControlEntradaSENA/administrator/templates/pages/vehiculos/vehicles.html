@@ -11,7 +11,11 @@
           <header class="card-header">
               <h1 class="card-title">Vehiculos</h1>
               <!-- Btn Registrar Usuario -->
-              <button type="button" class="btn btn-green add" id="btn-register-users">Registrar Vehiculo</button>         
+              <button type="button" class="btn btn-green add">
+                <a class="links" href="{% url 'create_vehiculo' %}">
+                  Registrar Vehiculo
+                </a>
+              </button>        
           </header>
           <!-- Seccion Search -->
           <div class="card-search">

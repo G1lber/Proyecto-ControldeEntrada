@@ -19,6 +19,7 @@ urlpatterns = [
     path("admin/dispositivo/editdispositivo/<int:id>", views.edit_dispositivo, name="editdispositivo"),
     path("admin/dispositivo/delete/<int:id>", views.delete_dispotivos, name="delete_dispositivo"), 
     path("admin/vehiculos", views.vehicles, name="vehiculos"),
+    path("admin/create_vehiculo/", views.create_vehicle, name="create_vehiculo"),
     path("admin/vehiculos/editvehiculo/<int:id>", views.edit_vehiculo, name="editvehiculo"),
     path("admin/vehiculos/delete_vehiculo/<int:id>", views.delete_vehiculo, name="delete_vehiculo"),
     path("admin/about", views.about, name="about"),

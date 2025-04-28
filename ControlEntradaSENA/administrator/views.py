@@ -210,7 +210,16 @@ def vehicles(request):
         'title': 'Vehiculos',
         'vehicles': vehicles
     })
-
+def create_vehicle(request):
+    form = RegisterVehicle(request.POST or None, request.FILES or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Se ha registrado correctamente")
+            return redirect('vehiculos')
+    return render(request, "pages/vehiculos/crear.html",{
+        "form":form
+    })
 #Editar vehiculos
 def edit_vehiculo(request, id):
     instance=Vehiculos.objects.get(idvehiculo=id)

@@ -76,7 +76,9 @@
 
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}                        
-                {{form.usuario}}                
+                <div class="d-none">
+                    {{form.usuario}}
+                </div>           
                 <input type="hidden" name="tipo" value="{{vehicle}}">
                 <div class="form-group row">
                     <div class="col">
