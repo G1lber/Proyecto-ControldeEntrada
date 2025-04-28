@@ -520,12 +520,11 @@ document.addEventListener('DOMContentLoaded', function () {
       e.preventDefault(); // Evita que el formulario se envíe automáticamente
 
       const selectedItems = [];
-      for (const i = 0; i < checks.length; i++) {
+      for (let i = 0; i < checks.length; i++) {  // Cambiado a 'let'
         if (checks[i].checked) {
           selectedItems.push(checks[i].value); // Agrega los valores seleccionados al array
         }
       }
-
       const hiddenInput = document.createElement('input');
       hiddenInput.setAttribute('type', 'hidden');
       hiddenInput.setAttribute('name', 'checks-users');
