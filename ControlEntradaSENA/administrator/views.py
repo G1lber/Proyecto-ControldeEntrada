@@ -5,6 +5,7 @@ from django.contrib import messages
 from .models import *
 from django.db import connection
 from .forms import *
+from django.db.models import Q
 
 #Login admin
 @user_passes_test(lambda u: not u.is_authenticated, login_url='adminpanel') #Si el usuario ya esta logeado no va a poder acceder a la pagina de login 
@@ -57,7 +58,16 @@ def adminpanel(request):
 @login_required(login_url="admin")
 def users(request):
     users = Usuarios.objects.all().prefetch_related('dispositivos_set').prefetch_related('vehiculos_set')
-
+    
+    search_query = request.GET.get('search')
+    #Buscar usuarios
+    if search_query:
+        users = users.filter(
+            Q(nombres__icontains=search_query) | Q(documento__icontains=search_query)
+        )  
+    if not users.exists():  #Luego revisamos si el resultado está vacío
+        messages.warning(request, "No se encontraron usuarios con esa búsqueda.")
+        
     checks = request.POST.get('checks-users')
     if checks:
         checks = checks.split(',')
