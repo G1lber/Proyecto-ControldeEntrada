@@ -64,7 +64,7 @@
           <table class="table table-striped">
             <thead>
               <tr>
-                <th scope="col">ID</th>
+
                 <th scope="col">Propietari@</th>
                 <th scope="col">SN</th>
                 <th scope="col">Tipo Dispositivo</th>
@@ -78,7 +78,6 @@
             <tbody class="tbody">
               {% for dispositivo in dispositivos%}
               <tr>
-                <th scope="row">{{dispositivo.iddispositivo}}</th>
                 <td>{{dispositivo.usuario}}</td>
                 <td>{{dispositivo.sn}}</td>
                 <td>{{dispositivo.tipo}}</td>
