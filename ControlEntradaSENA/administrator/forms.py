@@ -67,17 +67,17 @@ class RegisterDevice(ModelForm):
         fields = "__all__"
 
     #Campos
-    usuario = forms.ModelChoiceField(queryset=Usuarios.objects.all(), widget=forms.HiddenInput())
+    usuario = forms.ModelChoiceField(queryset=Usuarios.objects.all(), widget=forms.Select(attrs={'class': 'form-select'}))
     sn = forms.CharField(widget=forms.TextInput(attrs={'maxlength': 50, 'autofocus': True, 'onkeyup': 'Upper(this)'}), label="Serial Number")
     tipo = forms.ModelChoiceField(queryset=DispositivosTipo.objects.all(), widget=forms.Select(attrs={'class': 'form-select', 'id': 'tipo'}), label="", empty_label="Tipo de dispositivo")
     marca = forms.ModelChoiceField(queryset=DispositivosMarca.objects.all(), widget=forms.Select(attrs={'class': 'form-select', 'id': 'single-select-field'}), label="", empty_label="Marca")
-    documento = forms.FileField(widget=forms.FileInput(attrs={'class': 'form-control', 'accept': '.pdf'}))
+    # documento = forms.FileField(widget=forms.FileInput(attrs={'class': 'form-control', 'accept': '.pdf'}))
     imagen = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control', 'id': 'device-file'}), required=False)
 
     #Validacion de imagen
     def clean_imagen(self):
         imagen = self.cleaned_data.get('imagen', False)
-        usuario = self.cleaned_data['usuario']
+        # usuario = self.cleaned_data['usuario']
         sn = self.cleaned_data['sn']
         if imagen:
             # Verifica que la extensión del archivo sea .jpg o .png
@@ -88,16 +88,16 @@ class RegisterDevice(ModelForm):
             imagen.name = filename
         return imagen
     
-    def clean_doc(self):
-        if doc := self.cleaned_data.get('documento', False):
-            extension = doc.name.split('.')[-1].lower()
-            if extension not in ['pdf']:
-                raise ValidationError("El archivo debe estar en formato PDF.")
-            tipo = self.cleaned_data['tipo']
-            sn = self.cleaned_data['sn']
-            marca = self.cleaned_data['marca']
-            filename = f"{tipo}-{marca}-{sn}-{doc.name.split('.')[-1]}"
-            doc.name = filename
+    # def clean_doc(self):
+    #     if doc := self.cleaned_data.get('documento', False):
+    #         extension = doc.name.split('.')[-1].lower()
+    #         if extension not in ['pdf']:
+    #             raise ValidationError("El archivo debe estar en formato PDF.")
+    #         tipo = self.cleaned_data['tipo']
+    #         sn = self.cleaned_data['sn']
+    #         marca = self.cleaned_data['marca']
+    #         filename = f"{tipo}-{marca}-{sn}-{doc.name.split('.')[-1]}"
+    #         doc.name = filename
     
 
 #Formulario para registro de vehiculo

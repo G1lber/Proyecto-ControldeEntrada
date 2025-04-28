@@ -19,5 +19,6 @@ urlpatterns = [
     path("admin/dispositivo/delete/<int:id>", views.delete_dispotivos, name="delete_dispositivo"), 
     path("admin/vehiculos", views.vehicles, name="vehiculos"),
     path("admin/vehiculos/editvehiculo/<int:id>", views.edit_vehiculo, name="editvehiculo"),
+    path("admin/vehiculos/delete_vehiculo/<int:id>", views.delete_vehiculo, name="delete_vehiculo"),
     path("admin/about", views.about, name="about"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
