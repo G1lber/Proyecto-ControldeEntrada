@@ -122,24 +122,20 @@ def edit_user(request, id):
 def dispositivo(request):
     devices = Dispositivos.objects.all()
 
-    
-    
-    return render(request, 'pages/dispositivos/devices.html', {
-        'title': 'Dispositivos',
-        'dispositivos': devices,
-
-    })
-
-def create_dispositivo(request):
     form = RegisterDevice(request.POST or None, request.FILES or None)
+
     if request.method == 'POST':
         if form.is_valid():
             form.save()
             messages.success(request, "Se ha registrado correctamente")
-            return redirect('devices')
-    return render(request, "pages/dispositivos/crear.html",{
-        "form":form
+            return redirect('dispositivo')
+    
+    return render(request, 'pages/dispositivos/devices.html', {
+        'title': 'Dispositivos',
+        'dispositivos': devices,
+        'form': form
     })
+
 #Editar dispositivo
 def edit_dispositivo(request, id):
     instance = Dispositivos.objects.get(iddispositivo=id)
@@ -219,9 +215,9 @@ def edit_vehiculo(request, id):
 
 #Eliminar vehiculos Individual
 def delete_vehiculo(request, id):
-    device = get_object_or_404(Vehiculos, idvehiculo =id)
-    device.delete()
-    return redirect("vehiculos")
+        device = get_object_or_404(Vehiculos, idvehiculo =id)
+        device.delete()
+        return redirect("vehiculos")
 
 
 

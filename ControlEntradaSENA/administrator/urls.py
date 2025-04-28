@@ -15,7 +15,6 @@ urlpatterns = [
     path("admin/sanciones", views.sanciones, name="penaltys"),
     path("admin/sanciones/editsanciones/<int:id>", views.edit_sanciones, name="editsanciones"),
     path("admin/dispositivo", views.dispositivo, name="devices"),
-    path("admin/create_dispositivo", views.create_dispositivo, name="create_device"),
     path("admin/dispositivo/editdispositivo/<int:id>", views.edit_dispositivo, name="editdispositivo"),
     path("admin/dispositivo/delete/<int:id>", views.delete_dispotivos, name="delete_dispositivo"), 
     path("admin/vehiculos", views.vehicles, name="vehiculos"),
