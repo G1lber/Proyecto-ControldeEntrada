@@ -7,8 +7,10 @@
       <header class="card-header">
         <h1 class="card-title">Dispositivos</h1>
         <!-- Btn Registrar Dispositivo -->
-        <button type="button" class="btn btn-green add" id="btn-register-users">
-          Registrar Dispositivo
+        <button type="button" class="btn btn-green add">
+          <a class="links" href="{% url 'create_device' %}">
+            Registrar Dispositivo
+          </a>
         </button>
       </header>
       <!-- Seccion Search -->
@@ -36,6 +38,7 @@
       <div class="card-body">
         <!-- Card Tabla-->
         <div class="card card-table">
+          {% comment %} TODO:BORRAR {% endcomment %}
           <!-- Seccion Btn de Accion -->
           <div class="card-table-buttons">
             <!-- Btn Eliminar -->
@@ -150,6 +153,7 @@
       </div>
     </section>
     <!-- Modal -->
+     {% comment %} TODO:BORRAR {% endcomment %}
     {% include 'pages\dispositivos\delete.html' %}
     <!-- Animacion entre tabla y form -->
     {% comment %} <section id="select">
