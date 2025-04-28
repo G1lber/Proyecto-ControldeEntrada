@@ -869,7 +869,13 @@ body {
     color: white;
     text-decoration: none;
 }
-
+.links{
+    color: white;
+    text-decoration: none;
+}
+.links:hover {
+    color: inherit; /* Mantiene el color original al pasar el mouse */
+}
 /*
         HEADER
 */

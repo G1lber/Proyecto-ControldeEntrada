@@ -1,5 +1,4 @@
-{% extends "layout.html" %}
-
+{% extends 'layouts/layout_admin.html' %} {% load static %}
 {% block title %} Agregar nuevo producto {% endblock %}
 
 {% block content %} 
@@ -10,7 +9,46 @@
     </div>
     <div class="card-body">
         <h4 class="card-title">Datos del Dispositivo</h4>
-        {% include 'Productos/form.html'%}
+        {% comment %} TODO:BORRAR {% endcomment %}
+        {% comment %} {% include 'Productos/form.html'%} {% endcomment %}
+        <div class="card-body">
+         {% if form.errors %}
+         <div class="alert alert-danger" role="alert">
+           {% for field, errors in form.errors.items %}
+           <strong>{{ field }}:</strong>
+           {% for error in errors %} {{ error }}<br />
+           {% endfor %} {% endfor %}
+         </div>
+         {% endif %}
+         <form method="post" enctype="multipart/form-data">
+           {% csrf_token %}
+           <div class="form-group row">
+             <div class="col">
+               <div class="input-box">
+                 {{form.sn}}
+                 <label>{{form.sn.label}}</label>
+               </div>
+             </div>
+   
+             <div class="col">{{form.tipo}}</div>
+           </div>
+   
+           <div class="form-group row">
+             <div class="col">{{form.marca}}</div>
+             <div class="col">
+               <label>{{form.imagen.label}}</label>
+               {{form.imagen}}
+             </div>
+           </div>
+           <div class="col">
+             <label>{{form.usuario.label}}</label>
+             {{form.usuario}}
+           </div>
+           <div class="form-submit">
+             <button class="form-btn btn btn-primary" type="submit">Crear device</button>
+           </div>
+         </form>
+       </div>
     </div>
     <div class="card-footer text-muted">
         
