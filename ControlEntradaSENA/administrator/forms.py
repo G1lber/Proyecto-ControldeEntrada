@@ -79,15 +79,18 @@ class RegisterDevice(ModelForm):
     #Validacion de imagen
     def clean_imagen(self):
         imagen = self.cleaned_data.get('imagen', False)
-        # usuario = self.cleaned_data['usuario']
-        sn = self.cleaned_data['sn']
+        usuario = self.cleaned_data.get('usuario')  # 👈 Aquí lo defines
+        sn = self.cleaned_data.get('sn')
+
         if imagen:
-            # Verifica que la extensión del archivo sea .jpg o .png
             extension = imagen.name.split('.')[-1].lower()
             if extension not in ['jpg', 'png', 'jpeg']:
                 raise ValidationError("El archivo debe estar en formato JPG o PNG.")
-            filename = f"{usuario.idusuario}.{sn}.{imagen.name.split('.')[-1]}"
-            imagen.name = filename
+
+            if usuario:
+                filename = f"{usuario.idusuario}.{sn}.{extension}"
+                imagen.name = filename
+
         return imagen
     
     # def clean_doc(self):
