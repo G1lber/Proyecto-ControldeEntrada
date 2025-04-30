@@ -6,6 +6,7 @@ from administrator.models import Usuarios, Dispositivos, Vehiculos, Ingresos, Sa
 from administrator.forms import RegisterUser, RegisterDevice, RegisterVehicle
 from datetime import datetime #Fecha y hora
 
+
 #Inicio
 def index(request):
     # sourcery skip: extract-method, use-fstring-for-concatenation
@@ -34,14 +35,46 @@ def index(request):
             jornada = ficha.jornada if ficha else None
             
             #Si el usuario toma su foto: Guardarla
-            if request.method == 'POST':   
+            if request.method == 'POST':
+                from rembg import remove
+                from PIL import Image
+                from io import BytesIO
+                from django.core.files.uploadedfile import InMemoryUploadedFile
+
+
+                # Eliminar imagen anterior
                 user.imagen.delete()
+
+                # Obtener imagen desde el formulario
                 imagen = request.FILES['imagen']
                 extension = imagen.name.split('.')[-1].lower()
                 filename = f"{code}.{extension}"
-                imagen.name = filename                        
-                user.imagen = imagen
+
+                # Procesar imagen para quitar el fondo
+                input_image = Image.open(imagen).convert("RGBA")
+                output_image = remove(input_image)
+
+                # Crear fondo blanco
+                background = Image.new("RGBA", output_image.size, (255, 255, 255, 255))
+                final_image = Image.alpha_composite(background, output_image).convert("RGB")
+
+                # Guardar imagen en memoria como JPEG o PNG
+                buffer = BytesIO()
+                final_image.save(buffer, format='PNG')  # Cambia a 'PNG' si prefieres
+                buffer.seek(0)
+
+                # Asignar imagen procesada al usuario
+                django_file = InMemoryUploadedFile(
+                    buffer,
+                    'ImageField',
+                    filename,
+                    'image/jpeg',  # Cambia a 'image/png' si usas PNG
+                    buffer.getbuffer().nbytes,
+                    None
+                )
+                user.imagen = django_file
                 user.save()
+
                 return redirect(f"/?code={code}")
                                 
             #Si el usuario tiene un ingreso activo, hacer salida
