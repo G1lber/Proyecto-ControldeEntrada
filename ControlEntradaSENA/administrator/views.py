@@ -211,14 +211,22 @@ def vehicles(request):
         'vehicles': vehicles
     })
 def create_vehicle(request):
-    form = RegisterVehicle(request.POST or None, request.FILES or None)
+    rol = None
+
+    # Si es superuser (admin)
+    if request.user.is_authenticated and request.user.is_superuser:
+        rol = 'admin'
+
+    form = RegisterVehicle(request.POST or None, request.FILES or None, rol=rol)
+
     if request.method == 'POST':
         if form.is_valid():
             form.save()
             messages.success(request, "Se ha registrado correctamente")
             return redirect('vehiculos')
-    return render(request, "pages/vehiculos/crear.html",{
-        "form":form
+
+    return render(request, "pages/vehiculos/crear.html", {
+        "form": form
     })
 #Editar vehiculos
 def edit_vehiculo(request, id):
