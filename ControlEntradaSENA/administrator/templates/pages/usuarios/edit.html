@@ -101,8 +101,14 @@
                       <input class="form-control" type="text" name="imagen_user" value="{{form.imagen.value}}" readonly>
                       {{form.imagen}}
                   </div> 
-              </div>
-              
+                   <div class="col">
+                      <div class="input-box">
+                        {{form.correo}}
+                        <label>{{form.correo.label}}</label>
+                    </div>
+                    {{ form.rol_hide }}
+                  </div> 
+              </div>    
               <div class="form-submit">
                   <button class="form-btn btn btn-primary" type="submit">Enviar</button>
               </div>

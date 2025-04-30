@@ -107,13 +107,19 @@ def register_user(request, rol):
 #Editar usuario
 def edit_user(request, id):
     instance = Usuarios.objects.get(idusuario=id)
-    initial = {'imagen': instance.imagen}
+    initial = {
+        'imagen': instance.imagen,
+        'rol': instance.rol,
+        'rol_hide': instance.rol
+    }
+    
     form = RegisterUser(request.POST or None, request.FILES or None, instance=instance, initial=initial)
 
     form.fields['imagen'].required = False
     form.fields['centro'].required = False if instance.rol == 3 else True
     form.fields['ficha'].required = False if instance.rol != 2 else True
-
+    form.fields['rol'].disabled = True  
+    
     if request.method == 'POST':
         if form.is_valid():
             form.save()
@@ -155,6 +161,8 @@ def edit_dispositivo(request, id):
     instance = Dispositivos.objects.get(iddispositivo=id)
     form = RegisterDevice(request.POST or None, request.FILES or None, instance= instance)
     if request .method == "POST" :
+
+
         if form.is_valid():
             form.save()
             messages.success(request, "se ha editado correctamente")
