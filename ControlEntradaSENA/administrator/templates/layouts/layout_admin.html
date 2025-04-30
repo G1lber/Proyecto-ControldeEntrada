@@ -62,33 +62,59 @@
             </div>
 
             <!-- Lista de dispositivos -->
-            <div class="item">
+            <div class="item {% if request.path == '/admin/dispositivo' or request.path == '/admin/create_dispositivo' %}active-item{% endif %}">
                 <a role="button" href="{% url 'devices' %}">
-                    <div class="icon"><img src="{% static 'assets/icons/dispositivo white.png' %}" alt=""></div>
+                    <div class="icon">
+                        {% if request.path == '/admin/dispositivo' or request.path == '/admin/create_dispositivo' %}
+                            <img src="{% static 'assets/icons/dispositivo.png' %}" alt="">
+                        {% else %}
+                            <img src="{% static 'assets/icons/dispositivo white.png' %}" alt="">
+                        {% endif %}
+                    </div>
                     <div class="title"><span>Lista de dispositivos</span></div>
                 </a>
             </div>
+            
 
             <!-- Lista de vehiculos -->
-            <div class="item">
+            <div class="item {% if request.path == '/admin/vehiculos' or request.path == '/admin/create_vehiculo/' %}active-item{% endif %}">
                 <a role="button" href="{% url 'vehiculos' %}">
-                    <div class="icon"><img src="{% static 'assets/icons/trafico white.png' %}" alt=""></div>
+                    <div class="icon">
+                        {% if request.path == '/admin/vehiculos' or request.path == '/admin/create_vehiculo/' %}
+                            <img src="{% static 'assets/icons/trafico.png' %}" alt="">
+                        {% else %}
+                            <img src="{% static 'assets/icons/trafico white.png' %}" alt="">
+                        {% endif %}
+                    </div>
                     <div class="title"><span>Lista de vehiculos</span></div>
                 </a>
             </div>
 
             <!-- Multas / Sanciones -->
-            <div class="item">
+            <div class="item {% if request.path|slice:":16" == '/admin/sanciones' %}active-item{% endif %}">
                 <a role="button" href="{% url 'penaltys' %}">
-                    <div class="icon"><img src="{% static 'assets/icons/multa white.png' %}" alt=""></div>
-                    <div class="title"><span>Multas / Sanciones</span></div>
+                    <div class="icon">
+                        {% if request.path|slice:":16" == '/admin/sanciones' %}
+                            <img src="{% static 'assets/icons/multa.png' %}" alt="">
+                        {% else %}
+                            <img src="{% static 'assets/icons/multa white.png' %}" alt="">
+                        {% endif %}
+                    </div>
+                    <div class="title"><span>Subir Fichas</span></div>
                 </a>
             </div>
 
+
             <!-- Acerca de -->
-            <div class="item">
+            <div class="item {% if request.path|slice:":12" == '/admin/about' %}active-item{% endif %}">
                 <a role="button" href="{% url 'about' %}">
-                    <div class="icon"><img src="{% static 'assets/icons/acerca-de white.png' %}" alt=""></div>
+                    <div class="icon">
+                        {% if request.path|slice:":12" == '/admin/about' %}
+                            <img src="{% static 'assets/icons/acerca-de.png' %}" alt="">
+                        {% else %}
+                            <img src="{% static 'assets/icons/acerca-de white.png' %}" alt="">
+                        {% endif %}
+                    </div>
                     <div class="title"><span>Acerca de</span></div>
                 </a>
             </div>
