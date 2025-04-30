@@ -212,10 +212,19 @@ def edit_sanciones(request, id):
 #Vehicles
 @login_required(login_url="admin")
 def vehicles(request):
-    vehicles = Vehiculos.objects.all()
+    search_query = request.GET.get('search', '')  # Obtiene el término de búsqueda desde la URL
+    print(f"Search query: {search_query}")  # Para verificar que estamos recibiendo la búsqueda
+    
+    # Inicializar vehicles por defecto
+    vehicles = Vehiculos.objects.all()  # Por defecto, mostrar todos los vehículos
+    
+    if search_query:  # Si hay un término de búsqueda
+        vehicles = Vehiculos.objects.filter(placa__icontains=search_query)  # Filtra por placa
+    if not vehicles:
+        messages.warning(request, "No se encontraron vehiculos con esa búsqueda.")
     
     return render(request, 'pages/vehiculos/vehicles.html', {
-        'title': 'Vehiculos',
+        'title': 'Vehículos',
         'vehicles': vehicles
     })
 def create_vehicle(request):
