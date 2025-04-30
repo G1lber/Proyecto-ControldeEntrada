@@ -103,31 +103,66 @@ class RegisterDevice(ModelForm):
 
 #Formulario para registro de vehiculo
 class RegisterVehicle(ModelForm):
-    
     YEAR_CHOICES = [(str(year), str(year)) for year in range(2000, 2023 + 1)]
     YEAR_CHOICES.insert(0, ('', 'Selecciona el modelo'))
+
     class Meta:
         model = Vehiculos
         fields = "__all__"
 
-    #Campos
-    usuario = forms.ModelChoiceField(queryset=Usuarios.objects.all(), widget=forms.HiddenInput(attrs={'readonly': True}), label="")
-    tipo = forms.ModelChoiceField(queryset=VehiculosTipo.objects.all(), widget=forms.Select(attrs={'class': 'form-select'}), label="", empty_label="Tipo de vehiculo", disabled=True)
-    placa = forms.CharField(widget=forms.TextInput(attrs={'maxlength': 7, 'autofocus': True, 'onkeyup': 'Upper(this)'}))
-    marca = forms.ModelChoiceField(queryset=VehiculosMarca.objects.all(), widget=forms.Select(attrs={'class': 'form-select', 'id': 'single-select-field'}), label="", empty_label="Marca")
-    modelo = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-select'}), label="", choices=YEAR_CHOICES)
-    imagen = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control', 'id': 'vehicle-file'}), required=False)
+    # Campos
+    usuario = forms.ModelChoiceField(
+        queryset=Usuarios.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        label=""
+    )
+    tipo = forms.ModelChoiceField(
+        queryset=VehiculosTipo.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        label="",
+        empty_label="Tipo de vehiculo",
+        required=True  # Requerido para admin
+    )
+    placa = forms.CharField(
+        widget=forms.TextInput(attrs={'maxlength': 7, 'autofocus': True, 'onkeyup': 'Upper(this)'})
+    )
+    marca = forms.ModelChoiceField(
+        queryset=VehiculosMarca.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-select', 'id': 'single-select-field'}),
+        label="",
+        empty_label="Marca"
+    )
+    modelo = forms.ChoiceField(
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        label="",
+        choices=YEAR_CHOICES
+    )
+    imagen = forms.ImageField(
+        widget=forms.FileInput(attrs={'class': 'form-control', 'id': 'vehicle-file'}),
+        required=False
+    )
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        rol = kwargs.pop('rol', '').lower()
+        super().__init__(*args, **kwargs)
 
-    #Validacion de imagen
+        if rol == 'instructor':
+            self.fields['tipo'].disabled = True
+            self.fields['tipo'].initial = VehiculosTipo.objects.get(nombre="Carro")
+        elif rol == 'aprendiz':
+            self.fields['tipo'].disabled = True
+            self.fields['tipo'].initial = VehiculosTipo.objects.get(nombre="Moto")
+        elif rol == 'admin':
+            self.fields['tipo'].disabled = False
+
     def clean_imagen(self):
         imagen = self.cleaned_data.get('imagen', False)
         usuario = self.cleaned_data['usuario']
         placa = self.cleaned_data['placa']
         if imagen:
-            # Verifica que la extensión del archivo sea .jpg o .png
             extension = imagen.name.split('.')[-1].lower()
             if extension not in ['jpg', 'png', 'jpeg']:
                 raise ValidationError("El archivo debe estar en formato JPG o PNG.")
-            filename = f"{usuario.idusuario}.{placa}.{imagen.name.split('.')[-1]}"
+            filename = f"{usuario.idusuario}.{placa}.{extension}"
             imagen.name = filename
         return imagen

@@ -144,13 +144,15 @@ def registeruser(request, code):
 #Registrar vehiculo
 def registervehicle(request, code):
     users = Usuarios.objects.get(documento=code)
+    rol = users.rol.nombre.lower()
+    
     #Tipo vehiculo
     vehicle = request.GET.get('vehicle')
 
     #Tipo vehiculo y usuario predeterminados
     initial_data = {'tipo': vehicle, 'usuario': users.idusuario}
 
-    form = RegisterVehicle(request.POST or None, request.FILES or None, initial=initial_data)
+    form = RegisterVehicle(request.POST or None, request.FILES or None, initial=initial_data , rol=rol)
 
     form.fields['placa'].required = vehicle != "3"
     form.fields['modelo'].required = vehicle != "3"
