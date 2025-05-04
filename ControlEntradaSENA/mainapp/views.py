@@ -122,7 +122,7 @@ def access(request, code):
 #Registrar usuario
 def registeruser(request, code):
     rol = request.GET.get('rol') #Obtener rol a registrar por GET
-    initial_data = {'rol': rol, 'documento': code} #Dato predeterminado del rol y documento
+    initial_data = {'rol': rol, 'rol_hide': rol , 'documento': code} #Dato predeterminado del rol y documento
     form = RegisterUser(request.POST or None, request.FILES or None, initial=initial_data)
 
     #Requerir o no campos de formulario segun el rol
@@ -152,7 +152,8 @@ def registervehicle(request, code):
     #Tipo vehiculo y usuario predeterminados
     initial_data = {'tipo': vehicle, 'usuario': users.idusuario}
 
-    form = RegisterVehicle(request.POST or None, request.FILES or None, initial=initial_data , rol=rol)
+    form = RegisterVehicle(request.POST or None, request.FILES or None, initial=initial_data, rol=rol, user=users)
+
 
     form.fields['placa'].required = vehicle != "3"
     form.fields['modelo'].required = vehicle != "3"
