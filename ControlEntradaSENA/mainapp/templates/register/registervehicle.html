@@ -56,9 +56,8 @@
                 Registrar Carro
                 {% elif vehicle == "2"%}
                 Registrar Moto
-                {% elif vehicle == "3"%}
+                {% else %}
                 Registrar Bicicleta
-              
                 {% endif %}
             </h1>
         </header>
@@ -92,15 +91,14 @@
                             {{form.placa}}
                             <label>{{form.placa.label}}</label>
                         </div>
-                        
                         {% else %}
                         <div class="col">
                             {{form.marca}}                      
                         </div>
                         {% endif %}
                     </div>
-                    
                 </div>
+                {% comment %} Si es bicicleta {% endcomment %}
                 {% if vehicle != "3" %}
                 <div class="form-group row">
                     <div class="col">
@@ -108,18 +106,6 @@
                     </div>
                     <div class="col">
                         {{form.modelo}}
-                    </div>
-                </div>
-                {% endif %}
-                {% comment %} Si es bicicleta {% endcomment %}
-                {% if vehicle == "3" %}
-                <div class="form-group row">
-                    <div class="col">
-                        <div class="input-box">
-
-                            {{form.placa}}
-                            <label>{{form.placa.label}}</label>
-                        </div>
                     </div>
                 </div>
                 {% endif %}
