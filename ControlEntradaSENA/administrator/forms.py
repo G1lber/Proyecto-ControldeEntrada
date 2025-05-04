@@ -148,17 +148,8 @@ class RegisterVehicle(ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         rol = kwargs.pop('rol', '').lower()
-        tipo_vehiculo_id = kwargs.get('initial', {}).get('tipo')
-
         super().__init__(*args, **kwargs)
 
-        # Filtrar las marcas según el tipo de vehículo
-        if tipo_vehiculo_id:
-           self.fields['marca'].queryset = VehiculosMarca.objects.filter(tipo_id=tipo_vehiculo_id)
-        else:
-            self.fields['marca'].queryset = VehiculosMarca.objects.none()
-
-        # Reglas de roles
         if rol == 'instructor':
             self.fields['tipo'].disabled = True
             self.fields['tipo'].initial = VehiculosTipo.objects.get(nombre="Carro")
@@ -167,7 +158,6 @@ class RegisterVehicle(ModelForm):
             self.fields['tipo'].initial = VehiculosTipo.objects.get(nombre="Moto")
         elif rol == 'admin':
             self.fields['tipo'].disabled = False
-
 
     def clean_imagen(self):
         imagen = self.cleaned_data.get('imagen', False)
