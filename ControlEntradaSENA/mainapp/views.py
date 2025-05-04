@@ -122,7 +122,7 @@ def access(request, code):
 #Registrar usuario
 def registeruser(request, code):
     rol = request.GET.get('rol') #Obtener rol a registrar por GET
-    initial_data = {'rol': rol, 'rol_hide': rol , 'documento': code} #Dato predeterminado del rol y documento
+    initial_data = {'rol': rol, 'documento': code} #Dato predeterminado del rol y documento
     form = RegisterUser(request.POST or None, request.FILES or None, initial=initial_data)
 
     #Requerir o no campos de formulario segun el rol
