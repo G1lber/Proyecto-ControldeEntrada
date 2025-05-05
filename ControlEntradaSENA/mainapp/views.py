@@ -13,7 +13,7 @@ def index(request):
     #Traer los ingresos que no estan relacionados con una salida
     ingresos = Ingresos.objects.exclude(idingreso__in=Subquery(Salidas.objects.values('ingreso'))) or None 
     #Traer salidas
-    salidas = Salidas.objects.all
+    salidas = Salidas.objects.all()
     #Recibir codigo por GET
     if 'code' in request.GET:
         code = request.GET.get('code')
@@ -47,6 +47,8 @@ def index(request):
             #Si el usuario tiene un ingreso activo, hacer salida
             salida = Ingresos.objects.filter(usuario=user.idusuario).exclude(idingreso__in=Salidas.objects.values('ingreso')).first() or None
             dispositivo_salida = Dispositivos.objects.filter(usuario=user.idusuario, documento__isnull=False).first()
+
+            print(salida)
 
             return render(request, 'index.html',{
                 #Para ingreso

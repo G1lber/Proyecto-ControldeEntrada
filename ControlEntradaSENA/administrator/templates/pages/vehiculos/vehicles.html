@@ -33,7 +33,7 @@
           <!-- Mensajes -->
           {% if messages %}
           {% for message in messages %}
-              <div class="alert alert-success" role="alert">
+              <div class="alert alert-{{ message.tags }}" role="alert">
               {{message}}
               </div>
           {% endfor %}
