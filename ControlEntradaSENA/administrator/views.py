@@ -139,8 +139,8 @@ def dispositivo(request):
     query = request.GET.get('search', '')
     if query:
         devices = Dispositivos.objects.filter(sn__icontains=query)
-    else:
-        devices = Dispositivos.objects.all()
+        if not devices.exists():  #Luego revisamos si el resultado está vacío
+            messages.warning(request, "No se encontraron dispositivos con esa búsqueda.")
 
     return render(request, 'pages/dispositivos/devices.html', {
         'title': 'Dispositivos',
@@ -218,12 +218,23 @@ def crear_fichas(request):
 #Fichas
 @login_required(login_url="admin")
 def fichas(request):
+    search_query = request.GET.get('search', '')
     fichas = Fichas.objects.all()
-    print(fichas)
+
+    if search_query:
+        fichas = fichas.filter(
+            Q(nombre__nombre__icontains=search_query) |
+            Q(jornada__nombre__icontains=search_query) |
+            Q(numero__icontains=search_query) 
+        )
+        if not fichas.exists():
+            messages.warning(request, "No se encontraron fichas con esa búsqueda.")
+
     return render(request, 'pages/fichas/fichas.html', {
         'title': 'Fichas',
         'fichas': fichas
     })
+
 
 #Editar Fichas
 
