@@ -136,14 +136,16 @@ def edit_user(request, id):
 # Lista de dispositivos
 @login_required(login_url="admin")
 def dispositivo(request):
-    devices = Dispositivos.objects.all()
+    query = request.GET.get('search', '')
+    if query:
+        devices = Dispositivos.objects.filter(sn__icontains=query)
+    else:
+        devices = Dispositivos.objects.all()
 
-    
-    
     return render(request, 'pages/dispositivos/devices.html', {
         'title': 'Dispositivos',
         'dispositivos': devices,
-
+        'search': query,
     })
 
 def create_dispositivo(request):
