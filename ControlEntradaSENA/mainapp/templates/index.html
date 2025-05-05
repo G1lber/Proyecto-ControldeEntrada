@@ -190,7 +190,10 @@
                 {% endif %} 
             </div>
         </header>
-
+        <pre>
+            Salida: {{ salida }}
+            Vehiculo: {{ salida.vehiculo }}
+        </pre>
         <div class="card-body"> 
             <!-- Seccion imagen usuario-->       
             <div class="card-image">
@@ -212,7 +215,7 @@
                 <!-- Modal Camara -->
                 {% include 'includes/modalCamara2.html'%}
                 {% endif %}
-            </div>
+            </div>  
             <!-- Datos usuario -->
             <div class="card-info">            
                 <div class="row">
@@ -261,10 +264,10 @@
                             <div class="select-form vehicle">
                                 <!-- Select -->
                                 <div class="select-btn open">
-                                    <span class="btn-text">{% if ingreso.vehiculo %}{{ingreso.vehiculo}}{% else %}Ninguno{% endif %}</span>
+                                    {% if salida.vehiculo %}{{ salida.vehiculo }}{% else %}Ninguno{% endif %}
                                 </div>      
                                 <!-- Item -->                  
-                                <input type="hidden" class="item-selected" value="{{ingreso.vehiculo.idvehiculo}}">
+                                <input type="hidden" class="item-selected" value="{{salida.vehiculos.idvehiculo}}">
                             </div> 
                         {% else %}
                         <!-- Zona select -->  
