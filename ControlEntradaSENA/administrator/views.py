@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+import pandas as pd
 from .models import *
 from django.db import connection
 from .forms import *
@@ -219,10 +220,11 @@ def crear_fichas(request):
 @login_required(login_url="admin")
 def fichas(request):
     fichas = Fichas.objects.all()
-    print(fichas)
+    form = CargarUsers()
     return render(request, 'pages/fichas/fichas.html', {
         'title': 'Fichas',
-        'fichas': fichas
+        'fichas': fichas,
+        'form': form    
     })
 
 #Editar Fichas
@@ -242,6 +244,84 @@ def edit_ficha(request, id):
 
     return render(request, 'pages/fichas/edit.html', {
         'title': 'Editar Fichas',
+        'form': form
+    })
+
+def cargar_users(request, ficha_id):
+    ficha = get_object_or_404(Fichas, idficha=ficha_id)
+    fichas = Fichas.objects.all()
+    form = CargarUsers()
+
+    if request.method == "POST":
+        archivo_excel = request.FILES.get("archivo_excel")
+
+        if not archivo_excel:
+            return render(request, 'pages/fichas/fichas.html', {
+                'error': "Debes subir un archivo Excel.",
+                'form': form,
+                'ficha': ficha,
+                'fichas': fichas
+            })
+
+        try:
+            df = pd.read_excel(archivo_excel, skiprows=9, engine='openpyxl')
+            expected_columns = ['Tipo de Documento', 'Número de Documento', 'Nombre', 'Apellidos', 'Estado']
+
+            if not all(col in df.columns for col in expected_columns):
+                return render(request, 'pages/fichas/fichas.html', {
+                    'error': "El archivo Excel no tiene las columnas esperadas.",
+                    'ficha': ficha,
+                    'fichas': fichas,
+                    'form': form
+                })
+
+            rol = Roles.objects.get(idrol=2)  # Rol de aprendiz
+
+            for _, row in df.iterrows():
+                tipo_doc_instance = DocumentoTipo.objects.filter(nombre=row['Tipo de Documento']).first()
+                if not tipo_doc_instance:
+                    return render(request, 'pages/fichas/fichas.html', {
+                        'error': f"Tipo de documento '{row['Tipo de Documento']}' no encontrado.",
+                        'ficha': ficha,
+                        'fichas': fichas,
+                        'form': form
+                    })
+
+                estado = 1 if str(row['Estado']).strip().upper() == "EN FORMACION" else 0
+
+                user, _ = Usuarios.objects.update_or_create(
+                    documento=str(row['Número de Documento']),
+                    defaults={
+                        'nombres': row['Nombre'],
+                        'apellidos': row['Apellidos'],
+                        'tipodocumento': tipo_doc_instance,
+                        'rol': rol,
+                        'ficha': ficha,
+                        'correo': None,
+                        'telefono': None,
+                        'centro': ficha.centro,
+                        'imagen': 'images/users/default.png',  # Imagen genérica
+                    }
+                )
+
+                use = FichasXAprendiz.objects.get_or_create(ficha=ficha, aprendiz=user)
+                
+            # Agregar el mensaje de éxito
+            messages.success(request, 'Ficha cargada correctamente.')
+
+        except Exception as e:
+            return render(request, 'pages/fichas/fichas.html', {
+                'error': f"Error al leer el archivo Excel: {str(e)}",
+                'ficha': ficha,
+                'fichas': fichas,
+                'form': form
+            })
+
+        return redirect('fichas')
+
+    return render(request, 'pages/fichas/fichas.html', {
+        'ficha': ficha,
+        'fichas': fichas,
         'form': form
     })
 

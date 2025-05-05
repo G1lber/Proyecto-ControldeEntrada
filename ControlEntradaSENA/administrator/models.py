@@ -186,17 +186,17 @@ class Usuarios(models.Model):
     idusuario = models.AutoField(db_column='IdUsuario', primary_key=True)  # Field name made lowercase.
     nombres = models.CharField(db_column='NombresUsuario', max_length=50)  # Field name made lowercase.
     apellidos = models.CharField(db_column='ApellidosUsuario', max_length=50)  # Field name made lowercase.
-    tipodocumento = models.ForeignKey(DocumentoTipo, models.DO_NOTHING, db_column='IdTipoDocumento')  # Field name made lowercase.
+    tipodocumento = models.ForeignKey(DocumentoTipo, models.DO_NOTHING, db_column='IdTipoDocumento',default=1)  # Field name made lowercase.
     documento = models.CharField(db_column='DocumentoUsuario', unique=True, max_length=10)  # Field name made lowercase.
-    telefono = models.CharField(db_column='TelefonoUsuario', unique=True, max_length=10)  # Field name made lowercase.
+    telefono = models.CharField(db_column='TelefonoUsuario', unique=True, max_length=10, blank=True, null=True,default=None)  # Field name made lowercase.
     correo = models.CharField(db_column='CorreoUsuario', unique=True, max_length=100, blank=True, null=True)  # Field name made lowercase.
     centro = models.ForeignKey(Centros, models.DO_NOTHING, db_column='IdCentro', blank=True, null=True, default=None)  # Field name made lowercase.
-    rol = models.ForeignKey(Roles, models.DO_NOTHING, db_column='IdRol')  # Field name made lowercase.
+    rol = models.ForeignKey(Roles, models.DO_NOTHING, db_column='IdRol',default=2)  # Field name made lowercase.
     ficha = models.ForeignKey(Fichas, models.DO_NOTHING, db_column='IdFicha', blank=True, null=True, default=None)  # Field name made lowercase.
     imagen = models.ImageField(db_column='ImagenUsuario', upload_to="images/users/", max_length=50)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'usuarios'
 
     def __str__(self):
@@ -207,7 +207,6 @@ class Usuarios(models.Model):
         if self.imagen:
             self.imagen.storage.delete(self.imagen.name)
         super(Usuarios, self).delete(using=using, keep_parents=keep_parents)
-
 
 class Vehiculos(models.Model):
     idvehiculo = models.AutoField(db_column='IdVehiculo', primary_key=True)  # Field name made lowercase.
@@ -249,3 +248,9 @@ class VehiculosTipo(models.Model):
 
     def __str__(self):
         return self.nombre
+    
+
+class FichasXAprendiz(models.Model):
+    ficha= models.ForeignKey(Fichas, on_delete=models.CASCADE)
+    aprendiz= models.ForeignKey(Usuarios, on_delete=models.CASCADE) 
+    
