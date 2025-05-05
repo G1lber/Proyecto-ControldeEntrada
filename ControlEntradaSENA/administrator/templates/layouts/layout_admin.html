@@ -90,11 +90,11 @@
                 </a>
             </div>
 
-            <!-- Multas / Sanciones -->
-            <div class="item {% if request.path|slice:":16" == '/admin/sanciones' %}active-item{% endif %}">
-                <a role="button" href="{% url 'penaltys' %}">
+            <!-- Fichas -->
+            <div class="item {% if request.path|slice:":16" == '/admin/fichas' %}active-item{% endif %}">
+                <a role="button" href="{% url 'fichas' %}">
                     <div class="icon">
-                        {% if request.path|slice:":16" == '/admin/sanciones' %}
+                        {% if request.path|slice:":16" == '/admin/fichas' %}
                             <img src="{% static 'assets/icons/multa.png' %}" alt="">
                         {% else %}
                             <img src="{% static 'assets/icons/multa white.png' %}" alt="">

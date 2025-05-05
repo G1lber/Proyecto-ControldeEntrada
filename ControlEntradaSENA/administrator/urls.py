@@ -12,8 +12,12 @@ urlpatterns = [
     path("admin/users", views.users, name="users"),
     path("admin/users/registeruser/<int:rol>", views.register_user, name="registeruser"),
     path("admin/users/edituser/<int:id>", views.edit_user, name="edituser"),
-    path("admin/sanciones", views.sanciones, name="penaltys"),
+    path("admin/sanciones", views.fichas, name="penaltys"), 
+    path("admin/crear_fichas", views.crear_fichas, name="crearfichas"), #sdasasd
+    
+    path("admin/fichas", views.fichas, name="fichas"), #sdasasd
     path("admin/sanciones/editsanciones/<int:id>", views.edit_sanciones, name="editsanciones"),
+    path("admin/fichas/editfichas/<int:id>", views.edit_ficha, name="editficha"),
     path("admin/dispositivo", views.dispositivo, name="devices"),
     path("admin/create_dispositivo", views.create_dispositivo, name="create_device"),
     path("admin/dispositivo/editdispositivo/<int:id>", views.edit_dispositivo, name="editdispositivo"),

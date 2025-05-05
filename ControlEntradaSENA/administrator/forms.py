@@ -1,6 +1,7 @@
 from django import forms
+from django_select2.forms import ModelSelect2TagWidget
 from django.forms import ModelForm
-from administrator.models import Usuarios, DocumentoTipo, Centros, Roles, Fichas, Dispositivos, DispositivosTipo, Vehiculos, VehiculosTipo, DispositivosMarca, VehiculosMarca
+from administrator.models import Usuarios, DocumentoTipo, Centros, Roles, Fichas, Dispositivos, DispositivosTipo, Vehiculos, VehiculosTipo, DispositivosMarca, VehiculosMarca, Jornada, Centros, FichasTipo, FichasNombre
 from django.core.exceptions import ValidationError
 #Fecha y hora
 from datetime import datetime
@@ -180,3 +181,55 @@ class RegisterVehicle(ModelForm):
             filename = f"{usuario.idusuario}.{placa}.{extension}"
             imagen.name = filename
         return imagen
+class FichasNombreWidget(ModelSelect2TagWidget):
+    model = FichasNombre
+    search_fields = ['nombre__icontains']
+
+    def create_value(self, value):
+        # Esto se llama cuando no encuentra una opción y se crea una nueva
+        return self.get_queryset().create(nombre=value)
+
+class RegisterFicha(forms.ModelForm):
+    nombre = forms.ModelChoiceField(
+        queryset=FichasNombre.objects.all(),
+        widget=forms.Select(attrs={
+            'id': 'id_nombre',
+            'class': 'form-select'
+        })
+    )
+    jornada = forms.ModelChoiceField(
+        queryset=Jornada.objects.all(),
+        empty_label="Seleccione jornada",
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+    tipo = forms.ModelChoiceField(
+        queryset=FichasTipo.objects.all(),
+        empty_label="Seleccione tipo",
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+    centro = forms.ModelChoiceField(
+        queryset=Centros.objects.all(),
+        empty_label="Seleccione centro",
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+
+    class Meta:
+        model = Fichas
+        fields = "__all__"
+        widgets = {
+            'numero': forms.TextInput(attrs={"minlength": "6"}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Si hay una instancia, asumimos que es edición
+        if self.instance and self.instance.pk:
+            # Campos deshabilitados
+            self.fields['nombre'].disabled = True
+            self.fields['tipo'].disabled = True
+            self.fields['numero'].widget.attrs['readonly'] = True
+
+            # Para que no rompa la validación
+            self.fields['nombre'].required = False
+            self.fields['tipo'].required = False

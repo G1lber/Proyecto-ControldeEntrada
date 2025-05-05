@@ -189,7 +189,59 @@ def sanciones(request):
         'penaltys': sanciones
     })
 
+# Crear Fichas
+@login_required(login_url="admin")
+def crear_fichas(request):
+    if request.method == 'POST':
+        post_data = request.POST.copy()  # hacemos copia para modificarlo
+        nombre_id = post_data.get('nombre')
 
+        # Si el nombre no es un ID numérico, lo escribió el usuario y hay que crearlo
+        if nombre_id and not nombre_id.isdigit():
+            nuevo_nombre = FichasNombre.objects.create(nombre=nombre_id)
+            post_data['nombre'] = nuevo_nombre.idfichanombre  # reescribimos con el ID real
+
+        form = RegisterFicha(post_data)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Se ha creado correctamente")
+            return redirect('fichas')
+    else:
+        form = RegisterFicha()
+
+    return render(request, 'pages/fichas/crear.html', {
+        'form': form
+    })
+
+#Fichas
+@login_required(login_url="admin")
+def fichas(request):
+    fichas = Fichas.objects.all()
+    print(fichas)
+    return render(request, 'pages/fichas/fichas.html', {
+        'title': 'Fichas',
+        'fichas': fichas
+    })
+
+#Editar Fichas
+
+def edit_ficha(request, id):
+    instance = Fichas.objects.get(idficha=id)
+    form = RegisterFicha(request.POST or None, instance=instance)
+
+    if request.method == "POST":
+        if form.is_valid():
+            # Restauramos los campos deshabilitados manualmente
+            form.instance.nombre = instance.nombre
+            form.instance.tipo = instance.tipo
+            form.save()
+            messages.success(request, "Se ha editado correctamente")
+            return redirect('fichas')
+
+    return render(request, 'pages/fichas/edit.html', {
+        'title': 'Editar Fichas',
+        'form': form
+    })
 
 #Editar sanciones
 
