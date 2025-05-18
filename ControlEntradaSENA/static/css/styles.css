@@ -210,6 +210,7 @@ header.layout .header-admin img {
 
 /* CARD */
 .card {
+    position: relative; /* IMPORTANTE */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -223,6 +224,19 @@ header.layout .header-admin img {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
+.card-aside {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 10;
+}
+
+.card-aside .btn {
+    border-radius: 10 10 10 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    font-size: 12px;
+    padding: 6px 12px;
+}
 .card .card-header {
     background-color: white;
     border: none;
