@@ -313,7 +313,7 @@ def cargar_users(request, ficha_id):
                         'correo': None,
                         'telefono': None,
                         'centro': ficha.centro,
-                        'imagen': 'images/users/default.png',  # Imagen genérica
+                        'imagen': 'images/users/default.jpg',  # Imagen genérica
                     }
                 )
 

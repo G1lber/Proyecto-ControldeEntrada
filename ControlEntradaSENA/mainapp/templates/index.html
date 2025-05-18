@@ -195,7 +195,7 @@
             <div class="card-image">
                 <!-- Imagen -->
                 <div class="col">
-                    <img src="{% if users.imagen %}{{users.imagen.url}}{% endif %}" alt="">
+                    <img src="{{users.imagen_url}}" alt="">
                 </div>
                 {% if not salida %}
                 <!-- Tomar foto -->

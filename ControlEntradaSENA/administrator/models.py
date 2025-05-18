@@ -6,6 +6,9 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
+import os
+from django.core.files.storage import default_storage
+from django.conf import settings
 
 
 class Centros(models.Model):
@@ -193,8 +196,12 @@ class Usuarios(models.Model):
     centro = models.ForeignKey(Centros, models.DO_NOTHING, db_column='IdCentro', blank=True, null=True, default=None)  # Field name made lowercase.
     rol = models.ForeignKey(Roles, models.DO_NOTHING, db_column='IdRol',default=2)  # Field name made lowercase.
     ficha = models.ForeignKey(Fichas, models.DO_NOTHING, db_column='IdFicha', blank=True, null=True, default=None)  # Field name made lowercase.
-    imagen = models.ImageField(db_column='ImagenUsuario', upload_to="images/users/", max_length=50)  # Field name made lowercase.
-
+    imagen = models.ImageField(db_column='ImagenUsuario', upload_to="users/", max_length=50)  # Field name made lowercase.
+    @property
+    def imagen_url(self):
+        if self.imagen and default_storage.exists(self.imagen.name):
+            return self.imagen.url
+        return settings.MEDIA_URL + 'default.jpg'
     class Meta:
         managed = True
         db_table = 'usuarios'
