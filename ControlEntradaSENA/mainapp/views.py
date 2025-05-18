@@ -76,6 +76,74 @@ def index(request):
         'salidas': salidas
     })
 
+def idispositivos(request):
+    # sourcery skip: extract-method, use-fstring-for-concatenation
+
+    #Traer los ingresos que no estan relacionados con una salida
+    ingresos = Ingresos.objects.exclude(idingreso__in=Subquery(Salidas.objects.values('ingreso'))) or None 
+    #Traer salidas
+    salidas = Salidas.objects.all()
+    #Recibir codigo por GET
+    if 'code' in request.GET:
+        code = request.GET.get('code')
+
+        #Si el usuario esta registrado
+        try:
+            #Buscar usuario por su documento
+            user = get_object_or_404(Usuarios, documento=code) 
+
+            #Traer todos los datos del usuario
+            vehiculos = Vehiculos.objects.filter(usuario=user.idusuario)
+            dispositivos = Dispositivos.objects.filter(usuario=user.idusuario)
+            rol = user.rol
+            DocType = user.tipodocumento 
+            centro = user.centro or None
+            ficha = user.ficha or None
+            FichaName = ficha.nombre if ficha else None
+            jornada = ficha.jornada if ficha else None
+            
+            #Si el usuario toma su foto: Guardarla
+            if request.method == 'POST':   
+                user.imagen.delete()
+                imagen = request.FILES['imagen']
+                extension = imagen.name.split('.')[-1].lower()
+                filename = f"{code}.{extension}"
+                imagen.name = filename                        
+                user.imagen = imagen
+                user.save()
+                return redirect(f"/?code={code}")
+                                
+            #Si el usuario tiene un ingreso activo, hacer salida
+            salida = Ingresos.objects.filter(usuario=user.idusuario).exclude(idingreso__in=Salidas.objects.values('ingreso')).first() or None
+            dispositivo_salida = Dispositivos.objects.filter(usuario=user.idusuario, documento__isnull=False).first()
+
+            print(salida)
+
+            return render(request, 'dipositivos.html',{
+                #Para ingreso
+                'title': user,          
+                'users': user,                
+                'DocType': DocType,
+                'centro': centro,
+                'rol': rol,
+                'ficha': ficha,
+                'FichaName': FichaName,
+                'jornada': jornada,
+                'vehiculos': vehiculos,
+                'dispositivos': dispositivos,
+                #Para salida
+                'salida': salida,
+                'dispositivo_salida': dispositivo_salida,
+                })
+        #Si el usuario no existe
+        except Http404:
+            return redirect('registeruser', code=code)
+    
+    return render(request, 'dipositivos.html', {
+        'title': 'Inicio',
+        'ingresos': ingresos,
+        'salidas': salidas
+    })
 #Ingreso y salida
 def access(request, code):
     #Fecha y hora actuales
