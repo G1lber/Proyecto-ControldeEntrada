@@ -11,7 +11,7 @@
     <!-- Alerta despues de registro -->
     <div class="registerAlert" data-status="{% if messages %}{% for message in messages %}{{message}}{% endfor %}{% endif %}"></div>
 
-    <section class="btn-zone">
+    {% comment %} <section class="btn-zone">
         <!-- Boton modal ingresos -->
         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#AccessModal">
             Ingresos
@@ -113,7 +113,7 @@
             </div>
           </div>
         </div>
-    </section>
+    </section> {% endcomment %}
 
     <!-- Card escaneo -->
     <section class="card">
@@ -201,7 +201,7 @@
             <div class="card-image">
                 <!-- Imagen -->
                 <div class="col">
-                    <img src="{% if users.imagen %}{{users.imagen.url}}{% endif %}" alt="">
+                    <img src="{{users.imagen_url}}" alt="">
                 </div>
                 {% if not salida %}
                 <!-- Tomar foto -->

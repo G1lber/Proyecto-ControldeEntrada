@@ -87,11 +87,13 @@ def idispositivos(request):
     if 'code' in request.GET:
         code = request.GET.get('code')
 
-        #Si el usuario esta registrado
+        #Si el dispositivo esta registrado
         try:
-            #Buscar usuario por su documento
-            user = get_object_or_404(Usuarios, documento=code) 
-
+            #Buscar dispositivo por su SN
+            dispostivo = get_object_or_404(Dispositivos, sn=code) 
+            print(dispostivo)
+            if dispostivo.usuario:
+                user = get_object_or_404(Usuarios, idusuario=dispostivo.usuario.idusuario)
             #Traer todos los datos del usuario
             vehiculos = Vehiculos.objects.filter(usuario=user.idusuario)
             dispositivos = Dispositivos.objects.filter(usuario=user.idusuario)
@@ -135,9 +137,9 @@ def idispositivos(request):
                 'salida': salida,
                 'dispositivo_salida': dispositivo_salida,
                 })
-        #Si el usuario no existe
+        #Si el dispositvo no existe
         except Http404:
-            return redirect('registeruser', code=code)
+            return redirect('index')
     
     return render(request, 'dipositivos.html', {
         'title': 'Inicio',
