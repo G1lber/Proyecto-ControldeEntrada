@@ -59,8 +59,8 @@
                           <th scope="col">Placa</th>
                           <th scope="col">Tipo</th>
                           <th scope="col">Marca</th>
-                          <th scope="col">Modelo</th>
-                          <th scope="col">Imagen</th>
+                          <th scope="col" class="d-none d-xl-table-cell">Modelo</th>
+                          <th scope="col" class="d-none d-xl-table-cell">Imagen</th>
                           <th scope="col">Acciones</th>
                         </tr>
                       </thead>
@@ -70,7 +70,7 @@
                           <td>{{vehicle.usuario}}</td>
                           <td>{{vehicle.placa}}</td>
                           <td>{{vehicle.tipo.nombre}}</td>
-                          <td>{{vehicle.marca.nombre}}</td>
+                          <td class="d-none d-xl-table-cell">{{vehicle.marca.nombre}}</td>
                           <td>{{vehicle.modelo}}</td>
                           <td>{{vehicle.tipodocumento}}</td>
                           <td class="actions">
