@@ -333,6 +333,23 @@
                         </div>                                             
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <label for="extras" >Extras</label>
+                        <button id="toggleExtrasBtn" class="btn btn-outline-success btn-sm rounded-circle ms-2">
+                            &times;
+                        </button>
+                    </div>
+
+                    <div id="extrasContainer" class="col-12 mt-3 d-none">
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            {% comment %} <button type="submit" class="btn btn-success">Guardar Extra</button> {% endcomment %}
+                        </form>
+                    </div>
+                </div>
+
             </div>            
         </div>
         <footer class="card-footer">
@@ -352,6 +369,13 @@
         </footer>
     </section>
 </article>
+ {% comment %} EXTRAS {% endcomment %}
+<script>
+    document.getElementById('toggleExtrasBtn').addEventListener('click', function () {
+        const container = document.getElementById('extrasContainer');
+        container.classList.toggle('d-none');
+    });
+</script>
 {% endif %}
 
 {% endblock %}

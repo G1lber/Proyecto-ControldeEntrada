@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.http import Http404
 from django.db.models import Subquery
 from administrator.models import Usuarios, Dispositivos, Vehiculos, Ingresos, Salidas
-from administrator.forms import RegisterUser, RegisterDevice, RegisterVehicle
+from administrator.forms import RegisterUser, RegisterDevice, RegisterVehicle, ExtrasForm
 from datetime import datetime #Fecha y hora
 
 #Inicio
@@ -17,7 +17,7 @@ def index(request):
     #Recibir codigo por GET
     if 'code' in request.GET:
         code = request.GET.get('code')
-
+        form = ExtrasForm(request.POST, request.FILES)
         #Si el usuario esta registrado
         try:
             #Buscar usuario por su documento
@@ -62,6 +62,7 @@ def index(request):
                 'jornada': jornada,
                 'vehiculos': vehiculos,
                 'dispositivos': dispositivos,
+                'form': form,
                 #Para salida
                 'salida': salida,
                 'dispositivo_salida': dispositivo_salida,

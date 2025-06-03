@@ -9,6 +9,7 @@ from django.db import models
 import os
 from django.core.files.storage import default_storage
 from django.conf import settings
+from django.utils import timezone
 
 
 class Centros(models.Model):
@@ -261,3 +262,23 @@ class FichasXAprendiz(models.Model):
     ficha= models.ForeignKey(Fichas, on_delete=models.CASCADE)
     aprendiz= models.ForeignKey(Usuarios, on_delete=models.CASCADE) 
     
+class Extras(models.Model):
+    descripcion = models.CharField(max_length=150)
+    ingreso = models.ForeignKey('Ingresos', on_delete=models.CASCADE, related_name='extras', blank=True, null=True)
+    salida = models.ForeignKey('Salidas', on_delete=models.CASCADE, related_name='extras', blank=True, null=True)
+    foto = models.ImageField(upload_to="images/extras/", max_length=100, blank=True, null=True)
+    salio = models.BooleanField(default=True)
+    observacion = models.TextField(blank=True, null=True)
+    fecha_registro = models.DateTimeField(auto_now_add=True)
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if not self.ingreso and not self.salida:
+            raise ValidationError("Debe estar asociado a un ingreso o a una salida")
+        if self.ingreso and self.salida:
+            raise ValidationError("No puede estar asociado a ingreso y salida al mismo tiempo")
+
+    def __str__(self):
+        movimiento = 'Ingreso' if self.ingreso else 'Salida'
+        relacion = self.ingreso or self.salida
+        return f"{self.descripcion} ({movimiento} #{relacion.id})"

@@ -1,7 +1,7 @@
 from django import forms
 from django_select2.forms import ModelSelect2TagWidget
 from django.forms import ModelForm
-from administrator.models import Usuarios, DocumentoTipo, Centros, Roles, Fichas, Dispositivos, DispositivosTipo, Vehiculos, VehiculosTipo, DispositivosMarca, VehiculosMarca, Jornada, Centros, FichasTipo, FichasNombre, FichasXAprendiz
+from administrator.models import Usuarios, DocumentoTipo, Centros, Roles, Fichas, Dispositivos, DispositivosTipo, Vehiculos, VehiculosTipo, DispositivosMarca, VehiculosMarca, Jornada, Centros, FichasTipo, FichasNombre, FichasXAprendiz, Extras
 from django.core.exceptions import ValidationError
 #Fecha y hora
 from datetime import datetime
@@ -249,3 +249,17 @@ class CargarUsers(forms.ModelForm):
         super(CargarUsers, self).__init__(*args, **kwargs)
         # Deshabilitar el campo ficha manualmente siempre
         self.fields['ficha'].widget.attrs['disabled'] = True
+
+
+class ExtrasForm(forms.ModelForm):
+    class Meta:
+        model = Extras
+        fields = ['descripcion', 'ingreso', 'salida', 'foto', 'salio', 'observacion']
+        widgets = {
+            'descripcion': forms.TextInput(attrs={'class': 'form-control'}),
+            'ingreso': forms.Select(attrs={'class': 'form-control'}),
+            'salida': forms.Select(attrs={'class': 'form-control'}),
+            'foto': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'salio': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'observacion': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
