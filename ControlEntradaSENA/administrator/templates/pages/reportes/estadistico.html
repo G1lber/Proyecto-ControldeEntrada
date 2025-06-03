@@ -1,0 +1,135 @@
+{% extends 'layouts/layout_admin.html' %}
+{% load static %}
+
+{% block title %} {{title}} {% endblock %}
+
+{%block content %}
+<article id="container-admin" class="users">
+    <section class="card">
+        <!-- Vista General -->
+        <section id="main">
+          <header class="card-header">
+                <div class="col-9">
+                    <h1 class="card-title">Reporte Estadistico</h1>
+                </div>
+                <button type="button" class="btn btn-green add">
+                    <a class="links" href="{% url 'reportes' %}">
+                    Reportes generales
+                    </a>
+                </button>   
+            </header>
+          <!-- Mensajes -->
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }}" role="alert">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+          {% if error %}
+              <div class="alert alert-danger">
+                  {{ error }}
+              </div>
+          {% endif %}
+            <div class="card-body">
+                <h1>Informe Estadístico - Ingresos y Salidas</h1>
+                <p><strong>Total Ingresos:</strong> {{ total_ingresos }}</p>
+                <p><strong>Total Salidas:</strong> {{ total_salidas }}</p>
+
+                <h2>Movimientos últimos 7 días</h2>
+                <canvas id="graficoDiario" width="600" height="300"></canvas>
+
+                <h2>Movimientos por rol (últimos 7 días)</h2>
+                <canvas id="graficoRol" width="600" height="300"></canvas>
+
+                
+                <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
+                <script>
+                    // Datos para gráfico diario
+                    const fechas = {{ fechas|safe }};
+                    const ingresosDia = {{ ingresos_dia|safe }};
+                    const salidasDia = {{ salidas_dia|safe }};
+
+                    const ctxDia = document.getElementById('graficoDiario').getContext('2d');
+                    new Chart(ctxDia, {
+                    type: 'line',
+                    data: {
+                        labels: fechas,
+                        datasets: [
+                        {
+                            label: 'Ingresos',
+                            data: ingresosDia,
+                            borderColor: 'green',
+                            backgroundColor: 'rgba(0,128,0,0.1)',
+                            fill: true,
+                            tension: 0.3,
+                        },
+                        {
+                            label: 'Salidas',
+                            data: salidasDia,
+                            borderColor: 'red',
+                            backgroundColor: 'rgba(255,0,0,0.1)',
+                            fill: true,
+                            tension: 0.3,
+                        }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                        y: {
+                            beginAtZero: true,
+                            precision: 0
+                        }
+                        }
+                    }
+                    });
+
+                    // Datos para gráfico por rol
+                    const ingresosRol = {{ ingresos_rol|safe }};
+                    const salidasRol = {{ salidas_rol|safe }};
+
+                    // Sacar etiquetas únicas de roles (unión de llaves de ambos)
+                    const roles = Array.from(new Set([...Object.keys(ingresosRol), ...Object.keys(salidasRol)]));
+
+                    const ingresosPorRol = roles.map(r => ingresosRol[r] || 0);
+                    const salidasPorRol = roles.map(r => salidasRol[r] || 0);
+
+                    const ctxRol = document.getElementById('graficoRol').getContext('2d');
+                    new Chart(ctxRol, {
+                    type: 'bar',
+                    data: {
+                        labels: roles,
+                        datasets: [
+                        {
+                            label: 'Ingresos',
+                            data: ingresosPorRol,
+                            backgroundColor: 'rgba(0, 128, 0, 0.7)'
+                        },
+                        {
+                            label: 'Salidas',
+                            data: salidasPorRol,
+                            backgroundColor: 'rgba(255, 0, 0, 0.7)'
+                        }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                        y: {
+                            beginAtZero: true,
+                            precision: 0
+                        }
+                        }
+                    }
+                    });
+                </script>
+            </div>
+        </section>
+    </section>
+</article>
+{% endblock %}
+
+
+  
+  

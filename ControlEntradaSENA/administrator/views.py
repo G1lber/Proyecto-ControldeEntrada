@@ -7,7 +7,11 @@ from .models import *
 from django.db import connection
 from .forms import *
 from django.db.models import Q
-
+import openpyxl
+from django.http import HttpResponse
+from openpyxl.utils import get_column_letter
+from datetime import date, timedelta
+from django.db.models import Count
 #Login admin
 @user_passes_test(lambda u: not u.is_authenticated, login_url='adminpanel') #Si el usuario ya esta logeado no va a poder acceder a la pagina de login 
 def login_admin(request):
@@ -419,13 +423,218 @@ def delete_vehiculo(request, id):
 #acerda de
 @login_required(login_url="admin")
 def about(request):
-    
+
     return render(request, 'pages/acerca/about.html', {
         'title': 'Acerca de'
     })
 
 
+#Reportes
+@login_required(login_url="admin")
+def reportes(request):
+    search_query = request.GET.get('search', '')  # Obtiene el término de búsqueda desde la URL
+    print(f"Search query: {search_query}")  # Para verificar que estamos recibiendo la búsqueda
+    
+    # Inicializar vehicles por defecto
+    salidas = Salidas.objects.all() # Por defecto, mostrar todos los vehículos
+    
+    if search_query:  # Si hay un término de búsqueda
+       salidas = Salidas.objects.filter(ingreso__usuario__documento__icontains=search_query)
+ # Filtra por documento de usuario
+    if not salidas.exists():
+        messages.warning(request, "No se encontraron salidas con esa búsqueda.")
+    
+    
+    return render(request, 'pages/reportes/reportes.html', {
+        'title': 'Reportes',
+        'salidas':salidas,
+
+    })
+def reporteInstructor(request):
+
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Roles Administrativos"
+
+    # Escribir encabezados
+    encabezados = [
+        # ingresos
+        'Número Documento', 'Nombre',  'Fecha Ingreso', 'Hora Entrada',
+        'Dispositivo 1 SN', 'Dispositivo 2 SN', 'Dispositivo 3 SN', 'Vehiculo',
+        # salidas
+        'Fecha Salida', 'Hora Salida', 'Dispositivo 1 Salida SN', 'Dispositivo 2 Salida SN', 'Dispositivo 3 Salida SN'
+    ]
+    ws.append(encabezados)
+
+    # Escribir datos
+    salidas = Salidas.objects.filter(
+    Q(ingreso__usuario__rol=1) | Q(ingreso__usuario__rol=4)
+    )
+    for salida in salidas:  
+        #vehiculo 
+        vehiculo = salida.ingreso.vehiculo.placa if salida.ingreso.vehiculo else "None"
+        # Dispositivos de ingreso
+        dispositivo1i = salida.ingreso.dispositivo.sn if salida.ingreso.dispositivo else "None"
+        dispositivo2i = salida.ingreso.dispositivo2.sn if salida.ingreso.dispositivo2 else "None"
+        dispositivo3i = salida.ingreso.dispositivo3.sn if salida.ingreso.dispositivo3 else "None"
+        # Dispositivos de salida
+        dispositivo1s = salida.dispositivo.sn if salida.dispositivo else "None"
+        dispositivo2s = salida.dispositivo2.sn if salida.dispositivo2 else "None"
+        dispositivo3s = salida.dispositivo3.sn if salida.dispositivo3 else "None"
+    
+        for col in range(1, len(encabezados) + 1):
+            ws.column_dimensions[get_column_letter(col)].width = 20
+        ws.append([
+            # Ingresos
+            salida.ingreso.usuario.documento,
+            salida.ingreso.usuario.nombres,
+            salida.ingreso.fecha,
+            salida.ingreso.horaingreso,
+            dispositivo1i,
+            dispositivo2i,
+            dispositivo3i,
+            vehiculo,
+            # salidas
+            salida.fecha,
+            salida.horasalida,
+            dispositivo1s,
+            dispositivo2s,
+            dispositivo3s
+
+
+        ])
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+
+    fecha_actual = date.today().strftime('%Y-%m-%d')
+    response['Content-Disposition'] = f'attachment; filename="Reporte_Admins_{fecha_actual}.xlsx"'
+
+    wb.save(response)
+
+    return response
+
+def reporteAprendiz(request):
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Aprendices"
+    # Escribir encabezados
+    encabezados = [
+        # ingresos
+        'Número Documento', 'Nombre', 'Ficha', 'Fecha Ingreso', 'Hora Entrada',
+        'Dispositivo 1 SN', 'Dispositivo 2 SN', 'Dispositivo 3 SN', 'Vehiculo',
+        # salidas
+        'Fecha Salida', 'Hora Salida', 'Dispositivo 1 Salida SN', 'Dispositivo 2 Salida SN', 'Dispositivo 3 Salida SN'
+    ]
+    ws.append(encabezados)
+    # Escribir datos
+    salidas = Salidas.objects.filter(
+    Q(ingreso__usuario__rol=2) | Q(ingreso__usuario__rol=3)
+    )
+    for salida in salidas:  
+        #vehiculo 
+        vehiculo = salida.ingreso.vehiculo.placa if salida.ingreso.vehiculo else "None"
+        # Dispositivos de ingreso
+        dispositivo1i = salida.ingreso.dispositivo.sn if salida.ingreso.dispositivo else "None"
+        dispositivo2i = salida.ingreso.dispositivo2.sn if salida.ingreso.dispositivo2 else "None"
+        dispositivo3i = salida.ingreso.dispositivo3.sn if salida.ingreso.dispositivo3 else "None"
+        # Dispositivos de salida
+        dispositivo1s = salida.dispositivo.sn if salida.dispositivo else "None"
+        dispositivo2s = salida.dispositivo2.sn if salida.dispositivo2 else "None"
+        dispositivo3s = salida.dispositivo3.sn if salida.dispositivo3 else "None"
+        # Ficha
+        ficha = salida.ingreso.usuario.ficha.numero if salida.ingreso.usuario.ficha else "None"
+        for col in range(1, len(encabezados) + 1):
+            ws.column_dimensions[get_column_letter(col)].width = 20
+        ws.append([
+            # Ingresos
+            salida.ingreso.usuario.documento,
+            salida.ingreso.usuario.nombres,
+            ficha,
+            salida.ingreso.fecha,
+            salida.ingreso.horaingreso,
+            dispositivo1i,
+            dispositivo2i,
+            dispositivo3i,
+            vehiculo,
+            # salidas
+            salida.fecha,
+            salida.horasalida,
+            dispositivo1s,
+            dispositivo2s,
+            dispositivo3s
+        ])
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    fecha_actual = date.today().strftime('%Y-%m-%d')
+    response['Content-Disposition'] = f'attachment; filename="Reporte_Aprendices_{fecha_actual}.xlsx"'
+    wb.save(response)
+
+    return response
 
 
 
+# Informe estadistico
+def daterange(start_date, end_date):
+    for n in range(int((end_date - start_date).days) + 1):
+        yield start_date + timedelta(n)
 
+def informe_estadistico(request):
+    hoy = date.today()
+    hace_7_dias = hoy - timedelta(days=6)
+
+    # Crear lista con los últimos 7 días como strings (para labels)
+    fechas = [d.strftime('%Y-%m-%d') for d in daterange(hace_7_dias, hoy)]
+
+    # Ingresos por fecha
+    ingresos_query = (
+        Ingresos.objects
+        .filter(fecha__range=[hace_7_dias, hoy])
+        .values('fecha')
+        .annotate(total=Count('idingreso'))
+    )
+    ingresos_dict = {item['fecha'].strftime('%Y-%m-%d'): item['total'] for item in ingresos_query}
+
+    ingresos_dia = [ingresos_dict.get(fecha, 0) for fecha in fechas]
+
+    # Salidas por fecha
+    salidas_query = (
+        Salidas.objects
+        .filter(fecha__range=[hace_7_dias, hoy])
+        .values('fecha')
+        .annotate(total=Count('idsalida'))
+    )
+    salidas_dict = {item['fecha'].strftime('%Y-%m-%d'): item['total'] for item in salidas_query}
+    salidas_dia = [salidas_dict.get(fecha, 0) for fecha in fechas]
+
+    # Ingresos por rol de usuario (últimos 7 días)
+    ingresos_rol_qs = (
+        Ingresos.objects
+        .filter(fecha__range=[hace_7_dias, hoy])
+        .values('usuario__rol')
+        .annotate(total=Count('idingreso'))
+    )
+    ingresos_rol = {item['usuario__rol']: item['total'] for item in ingresos_rol_qs}
+
+    # Salidas por rol de usuario (últimos 7 días)
+    salidas_rol_qs = (
+        Salidas.objects
+        .filter(fecha__range=[hace_7_dias, hoy])
+        .values('ingreso__usuario__rol')
+        .annotate(total=Count('idsalida'))
+    )
+    salidas_rol = {item['ingreso__usuario__rol']: item['total'] for item in salidas_rol_qs}
+
+    # Totales generales
+    total_ingresos = Ingresos.objects.count()
+    total_salidas = Salidas.objects.count()
+
+    context = {
+        'fechas': fechas,
+        'ingresos_dia': ingresos_dia,
+        'salidas_dia': salidas_dia,
+        'ingresos_rol': ingresos_rol,
+        'salidas_rol': salidas_rol,
+        'total_ingresos': total_ingresos,
+        'total_salidas': total_salidas,
+    }
+
+    return render(request, 'pages/reportes/estadistico.html', context)

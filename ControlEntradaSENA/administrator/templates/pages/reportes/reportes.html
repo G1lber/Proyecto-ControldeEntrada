@@ -1,0 +1,104 @@
+{% extends 'layouts/layout_admin.html' %}
+{% load static %}
+
+{% block title %} {{title}} {% endblock %}
+
+{%block content %}
+<article id="container-admin" class="users">
+    <section class="card">
+        <!-- Vista General -->
+        <section id="main">
+          <header class="card-header">
+                <div class="col-9">
+                    <h1 class="card-title">Reportes</h1>
+                </div>
+
+            </header>
+            <button type="button" class="btn btn-green add">
+                <a class="links" href="{% url 'informe_estadistico' %}">
+                Reporte Estadistico
+                </a>
+            </button>   
+          <!-- Seccion Search -->
+          <div class="card-search">
+            <form method="get" class="input-box search">
+              <input 
+                type="text" 
+                placeholder="Numero de documento " 
+                id="search" 
+                name="search" 
+                value="{{ request.GET.search|default:'' }}"
+              />
+              <button type="submit" style="background: none; border: none; padding: 0; margin: 0;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                  class="bi bi-search icon" viewBox="0 0 16 16">
+                  <path
+                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                </svg>
+              </button>
+            </form>
+          </div>
+            <div class="row mt-2">
+                <div class="col">
+                    <div class="d-flex flex-column gap-2">
+                        <a class="btn btn-success" href="{% url 'reporteInstructor' %}">
+                            Reporte de Instructores / Administradores
+                        </a>
+                        <a class="btn btn-success" href="{% url 'reporteAprendiz' %}">
+                            Reporte de Aprendices / Visitantes
+                        </a>
+                    </div>
+                </div>
+            </div>
+          <!-- Mensajes -->
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }}" role="alert">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+          {% if error %}
+              <div class="alert alert-danger">
+                  {{ error }}
+              </div>
+          {% endif %}
+          <div class="card-body">
+              <!-- Card Tabla-->
+              <div class="card card-table">
+                <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                  <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th scope="col">Num doc</th>
+                          <th scope="col">Nombre</th>
+                          <th scope="col">Rol</th>
+                          <th scope="col">Numero Ficha</th>
+                          <th scope="col">Ingreso</th>
+                          <th scope="col">Salida</th>
+                        </tr>
+                      </thead>
+                      <tbody class="tbody">
+                        {% for salida in salidas %}
+                        <tr>
+                          <th scope="row">{{salida.ingreso.usuario.documento}}</th>
+                          <th scope="row">{{salida.ingreso.usuario}}</th>
+                          <th scope="row">{{salida.ingreso.usuario.rol}}</th>
+                          <th scope="row">{% if salida.ingreso.usuario.ficha.numero %}{{salida.ingreso.usuario.ficha.numero}} {% else%} None {% endif %}</th>
+                          <th scope="row">{{salida.ingreso.fecha}}</th>
+                          <th scope="row">{{salida.fecha}}</th>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+        </section>
+    </section>
+</article>
+{% endblock %}
+
+
+  
+  

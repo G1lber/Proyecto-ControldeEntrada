@@ -26,5 +26,10 @@ urlpatterns = [
     path("admin/create_vehiculo/", views.create_vehicle, name="create_vehiculo"),
     path("admin/vehiculos/editvehiculo/<int:id>", views.edit_vehiculo, name="editvehiculo"),
     path("admin/vehiculos/delete_vehiculo/<int:id>", views.delete_vehiculo, name="delete_vehiculo"),
+    path("admin/reportes", views.reportes, name="reportes"),
+    path("admin/reportes/excel", views.reporteInstructor, name="reporteInstructor"),
+    path("admin/reportes/excelAprendiz", views.reporteAprendiz, name="reporteAprendiz"),
+    path("admin/reportes/estadistico", views.informe_estadistico, name="informe_estadistico"),
+    
     path("admin/about", views.about, name="about"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
