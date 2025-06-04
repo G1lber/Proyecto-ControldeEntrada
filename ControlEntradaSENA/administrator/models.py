@@ -10,7 +10,7 @@ import os
 from django.core.files.storage import default_storage
 from django.conf import settings
 from django.utils import timezone
-
+from django.core.exceptions import ValidationError
 
 class Centros(models.Model):
     idcentro = models.AutoField(db_column='IdCentro', primary_key=True)  # Field name made lowercase.
@@ -126,6 +126,7 @@ class Ingresos(models.Model):
     dispositivo = models.ForeignKey(Dispositivos, models.DO_NOTHING, db_column='IdDispositivo', related_name='ingresos_set' ,blank=True, null=True)  # Field name made lowercase.
     dispositivo2 = models.ForeignKey(Dispositivos, models.DO_NOTHING, db_column='IdDispositivo2', related_name='ingresos_set2', blank=True, null=True)  # Field name made lowercase.
     dispositivo3 = models.ForeignKey(Dispositivos, models.DO_NOTHING, db_column='IdDispositivo3', related_name='ingresos_set3',blank=True, null=True)  # Field name made lowercase.
+    
     horaingreso = models.TimeField(db_column='HoraIngreso')  # Field name made lowercase.
 
     class Meta:
@@ -263,22 +264,35 @@ class FichasXAprendiz(models.Model):
     aprendiz= models.ForeignKey(Usuarios, on_delete=models.CASCADE) 
     
 class Extras(models.Model):
-    descripcion = models.CharField(max_length=150)
-    ingreso = models.ForeignKey('Ingresos', on_delete=models.CASCADE, related_name='extras', blank=True, null=True)
-    salida = models.ForeignKey('Salidas', on_delete=models.CASCADE, related_name='extras', blank=True, null=True)
+    descripcion = models.TextField(blank=True, null=True)
     foto = models.ImageField(upload_to="images/extras/", max_length=100, blank=True, null=True)
-    salio = models.BooleanField(default=True)
-    observacion = models.TextField(blank=True, null=True)
     fecha_registro = models.DateTimeField(auto_now_add=True)
 
+    ingreso = models.ForeignKey(
+        'Ingresos',
+        on_delete=models.CASCADE,
+        related_name='extras',
+        blank=True,
+        null=True
+    )
+    salida = models.ForeignKey(
+        'Salidas',
+        on_delete=models.CASCADE,
+        related_name='extras',
+        blank=True,
+        null=True
+    )
+
     def clean(self):
-        from django.core.exceptions import ValidationError
+        # Validar que tenga solo ingreso o salida, no ambos
         if not self.ingreso and not self.salida:
-            raise ValidationError("Debe estar asociado a un ingreso o a una salida")
+            raise ValidationError("Debe asociarse al menos a un ingreso o una salida.")
         if self.ingreso and self.salida:
-            raise ValidationError("No puede estar asociado a ingreso y salida al mismo tiempo")
+            raise ValidationError("No puede asociarse a un ingreso y una salida al mismo tiempo.")
 
     def __str__(self):
-        movimiento = 'Ingreso' if self.ingreso else 'Salida'
-        relacion = self.ingreso or self.salida
-        return f"{self.descripcion} ({movimiento} #{relacion.id})"
+        if self.ingreso:
+            return f"{self.descripcion} (Ingreso #{self.ingreso.idingreso})"
+        elif self.salida:
+            return f"{self.descripcion} (Salida #{self.salida.idsalida})"
+        return f"{self.descripcion} (Sin movimiento)"

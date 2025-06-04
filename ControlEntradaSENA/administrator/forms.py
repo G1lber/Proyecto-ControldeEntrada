@@ -254,12 +254,8 @@ class CargarUsers(forms.ModelForm):
 class ExtrasForm(forms.ModelForm):
     class Meta:
         model = Extras
-        fields = ['descripcion', 'ingreso', 'salida', 'foto', 'salio', 'observacion']
+        fields = ['descripcion', 'foto']
         widgets = {
             'descripcion': forms.TextInput(attrs={'class': 'form-control'}),
-            'ingreso': forms.Select(attrs={'class': 'form-control'}),
-            'salida': forms.Select(attrs={'class': 'form-control'}),
             'foto': forms.ClearableFileInput(attrs={'class': 'form-control'}),
-            'salio': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'observacion': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
         }

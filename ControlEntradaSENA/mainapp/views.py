@@ -2,10 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.http import Http404
 from django.db.models import Subquery
-from administrator.models import Usuarios, Dispositivos, Vehiculos, Ingresos, Salidas
+from administrator.models import Usuarios, Dispositivos, Vehiculos, Ingresos, Salidas, Extras
 from administrator.forms import RegisterUser, RegisterDevice, RegisterVehicle, ExtrasForm
 from datetime import datetime #Fecha y hora
-
 #Inicio
 def index(request):
     # sourcery skip: extract-method, use-fstring-for-concatenation
@@ -48,7 +47,7 @@ def index(request):
             salida = Ingresos.objects.filter(usuario=user.idusuario).exclude(idingreso__in=Salidas.objects.values('ingreso')).first() or None
             dispositivo_salida = Dispositivos.objects.filter(usuario=user.idusuario, documento__isnull=False).first()
 
-            print(salida)
+           
 
             return render(request, 'index.html',{
                 #Para ingreso
@@ -62,7 +61,7 @@ def index(request):
                 'jornada': jornada,
                 'vehiculos': vehiculos,
                 'dispositivos': dispositivos,
-                'form': form,
+                'extra': form,
                 #Para salida
                 'salida': salida,
                 'dispositivo_salida': dispositivo_salida,
@@ -148,48 +147,89 @@ def idispositivos(request):
         'salidas': salidas
     })
 #Ingreso y salida
+
+
 def access(request, code):
-    #Fecha y hora actuales
+    users = get_object_or_404(Usuarios, documento=code)
     date = datetime.now().strftime("%Y-%m-%d")
     hour = datetime.now().strftime("%H:%M:%S")
 
-    
-    
-    #Vehiculo elegido
-    idvehiculo = request.GET.get('vehicle')
-    vehiculo = Vehiculos.objects.get(idvehiculo=idvehiculo) if idvehiculo else None
+    if request.method == 'POST':
+        # Recibir los datos del formulario
+        idvehiculo = request.POST.get('vehicle')
+        vehiculo = Vehiculos.objects.get(idvehiculo=idvehiculo) if idvehiculo else None
 
-    #Dispositivo elegido
-    iddispositivo = request.GET.get('devices')
-    iddispositivo = iddispositivo.split(',')
+        dispositivos = request.POST.get('devices', '')
+        dispositivos = dispositivos.split(',')
 
-    
-    dispositivo = Dispositivos.objects.get(iddispositivo=iddispositivo[0]) if len(iddispositivo) > 0 and iddispositivo[0] else None
-    dispositivo2 = Dispositivos.objects.get(iddispositivo=iddispositivo[1]) if len(iddispositivo) > 1 and iddispositivo[1] else None
-    dispositivo3 = Dispositivos.objects.get(iddispositivo=iddispositivo[2]) if len(iddispositivo) > 2 and iddispositivo[2] else None
-      
-    users = get_object_or_404(Usuarios, documento=code)
-    
-    
+        dispositivo = Dispositivos.objects.get(iddispositivo=dispositivos[0]) if len(dispositivos) > 0 and dispositivos[0] else None
+        dispositivo2 = Dispositivos.objects.get(iddispositivo=dispositivos[1]) if len(dispositivos) > 1 and dispositivos[1] else None
+        dispositivo3 = Dispositivos.objects.get(iddispositivo=dispositivos[2]) if len(dispositivos) > 2 and dispositivos[2] else None
 
-    ingreso = Ingresos.objects.filter(usuario=users.idusuario).exclude(idingreso__in=Salidas.objects.values('ingreso')).first() or None
-    
-    #Si el usuario ha ingresado: Hacer salida
-    if ingreso:
-        salida = Salidas.objects.create(fecha=date, ingreso=ingreso, vehiculo=vehiculo, dispositivo=dispositivo, dispositivo2=dispositivo2, dispositivo3=dispositivo3, horasalida=hour)
-        status = "Salida"
-    #Si el usuario no ha ingresado: Hacer ingreso
+        # Campos del extra
+        descripcion = request.POST.get('descripcion')
+        foto = request.FILES.get('foto')
+
+        # Revisar si hay un ingreso sin salida (usuario dentro)
+        ingreso = Ingresos.objects.filter(usuario=users.idusuario).exclude(idingreso__in=Salidas.objects.values('ingreso')).first() or None
+
+        if ingreso:
+            # Crear salida
+            salida = Salidas.objects.create(
+                fecha=date,
+                ingreso=ingreso,
+                vehiculo=vehiculo,
+                dispositivo=dispositivo,
+                dispositivo2=dispositivo2,
+                dispositivo3=dispositivo3,
+                horasalida=hour
+            )
+            status = "Salida"
+
+            # Crear extra asociado a salida (si hay datos)
+            if descripcion or foto:
+                Extras.objects.create(
+                    descripcion=descripcion,
+                    foto=foto,
+                    salida=salida
+                )
+
+        else:
+            # Crear ingreso
+            ingreso = Ingresos.objects.create(
+                fecha=date,
+                usuario=users,
+                vehiculo=vehiculo,
+                dispositivo=dispositivo,
+                dispositivo2=dispositivo2,
+                dispositivo3=dispositivo3,
+                horaingreso=hour
+            )
+            status = "Ingreso"
+
+            # Crear extra asociado a ingreso (si hay datos)
+            if descripcion or foto:
+                Extras.objects.create(
+                    descripcion=descripcion,
+                    foto=foto,
+                    ingreso=ingreso
+                )
+
+        return render(request, 'access.html', {
+            'title': f'{status} usuario',
+            'users': users,
+            'ingreso': ingreso,
+            'status': status,
+        })
+
     else:
-        #Crear ingreso
-        ingreso = Ingresos.objects.create(fecha=date, usuario=users, vehiculo=vehiculo, dispositivo=dispositivo, dispositivo2=dispositivo2, dispositivo3=dispositivo3, horaingreso=hour)
-        status = "Ingreso"
+        # GET: mostrar solo el formulario vacío
+        return render(request, 'access.html', {
+            'title': 'Acceso usuario',
+            'users': users,
+            'status': None,
+        })
 
-    return render(request, 'access.html',{
-        'title': f'{status} usuario',
-        'users': users,
-        'ingreso': ingreso,
-        'status': status
-    })
 
 
 #Registrar usuario
