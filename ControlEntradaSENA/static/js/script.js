@@ -363,7 +363,7 @@ if (camaraModal) {
     dataTransfer.items.add(file);
   
     // Lista de posibles IDs de campos file
-    const fileIds = ['device-file', 'user-file', 'vehicle-file'];
+    const fileIds = ['device-file', 'user-file', 'vehicle-file', 'id_extra'];
   
     let applied = false;
   

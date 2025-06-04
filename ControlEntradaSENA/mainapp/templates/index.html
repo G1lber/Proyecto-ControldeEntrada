@@ -354,6 +354,13 @@
                             <div class="form-group">
                                 {{ extra.foto.label_tag }}
                                 {{ extra.foto }}
+                                <button class="btn btn-green" title="Tomar foto" type="button" id="user-picture-btn" data-bs-toggle="modal" data-bs-target="#camaraModal">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="100%" fill="currentColor" class="bi bi-camera-fill" viewBox="0 0 16 16">
+                                        <path d="M10.5 8.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                                        <path d="M2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2zm.5 2a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zm9 2.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0z"/>
+                                    </svg>
+                                </button>
+
                                 {% for error in extra.foto.errors %}
                                     <div class="text-danger">{{ error }}</div>
                                 {% endfor %}
@@ -362,20 +369,28 @@
                     </div>
                 </div>
                 <div class="row">
-                    {% if salida %}
-                    <div>
-                        <h5>Extras asociados al ingreso:</h5>
-                        {% for extra in ingreso.extras.all %}
-                        <div>
-                            <input type="checkbox" name="extras_to_move" value="{{ extra.id }}" id="extra_{{ extra.id }}">
-                            <label for="extra_{{ extra.id }}">{{ extra.descripcion }}</label>
-                        </div>
-                        {% empty %}
-                        <p>No hay extras asociados al ingreso.</p>
+                    {% if extras_ingreso %}
+                    <h3 class="text-lg font-semibold mt-4">Extras asociados al ingreso</h3>
+                    <p class="text-sm text-gray-600 mb-2">
+                        {% if status == "Salida" %}
+                        Selecciona los extras que deseas copiar a la salida:
+                        {% else %}
+                        Aquí puedes ver los extras asociados a este ingreso.
+                        {% endif %}
+                    </p>
+                    <div class="space-y-2">
+                        {% for extra in extras_ingreso %}
+                            <label class="flex items-center space-x-2">
+                                {% if status == "Salida" %}
+                                <input type="checkbox" name="extras_to_move" value="{{ extra.id }}" class="form-checkbox">
+                                {% endif %}
+                                <span>{{ extra.descripcion }}</span>
+                            </label>
                         {% endfor %}
                     </div>
                     {% endif %}
                 </div>
+
 
             </div>            
         </div>
@@ -395,6 +410,8 @@
         </footer>
     </section>
 </article>
+    <!-- Modal Camara -->
+    {% include 'includes/modalCamara3.html'%}
  {% comment %} EXTRAS {% endcomment %}
 <script>
     document.getElementById('toggleExtrasBtn').addEventListener('click', function () {
