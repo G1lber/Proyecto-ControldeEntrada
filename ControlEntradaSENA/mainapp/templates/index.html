@@ -11,7 +11,7 @@
     <!-- Alerta despues de registro -->
     <div class="registerAlert" data-status="{% if messages %}{% for message in messages %}{{message}}{% endfor %}{% endif %}"></div>
 
-    <section class="btn-zone">
+    {% comment %} <section class="btn-zone">
         <!-- Boton modal ingresos -->
         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#AccessModal">
             Ingresos
@@ -113,7 +113,7 @@
             </div>
           </div>
         </div>
-    </section>
+    </section> {% endcomment %}
 
     <!-- Card escaneo -->
     <script src="{% static 'js/teclado_virtual.js' %}"></script>
@@ -214,7 +214,7 @@
             <div class="card-image">
                 <!-- Imagen -->
                 <div class="col">
-                    <img src="{% if users.imagen %}{{users.imagen.url}}{% endif %}" alt="">
+                    <img src="{{users.imagen_url}}" alt="">
                 </div>
                 {% if not salida %}
                 <!-- Tomar foto -->
@@ -344,6 +344,50 @@
                         </div>                                             
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <label for="extras" >Extras</label>
+                        <button id="toggleExtrasBtn" class="btn btn-outline-success btn-sm rounded-circle ms-2">
+                            &times;
+                        </button>
+                    </div>
+
+                    <div id="extrasContainer" class="col-12 mt-3 d-none">
+                        <form id="form-access" method="POST" enctype="multipart/form-data" action="{% url 'access' code=users.documento %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                {{ extra.descripcion.label_tag }}
+                                {{ extra.descripcion }}
+                                {% for error in extra.descripcion.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group">
+                                {{ extra.foto.label_tag }}
+                                {{ extra.foto }}
+                                {% for error in extra.foto.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                    </div>
+                </div>
+                <div class="row">
+                    {% if salida %}
+                    <div>
+                        <h5>Extras asociados al ingreso:</h5>
+                        {% for extra in ingreso.extras.all %}
+                        <div>
+                            <input type="checkbox" name="extras_to_move" value="{{ extra.id }}" id="extra_{{ extra.id }}">
+                            <label for="extra_{{ extra.id }}">{{ extra.descripcion }}</label>
+                        </div>
+                        {% empty %}
+                        <p>No hay extras asociados al ingreso.</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
             </div>            
         </div>
         <footer class="card-footer">
@@ -353,8 +397,7 @@
                 </div>
             <!-- Boton ingresar y form para enviar el vehiculo y los dispositivos --> 
             <div class="col">
-                <form id="form-access" method="get" action="{% url 'access' code=users.documento %}">
-                    {% csrf_token %}
+               
                     <input id="vehicle" type="hidden" name="vehicle" value="">
                     <input id="devices" type="hidden" name="devices" value="">      
                     <button type="submit" class="btn accept">{% if salida %}Salir{% else %}Ingresar{% endif %}</button>
@@ -363,6 +406,13 @@
         </footer>
     </section>
 </article>
+ {% comment %} EXTRAS {% endcomment %}
+<script>
+    document.getElementById('toggleExtrasBtn').addEventListener('click', function () {
+        const container = document.getElementById('extrasContainer');
+        container.classList.toggle('d-none');
+    });
+</script>
 {% endif %}
 
 {% endblock %}

@@ -6,7 +6,11 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
-
+import os
+from django.core.files.storage import default_storage
+from django.conf import settings
+from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 class Centros(models.Model):
     idcentro = models.AutoField(db_column='IdCentro', primary_key=True)  # Field name made lowercase.
@@ -122,6 +126,7 @@ class Ingresos(models.Model):
     dispositivo = models.ForeignKey(Dispositivos, models.DO_NOTHING, db_column='IdDispositivo', related_name='ingresos_set' ,blank=True, null=True)  # Field name made lowercase.
     dispositivo2 = models.ForeignKey(Dispositivos, models.DO_NOTHING, db_column='IdDispositivo2', related_name='ingresos_set2', blank=True, null=True)  # Field name made lowercase.
     dispositivo3 = models.ForeignKey(Dispositivos, models.DO_NOTHING, db_column='IdDispositivo3', related_name='ingresos_set3',blank=True, null=True)  # Field name made lowercase.
+    
     horaingreso = models.TimeField(db_column='HoraIngreso')  # Field name made lowercase.
 
     class Meta:
@@ -186,17 +191,21 @@ class Usuarios(models.Model):
     idusuario = models.AutoField(db_column='IdUsuario', primary_key=True)  # Field name made lowercase.
     nombres = models.CharField(db_column='NombresUsuario', max_length=50)  # Field name made lowercase.
     apellidos = models.CharField(db_column='ApellidosUsuario', max_length=50)  # Field name made lowercase.
-    tipodocumento = models.ForeignKey(DocumentoTipo, models.DO_NOTHING, db_column='IdTipoDocumento')  # Field name made lowercase.
+    tipodocumento = models.ForeignKey(DocumentoTipo, models.DO_NOTHING, db_column='IdTipoDocumento',default=1)  # Field name made lowercase.
     documento = models.CharField(db_column='DocumentoUsuario', unique=True, max_length=10)  # Field name made lowercase.
-    telefono = models.CharField(db_column='TelefonoUsuario', unique=True, max_length=10)  # Field name made lowercase.
+    telefono = models.CharField(db_column='TelefonoUsuario', unique=True, max_length=10, blank=True, null=True,default=None)  # Field name made lowercase.
     correo = models.CharField(db_column='CorreoUsuario', unique=True, max_length=100, blank=True, null=True)  # Field name made lowercase.
     centro = models.ForeignKey(Centros, models.DO_NOTHING, db_column='IdCentro', blank=True, null=True, default=None)  # Field name made lowercase.
-    rol = models.ForeignKey(Roles, models.DO_NOTHING, db_column='IdRol')  # Field name made lowercase.
+    rol = models.ForeignKey(Roles, models.DO_NOTHING, db_column='IdRol',default=2)  # Field name made lowercase.
     ficha = models.ForeignKey(Fichas, models.DO_NOTHING, db_column='IdFicha', blank=True, null=True, default=None)  # Field name made lowercase.
-    imagen = models.ImageField(db_column='ImagenUsuario', upload_to="images/users/", max_length=50)  # Field name made lowercase.
-
+    imagen = models.ImageField(db_column='ImagenUsuario', upload_to="users/", max_length=50)  # Field name made lowercase.
+    @property
+    def imagen_url(self):
+        if self.imagen and default_storage.exists(self.imagen.name):
+            return self.imagen.url
+        return settings.MEDIA_URL + 'default.jpg'
     class Meta:
-        managed = False
+        managed = True
         db_table = 'usuarios'
 
     def __str__(self):
@@ -207,7 +216,6 @@ class Usuarios(models.Model):
         if self.imagen:
             self.imagen.storage.delete(self.imagen.name)
         super(Usuarios, self).delete(using=using, keep_parents=keep_parents)
-
 
 class Vehiculos(models.Model):
     idvehiculo = models.AutoField(db_column='IdVehiculo', primary_key=True)  # Field name made lowercase.
@@ -249,3 +257,42 @@ class VehiculosTipo(models.Model):
 
     def __str__(self):
         return self.nombre
+    
+
+class FichasXAprendiz(models.Model):
+    ficha= models.ForeignKey(Fichas, on_delete=models.CASCADE)
+    aprendiz= models.ForeignKey(Usuarios, on_delete=models.CASCADE) 
+    
+class Extras(models.Model):
+    descripcion = models.TextField(blank=True, null=True)
+    foto = models.ImageField(upload_to="images/extras/", max_length=100, blank=True, null=True)
+    fecha_registro = models.DateTimeField(auto_now_add=True)
+
+    ingreso = models.ForeignKey(
+        'Ingresos',
+        on_delete=models.CASCADE,
+        related_name='extras',
+        blank=True,
+        null=True
+    )
+    salida = models.ForeignKey(
+        'Salidas',
+        on_delete=models.CASCADE,
+        related_name='extras',
+        blank=True,
+        null=True
+    )
+
+    def clean(self):
+        # Validar que tenga solo ingreso o salida, no ambos
+        if not self.ingreso and not self.salida:
+            raise ValidationError("Debe asociarse al menos a un ingreso o una salida.")
+        if self.ingreso and self.salida:
+            raise ValidationError("No puede asociarse a un ingreso y una salida al mismo tiempo.")
+
+    def __str__(self):
+        if self.ingreso:
+            return f"{self.descripcion} (Ingreso #{self.ingreso.idingreso})"
+        elif self.salida:
+            return f"{self.descripcion} (Salida #{self.salida.idsalida})"
+        return f"{self.descripcion} (Sin movimiento)"

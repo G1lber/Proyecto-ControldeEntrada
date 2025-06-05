@@ -1,0 +1,115 @@
+
+[2025-06-03 09:03:10] Iniciando limpieza automática para roles: Instructor, Administrativo
+
+[2025-06-03 09:04:32] Iniciando limpieza automática para roles: Instructor, Administrativo
+[2025-06-03 09:04:32] Eliminando SALIDA ID 32 | Usuario ID 1013262891 | Rol: Desconocido
+[2025-06-03 09:04:32] Eliminando SALIDA ID 33 | Usuario ID 1013262891 | Rol: Desconocido
+[2025-06-03 09:04:32] Eliminando SALIDA ID 34 | Usuario ID 1013262891 | Rol: Desconocido
+[2025-06-03 09:04:32] Eliminando SALIDA ID 35 | Usuario ID 1013262891 | Rol: Desconocido
+[2025-06-03 09:04:32] Eliminando INGRESO ID 35 | Usuario ID 1013262891 | Rol: Desconocido
+[2025-06-03 09:04:32] Eliminando INGRESO ID 36 | Usuario ID 1013262891 | Rol: Desconocido
+[2025-06-03 09:04:32] Eliminando INGRESO ID 37 | Usuario ID 1013262891 | Rol: Desconocido
+[2025-06-03 09:04:32] Eliminando INGRESO ID 38 | Usuario ID 1013262891 | Rol: Desconocido
+[2025-06-03 09:04:32] Limpieza finalizada: 4 ingresos y 4 salidas eliminados.
+
+[2025-06-03 09:11:38] Iniciando limpieza automática para roles: Instructor, Administrativo
+[2025-06-03 09:11:38] Limpieza finalizada: 0 ingresos y 0 salidas eliminados.
+
+[2025-06-03 09:15:19] Iniciando limpieza automática para roles: Instructor, Administrativo
+[2025-06-03 09:15:19] Eliminando SALIDA ID 36 | Usuario ID 1013262891 | Rol: Desconocido
+
+[2025-06-03 09:16:02] Iniciando limpieza automática para roles: Instructor, Administrativo
+[2025-06-03 09:16:02] Eliminando SALIDA ID 36 | Usuario ID 1013262891 | Rol: Desconocido
+[2025-06-03 09:16:02] Eliminando INGRESO ID 39 | Usuario ID 1013262891 | Rol: Desconocido
+[2025-06-03 09:16:02] Limpieza finalizada: 1 ingresos y 1 salidas eliminados.
+
+[2025-06-03 09:18:35] Iniciando limpieza automática para roles: Instructor, Administrativo
+
+[2025-06-03 09:22:58] Iniciando limpieza automática para roles: Instructor, Administrativo
+[2025-06-03 09:22:58] Eliminando SALIDA ID 37 | Usuario ID 1013262891 | Rol: Instructor
+[2025-06-03 09:22:58] Eliminando INGRESO ID 40 | Usuario ID 1013262891 | Rol: Instructor
+[2025-06-03 09:22:58] Limpieza finalizada: 1 ingresos y 1 salidas eliminados.
+
+[2025-06-03 04:26:52] Iniciando limpieza automática para roles: Instructor, Administrativo
+[2025-06-03 04:26:52] Eliminando SALIDA ID 38 | Usuario ID 1013262891 | Rol: Instructor
+[2025-06-03 04:26:52] Eliminando INGRESO ID 41 | Usuario ID 1013262891 | Rol: Instructor
+[2025-06-03 04:26:52] Limpieza finalizada: 1 ingresos y 1 salidas eliminados.
+
+[2025-06-03 04:28:44] Iniciando limpieza automática para roles: Aprendiz, Visitante
+[2025-06-03 04:28:44] Eliminando SALIDA ID 1 | Usuario ID 1058546278 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 2 | Usuario ID 1007189967 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 3 | Usuario ID 1002821855 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 4 | Usuario ID 1059980869 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 5 | Usuario ID 1060867136 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 6 | Usuario ID 1061692813 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 7 | Usuario ID 1002848557 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 8 | Usuario ID 1061770857 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 9 | Usuario ID 1061692971 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 10 | Usuario ID 1060990035 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 11 | Usuario ID 1002965391 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 12 | Usuario ID 1131024145 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 13 | Usuario ID 76327181 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 14 | Usuario ID 1089478347 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 15 | Usuario ID 1089478347 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 16 | Usuario ID 76312713 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 17 | Usuario ID 94393013 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 18 | Usuario ID 1060796022 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 19 | Usuario ID 1002966356 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 20 | Usuario ID 1060796022 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 21 | Usuario ID 1060796022 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 22 | Usuario ID 1060796022 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 23 | Usuario ID 1002966356 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 24 | Usuario ID 76327181 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 25 | Usuario ID 1058933154 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 26 | Usuario ID 76327181 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 27 | Usuario ID 1061716233 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 28 | Usuario ID 76327181 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 29 | Usuario ID 76327181 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 30 | Usuario ID 1061716233 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando SALIDA ID 31 | Usuario ID 1061728939 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 1 | Usuario ID 1058546278 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 2 | Usuario ID 1007189967 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 3 | Usuario ID 1002821855 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 4 | Usuario ID 1059980869 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 5 | Usuario ID 1060867136 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 6 | Usuario ID 1061692813 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 7 | Usuario ID 1002848557 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 8 | Usuario ID 1061770857 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 9 | Usuario ID 1061692971 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 10 | Usuario ID 1060990035 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 11 | Usuario ID 1002965391 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 12 | Usuario ID 1131024145 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 13 | Usuario ID 76327181 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 14 | Usuario ID 1089478347 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 15 | Usuario ID 1089478347 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 16 | Usuario ID 76312713 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 17 | Usuario ID 1002966356 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 18 | Usuario ID 94393013 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 19 | Usuario ID 1060796022 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 20 | Usuario ID 1131024145 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 21 | Usuario ID 1058547567 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 22 | Usuario ID 1060796022 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 23 | Usuario ID 1060796022 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 24 | Usuario ID 1060796022 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 25 | Usuario ID 1002966356 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 26 | Usuario ID 1060796022 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 27 | Usuario ID 1058933154 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 28 | Usuario ID 76327181 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 29 | Usuario ID 76327181 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 30 | Usuario ID 76327181 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 31 | Usuario ID 1061716233 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 32 | Usuario ID 76327181 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 33 | Usuario ID 1061716233 | Rol: Aprendiz
+[2025-06-03 04:28:44] Eliminando INGRESO ID 34 | Usuario ID 1061728939 | Rol: Aprendiz
+[2025-06-03 04:28:44] Limpieza finalizada: 34 ingresos y 31 salidas eliminados.
+
+[2025-06-03 04:30:49] Iniciando limpieza automática para roles: Aprendiz, Visitante
+[2025-06-03 04:30:49] Limpieza finalizada: 0 ingresos y 0 salidas eliminados.
+
+[2025-06-03 04:31:07] Iniciando limpieza automática para roles: Aprendiz, Visitante
+[2025-06-03 04:31:07] Limpieza finalizada: 0 ingresos y 0 salidas eliminados.
+
+[2025-06-03 04:31:38] Iniciando limpieza automática para roles: Instructor, Administrativo
+[2025-06-03 04:31:38] Eliminando SALIDA ID 39 | Usuario ID 1013262891 | Rol: Instructor
+[2025-06-03 04:31:38] Eliminando INGRESO ID 42 | Usuario ID 1013262891 | Rol: Instructor
+[2025-06-03 04:31:38] Limpieza finalizada: 1 ingresos y 1 salidas eliminados.

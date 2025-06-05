@@ -1,0 +1,26 @@
+
+<!-- Modal CARGAR -->
+<div class="modal fade" id="cargar" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">Cargar Usuarios</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="cargarUsersForm" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        {{ form.ficha }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="archivo_excel" class="form-label">Cargar Usuarios</label>
+                        <input id="archivo_excel" name="archivo_excel" type="file" class="form-control">
+                    </div>
+                
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

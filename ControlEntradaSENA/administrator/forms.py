@@ -1,7 +1,7 @@
 from django import forms
 from django_select2.forms import ModelSelect2TagWidget
 from django.forms import ModelForm
-from administrator.models import Usuarios, DocumentoTipo, Centros, Roles, Fichas, Dispositivos, DispositivosTipo, Vehiculos, VehiculosTipo, DispositivosMarca, VehiculosMarca, Jornada, Centros, FichasTipo, FichasNombre
+from administrator.models import Usuarios, DocumentoTipo, Centros, Roles, Fichas, Dispositivos, DispositivosTipo, Vehiculos, VehiculosTipo, DispositivosMarca, VehiculosMarca, Jornada, Centros, FichasTipo, FichasNombre, FichasXAprendiz, Extras
 from django.core.exceptions import ValidationError
 #Fecha y hora
 from datetime import datetime
@@ -233,3 +233,29 @@ class RegisterFicha(forms.ModelForm):
             # Para que no rompa la validación
             self.fields['nombre'].required = False
             self.fields['tipo'].required = False
+
+class CargarUsers(forms.ModelForm):
+    ficha = forms.ModelChoiceField(
+        queryset= Fichas.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-select', 'id': 'id_ficha'}),
+        to_field_name="idficha",  # Esto asegura que Django use el ID internamente
+        required=False
+    )
+    class Meta:
+        model = FichasXAprendiz
+        fields = ['ficha', 'aprendiz']
+
+    def __init__(self, *args, **kwargs):
+        super(CargarUsers, self).__init__(*args, **kwargs)
+        # Deshabilitar el campo ficha manualmente siempre
+        self.fields['ficha'].widget.attrs['disabled'] = True
+
+
+class ExtrasForm(forms.ModelForm):
+    class Meta:
+        model = Extras
+        fields = ['descripcion', 'foto']
+        widgets = {
+            'descripcion': forms.TextInput(attrs={'class': 'form-control'}),
+            'foto': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+        }

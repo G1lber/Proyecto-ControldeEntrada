@@ -38,9 +38,11 @@ INSTALLED_APPS = [
     "django.core.files.storage",
     "mainapp",
     'django_select2',
-    "administrator"
+    "administrator",
+    "limpieza"
 ]
 VERSION = "Control Entrada Sena V2.0"
+
 
 
 MIDDLEWARE = [
@@ -121,7 +123,7 @@ TIME_ZONE = "America/Bogota"
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -141,5 +143,5 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 #Imagenes
-MEDIA_ROOT = os.path.join(BASE_DIR, '')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'images')
 MEDIA_URL = '/images/'
