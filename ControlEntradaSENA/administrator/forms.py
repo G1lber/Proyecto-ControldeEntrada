@@ -257,5 +257,5 @@ class ExtrasForm(forms.ModelForm):
         fields = ['descripcion', 'foto']
         widgets = {
             'descripcion': forms.TextInput(attrs={'class': 'form-control'}),
-            'foto': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'foto': forms.ClearableFileInput(attrs={'class': 'form-control', 'id': 'id_extra'}),
         }

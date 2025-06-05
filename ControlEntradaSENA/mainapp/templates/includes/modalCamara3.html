@@ -21,7 +21,7 @@
                 <!-- Form enviar file foto -->
                 <form id="form-access" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
-                    <input type="file" name="imagen" id="user-file" style="display: none">    
+                    <input type="file" name="foto" id="id_extra" style="display: none">    
                     <!-- Boton guardar foto -->                       
                     <button type="submit" class="btn btn-green btn-picture" id="user-savepicture-btn" onclick="saveImage()" data-bs-dismiss="modal">
                         <svg xmlns="http://www.w3.org/2000/svg" width="100%" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">

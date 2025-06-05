@@ -7,52 +7,63 @@ from administrator.forms import RegisterUser, RegisterDevice, RegisterVehicle, E
 from datetime import datetime #Fecha y hora
 #Inicio
 def index(request):
-    # sourcery skip: extract-method, use-fstring-for-concatenation
-
-    #Traer los ingresos que no estan relacionados con una salida
-    ingresos = Ingresos.objects.exclude(idingreso__in=Subquery(Salidas.objects.values('ingreso'))) or None 
-    #Traer salidas
+    ingresos = Ingresos.objects.exclude(idingreso__in=Subquery(Salidas.objects.values('ingreso')))
     salidas = Salidas.objects.all()
-    #Recibir codigo por GET
+
     if 'code' in request.GET:
         code = request.GET.get('code')
-        form = ExtrasForm(request.POST, request.FILES)
-        #Si el usuario esta registrado
-        try:
-            #Buscar usuario por su documento
-            user = get_object_or_404(Usuarios, documento=code) 
+        form = ExtrasForm(request.POST or None, request.FILES or None)
 
-            #Traer todos los datos del usuario
+        try:
+            user = get_object_or_404(Usuarios, documento=code)
+
             vehiculos = Vehiculos.objects.filter(usuario=user.idusuario)
             dispositivos = Dispositivos.objects.filter(usuario=user.idusuario)
             rol = user.rol
-            DocType = user.tipodocumento 
+            DocType = user.tipodocumento
             centro = user.centro or None
             ficha = user.ficha or None
             FichaName = ficha.nombre if ficha else None
             jornada = ficha.jornada if ficha else None
-            
-            #Si el usuario toma su foto: Guardarla
-            if request.method == 'POST':   
-                user.imagen.delete()
-                imagen = request.FILES['imagen']
-                extension = imagen.name.split('.')[-1].lower()
-                filename = f"{code}.{extension}"
-                imagen.name = filename                        
-                user.imagen = imagen
-                user.save()
-                return redirect(f"/?code={code}")
-                                
-            #Si el usuario tiene un ingreso activo, hacer salida
-            salida = Ingresos.objects.filter(usuario=user.idusuario).exclude(idingreso__in=Salidas.objects.values('ingreso')).first() or None
+
+            if request.method == 'POST':
+                # Procesar imagen del usuario si está en el POST
+                imagen = request.FILES.get('imagen')
+                if imagen:
+                    if user.imagen:
+                        user.imagen.delete()
+                    extension = imagen.name.split('.')[-1].lower()
+                    filename = f"{code}.{extension}"
+                    imagen.name = filename
+                    user.imagen = imagen
+                    user.save()
+                    return redirect(f"/?code={code}")
+
+                # Procesar archivo extra si está en el POST (por ejemplo, id_extra)
+                foto_extra = request.FILES.get('id_extra')
+                if foto_extra:
+                    ingreso_activo = Ingresos.objects.filter(usuario=user.idusuario).exclude(idingreso__in=Salidas.objects.values('ingreso')).first()
+                    if ingreso_activo:
+                        extension = foto_extra.name.split('.')[-1].lower()
+                        filename = f"{code}.{extension}"
+                        foto_extra.name = filename
+
+                        Extras.objects.create(
+                            descripcion="Foto extra subida",  # o pon otro texto o saca de un input si tienes
+                            foto=foto_extra,
+                            ingreso=ingreso_activo
+                        )
+
+
+            ingreso_activo = Ingresos.objects.filter(usuario=user.idusuario).exclude(idingreso__in=Salidas.objects.values('ingreso')).first()
+            extras_ingreso = ingreso_activo.extras.all() if ingreso_activo else []
+
+            salida = ingreso_activo
             dispositivo_salida = Dispositivos.objects.filter(usuario=user.idusuario, documento__isnull=False).first()
 
-           
-
-            return render(request, 'index.html',{
-                #Para ingreso
-                'title': user,          
-                'users': user,                
+            return render(request, 'index.html', {
+                'title': user,
+                'users': user,
                 'DocType': DocType,
                 'centro': centro,
                 'rol': rol,
@@ -62,14 +73,15 @@ def index(request):
                 'vehiculos': vehiculos,
                 'dispositivos': dispositivos,
                 'extra': form,
-                #Para salida
+                'extras_ingreso': extras_ingreso,
                 'salida': salida,
                 'dispositivo_salida': dispositivo_salida,
-                })
-        #Si el usuario no existe
+                'status': 'Salida',
+            })
+
         except Http404:
             return redirect('registeruser', code=code)
-    
+
     return render(request, 'index.html', {
         'title': 'Inicio',
         'ingresos': ingresos,
@@ -148,14 +160,15 @@ def idispositivos(request):
     })
 #Ingreso y salida
 
-
 def access(request, code):
     users = get_object_or_404(Usuarios, documento=code)
     date = datetime.now().strftime("%Y-%m-%d")
     hour = datetime.now().strftime("%H:%M:%S")
 
+    ingreso = Ingresos.objects.filter(usuario=users.idusuario).exclude(idingreso__in=Salidas.objects.values('ingreso')).first()
+    extras_ingreso = ingreso.extras.all() if ingreso else []
+
     if request.method == 'POST':
-        # Recibir los datos del formulario
         idvehiculo = request.POST.get('vehicle')
         vehiculo = Vehiculos.objects.get(idvehiculo=idvehiculo) if idvehiculo else None
 
@@ -166,15 +179,11 @@ def access(request, code):
         dispositivo2 = Dispositivos.objects.get(iddispositivo=dispositivos[1]) if len(dispositivos) > 1 and dispositivos[1] else None
         dispositivo3 = Dispositivos.objects.get(iddispositivo=dispositivos[2]) if len(dispositivos) > 2 and dispositivos[2] else None
 
-        # Campos del extra
         descripcion = request.POST.get('descripcion')
         foto = request.FILES.get('foto')
 
-        # Revisar si hay un ingreso sin salida (usuario dentro)
-        ingreso = Ingresos.objects.filter(usuario=users.idusuario).exclude(idingreso__in=Salidas.objects.values('ingreso')).first() or None
-
         if ingreso:
-            # Crear salida
+            # SALIDA
             salida = Salidas.objects.create(
                 fecha=date,
                 ingreso=ingreso,
@@ -186,7 +195,18 @@ def access(request, code):
             )
             status = "Salida"
 
-            # Crear extra asociado a salida (si hay datos)
+            # Mover extras seleccionados a la salida (sin duplicar)
+            extras_ids = request.POST.getlist('extras_to_move')
+            for extra_id in extras_ids:
+                try:
+                    extra_obj = Extras.objects.get(id=extra_id, ingreso=ingreso)
+                    extra_obj.salida = salida
+                    extra_obj.ingreso = None
+                    extra_obj.save()
+                except Extras.DoesNotExist:
+                    continue
+
+            # Nuevo extra en salida
             if descripcion or foto:
                 Extras.objects.create(
                     descripcion=descripcion,
@@ -194,8 +214,20 @@ def access(request, code):
                     salida=salida
                 )
 
+            extras_salida = salida.extras.all()
+
+            return render(request, 'access.html', {
+                'title': f'{status} usuario',
+                'users': users,
+                'ingreso': ingreso,
+                'salida': salida,
+                'status': status,
+                'extras_salida': extras_salida,
+                'extras_ingreso': [],  # ya no hay
+            })
+
         else:
-            # Crear ingreso
+            # INGRESO
             ingreso = Ingresos.objects.create(
                 fecha=date,
                 usuario=users,
@@ -207,7 +239,6 @@ def access(request, code):
             )
             status = "Ingreso"
 
-            # Crear extra asociado a ingreso (si hay datos)
             if descripcion or foto:
                 Extras.objects.create(
                     descripcion=descripcion,
@@ -215,22 +246,24 @@ def access(request, code):
                     ingreso=ingreso
                 )
 
-        return render(request, 'access.html', {
-            'title': f'{status} usuario',
-            'users': users,
-            'ingreso': ingreso,
-            'status': status,
-        })
+            extras_ingreso = ingreso.extras.all()
 
-    else:
-        # GET: mostrar solo el formulario vacío
-        return render(request, 'access.html', {
-            'title': 'Acceso usuario',
-            'users': users,
-            'status': None,
-        })
+            return render(request, 'access.html', {
+                'title': f'{status} usuario',
+                'users': users,
+                'ingreso': ingreso,
+                'status': status,
+                'extras_ingreso': extras_ingreso,
+            })
 
-
+    # GET
+    return render(request, 'access.html', {
+        'title': 'Acceso usuario',
+        'users': users,
+        'status': None,
+        'ingreso': ingreso,
+        'extras_ingreso': extras_ingreso,
+    })
 
 #Registrar usuario
 def registeruser(request, code):
