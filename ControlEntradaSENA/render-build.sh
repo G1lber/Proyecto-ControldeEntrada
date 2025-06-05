@@ -1,9 +1,7 @@
+#!/bin/bash
 
-# Render build script
-
-echo "Aplicando migraciones..."
+echo "🔧 Aplicando migraciones..."
 python manage.py migrate
 
-echo "Recopilando archivos estáticos..."
+echo "📦 Recolectando archivos estáticos..."
 python manage.py collectstatic --noinput
-    
