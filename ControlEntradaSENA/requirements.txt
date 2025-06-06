@@ -1,72 +1,18 @@
-asgiref
-astroid
-attrs
-certifi
-cffi
-charset-normalizer
-colorama
-coloredlogs
-cryptography
-dill
-distlib
-dj-database-url
-Django
-django-appconf
-django-ckeditor
-django-js-asset
-django-select2
-et_xmlfile
-filelock
-flatbuffers
-gunicorn
-humanfriendly
-idna
-imageio
-isort
-jsonschema
-jsonschema-specifications
-lazy_loader
-llvmlite
-mccabe
-mpmath
-mysql-connector-python
-networkx
-numba
-numpy
-onnxruntime
-opencv-python-headless
-openpyxl
-packaging
-pandas
-pillow
-platformdirs
-pooch
-protobuf
-pycparser
-pylint
-pylint-django
-pylint-plugin-utils
-PyMatting
-PyMySQL
-pyreadline3
-python-dateutil
-pytz
-referencing
-rembg
-requests
-rpds-py
-scikit-image
-scipy
-six
-sqlparse
-sympy
-tifffile
-tomlkit
-tqdm
-typing_extensions
-tzdata
-urllib3
-virtualenv
-whitenoise
-xlrd
-
+pip install asgiref==3.8.1
+pip install  cffi==1.17.1
+pip install cryptography==45.0.3
+pip install Django==5.2.1
+pip install django-appconf==1.1.0
+pip install django-select2==8.4.1
+pip install et_xmlfile==2.0.0
+pip install numpy==2.2.6
+pip install openpyxl==3.1.5
+pip install pandas==2.2.3
+pip install pillow==11.2.1
+pip install pycparser==2.22
+pip install PyMySQL==1.1.1
+pip install python-dateutil==2.9.0.post0
+pip install pytz==2025.2
+pip install six==1.17.0
+pip install sqlparse==0.5.3
+pip install tzdata==2025.2
