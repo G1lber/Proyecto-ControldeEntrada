@@ -284,29 +284,54 @@ if (camaraModal) {
 
   canvas.width = 640;
   canvas.height = 680;
+  const contadorElemento = document.getElementById('contador');
 
-  //Al presionar el boton de la camara
+  function iniciarCuentaRegresiva(duracionSegundos, callback) {
+    let tiempoRestante = duracionSegundos;
+    contadorElemento.style.display = 'block';
+    contadorElemento.textContent = tiempoRestante;
+
+    const intervalo = setInterval(() => {
+      tiempoRestante--;
+      if (tiempoRestante > 0) {
+        contadorElemento.textContent = tiempoRestante;
+      } else {
+        clearInterval(intervalo);
+        contadorElemento.style.display = 'none';
+        callback(); // Llama a captureImage() u otra función
+      }
+    }, 1000);
+  }
+
   btncamAccess.addEventListener('click', () => {
-    // Obtener acceso a la webcam
-    navigator.mediaDevices.getUserMedia({ video: true, width: 640, height: 680 })
-      .then(function (stream) {
-        video.srcObject = stream;
-        video.play();
+  navigator.mediaDevices.getUserMedia({ video: true, width: 640, height: 680 })
+    .then(function (stream) {
+      video.srcObject = stream;
+      video.play();
 
-        // Guardar la referencia de la pista de video
-        const videoTrack = stream.getVideoTracks()[0];
+      const videoTrack = stream.getVideoTracks()[0];
 
-        // Agregar un evento para detener la pista cuando el modal se cierre
-        camaraModal.addEventListener('hidden.bs.modal', function () {
-          videoTrack.stop(); // Detener la pista de video
-          video.srcObject = null; // Liberar el recurso de la cámara
-        });
+      camaraModal.addEventListener('hidden.bs.modal', function () {
+        videoTrack.stop();
+        video.srcObject = null;
+      });
 
-      })
-      .catch(function (error) {
-        console.log('Error al acceder a la webcam:', error);
+      // MOSTRAR VIDEO y OCULTAR CANVAS (por si quedó de antes)
+      canvas.style.display = 'none';
+      video.style.display = 'block';
+
+      // Iniciar cuenta regresiva y luego tomar la foto automáticamente
+      iniciarCuentaRegresiva(4, () => {
+        captureImage();
+        // saveImage(); // <- descomenta si también quieres que se guarde sola
+      });
+
+    })
+    .catch(function (error) {
+      console.log('Error al acceder a la webcam:', error);
       });
   });
+
 
 
   // Función para capturar la imagen
