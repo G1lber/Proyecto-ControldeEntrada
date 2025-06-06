@@ -74,12 +74,11 @@
           <table class="table table-striped">
             <thead>
               <tr>
-
                 <th scope="col">Propietari@</th>
                 <th scope="col">SN</th>
                 <th scope="col">Tipo Dispositivo</th>
-                <th scope="col">Marca</th>
-                <th scope="col">Imagen</th>
+                <th scope="col" class="d-none d-xl-table-cell">Marca</th>
+                <th scope="col" class="d-none d-xl-table-cell">Imagen</th>
                 <th scope="col">Documento</th>
                 <th scope="col">Acciones</th>
                 <th></th>
@@ -91,8 +90,8 @@
                 <td>{{dispositivo.usuario}}</td>
                 <td>{{dispositivo.sn}}</td>
                 <td>{{dispositivo.tipo}}</td>
-                <td>{{dispositivo.marca}}</td>
-                <td>{{dispositivo.imagen}}</td>
+                <td class="d-none d-xl-table-cell">{{dispositivo.marca}}</td>
+                <td class="d-none d-xl-table-cell">{{dispositivo.imagen}}</td>
                 <td>{{dispositivo.documento}}</td>
                 <td class="actions">
                   <div class="dropdown">
