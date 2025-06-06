@@ -1574,3 +1574,528 @@ tr:last-child td:last-child {
         padding: 30px 10px;
     }
 }
+
+/* ============ CUSTOM RESPONSIVE FIXES FOR MOBILES AND TABLETS ============ */
+@media (max-width: 768px) {
+    .card {
+        width: 95% !important;
+        padding: 20px 15px !important;
+    }
+
+    .card .card-header .card-title {
+        font-size: 1.5rem !important;
+        text-align: center;
+    }
+
+    .card .card-body form,
+    .card .card-body .form-group {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+    .form-group .col, .form-group .col-10 {
+        width: 100% !important;
+        margin-bottom: 15px;
+    }
+
+    .form-submit .form-btn,
+    .card-footer .btn {
+        width: 100% !important;
+    }
+
+    .card-image img {
+        width: 100% !important;
+        height: auto !important;
+    }
+
+    .select-form .select-btn,
+    .select-form .list-items .item {
+        font-size: 1rem !important;
+    }
+
+    #camaraModal #user-cam,
+    #camaraModal #user-picture {
+        width: 100% !important;
+        border-radius: 30px !important;
+    }
+
+    #login .card .card-body {
+        flex-direction: column !important;
+    }
+
+    #login .card .card-body .card-image,
+    #login .card .card-body .card-form {
+        width: 100% !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .back-button {
+        left: 20px !important;
+    }
+
+    .card .card-header .card-title {
+        font-size: 1.2rem !important;
+    }
+
+    .smallCamera {
+        width: 20% !important;
+    }
+
+    .form-group label {
+        font-size: 0.9rem !important;
+    }
+}
+
+
+/* ============ FIXES PARA ERRORES VISUALES EN CELULARES ============ */
+@media (max-width: 576px) {
+    .card-footer .row {
+        flex-direction: column !important;
+        gap: 10px;
+    }
+
+    .card-footer .btn {
+        width: 100% !important;
+        font-size: 1rem !important;
+        padding: 10px !important;
+    }
+
+    .form-control {
+        font-size: 1rem !important;
+        padding: 10px !important;
+    }
+
+    label {
+        font-size: 1rem !important;
+    }
+
+    .btn-green, .btn-danger, .btn-primary {
+        font-size: 1rem !important;
+        padding: 12px 0 !important;
+        min-width: 100px;
+        width: 100%;
+    }
+
+    .smallCamera svg {
+        width: 50px !important;
+        height: auto !important;
+    }
+
+    .select-form .select-btn {
+        flex-wrap: wrap !important;
+        justify-content: center;
+    }
+
+    .select-form .list-items {
+        font-size: 1rem;
+    }
+
+    #extrasContainer {
+        padding-bottom: 20px;
+    }
+
+    input[type="file"] {
+        width: 100% !important;
+    }
+
+    .form-group .btn-green {
+        display: block;
+        margin-top: 10px;
+    }
+
+    .card-title {
+        text-align: center;
+        font-size: 1.4rem !important;
+    }
+}
+
+
+/* ============ FIX: botones flotantes y selects mal alineados ============ */
+@media (max-width: 576px) {
+    .card-header-element {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center !important;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .card-header-element a.btn {
+        padding: 8px 12px;
+        width: auto !important;
+    }
+
+    .select-form.vehicle,
+    .select-form.device {
+        width: 100% !important;
+        margin-top: 10px;
+    }
+
+    .select-form .select-btn {
+        width: 100% !important;
+        padding: 10px 15px;
+    }
+
+    .select-form .list-items {
+        width: 100% !important;
+    }
+
+    .card-info .row {
+        flex-direction: column !important;
+    }
+
+    .card-info .col {
+        width: 100% !important;
+    }
+}
+
+
+/* ============ FIX: botón de cámara en sección 'Extras' demasiado grande ============ */
+@media (max-width: 576px) {
+    #extrasContainer .btn-green svg {
+        width: 40px !important;
+        height: 40px !important;
+    }
+
+    #extrasContainer .btn-green {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 60px !important;
+        height: 60px !important;
+        padding: 0 !important;
+        margin-top: 10px;
+        border-radius: 12px !important;
+    }
+}
+
+
+/* ============ UNIFICACIÓN Y PREVENCIÓN DE ERRORES PARA TODOS LOS BOTONES DE CÁMARA ============ */
+@media (max-width: 768px) {
+    .btn-green svg,
+    .btn svg,
+    .smallCamera svg {
+        width: 36px !important;
+        height: 36px !important;
+    }
+
+    .btn-green,
+    .btn.btn-green,
+    .btn.btn-primary,
+    .btn.btn-danger {
+        padding: 8px 12px !important;
+        font-size: 1rem !important;
+        min-width: 90px;
+        text-align: center;
+    }
+
+    #user-picture-btn {
+        width: auto !important;
+        max-width: 100%;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .card-image .btn-green {
+        width: 60px !important;
+        height: 60px !important;
+        padding: 0 !important;
+        border-radius: 14px !important;
+        margin: 10px auto 0 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .card-image .btn-green svg {
+        width: 36px !important;
+        height: 36px !important;
+    }
+}
+
+
+/* ============ RESPONSIVE UNIVERSAL (mobile-first hasta escritorio grande) ============ */
+
+/* Móviles (pantallas pequeñas) */
+@media (max-width: 480px) {
+    .card {
+        width: 95% !important;
+    }
+
+    .card-header-element {
+        flex-wrap: wrap;
+        justify-content: center !important;
+        gap: 10px;
+    }
+
+    .card-header-element a.btn {
+        padding: 6px 10px !important;
+        font-size: 0.9rem !important;
+    }
+
+    .select-form.vehicle,
+    .select-form.device {
+        width: 100% !important;
+        margin-top: 10px;
+    }
+
+    .select-form .select-btn {
+        width: 100% !important;
+        font-size: 1rem;
+    }
+
+    .select-form .list-items {
+        font-size: 0.9rem;
+    }
+
+    .card-footer .btn {
+        width: 100%;
+    }
+
+    .form-control {
+        font-size: 1rem !important;
+    }
+}
+
+/* Tablets */
+@media (min-width: 481px) and (max-width: 991px) {
+    .card {
+        width: 90% !important;
+    }
+
+    .card-header-element {
+        justify-content: flex-end !important;
+        gap: 8px;
+    }
+
+    .card-footer .btn {
+        min-width: 130px;
+        font-size: 1rem;
+    }
+}
+
+/* Escritorio (ancho medio) */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .card {
+        width: 80% !important;
+    }
+
+    .select-form .select-btn {
+        font-size: 1.1rem;
+    }
+}
+
+/* Escritorio grande */
+@media (min-width: 1200px) {
+    .card {
+        width: 60% !important;
+    }
+
+    .card-header-element {
+        justify-content: flex-end;
+    }
+
+    .card-footer .btn {
+        padding: 10px 20px;
+    }
+}
+
+
+/* ============ FIX FINAL: prevenir desbordes horizontales ============ */
+html, body {
+    max-width: 100vw;
+    overflow-x: hidden;
+}
+
+.card,
+section.card,
+article#ingreso {
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+.card-header-element {
+    flex-wrap: wrap;
+    justify-content: center !important;
+}
+
+@media (max-width: 576px) {
+    .card-header-element a.btn {
+        max-width: 48% !important;
+    }
+
+    .card-body,
+    .card-footer,
+    .card-header {
+        overflow-x: hidden !important;
+    }
+}
+
+
+/* ============ FIX FINAL BOTONES FLOTANTES VISIBLES EN MOVILES ============ */
+@media (max-width: 576px) {
+    .card-header-element {
+        overflow: visible !important;
+        position: relative;
+        z-index: 10;
+    }
+
+    .card-header-element a.btn {
+        width: 45px !important;
+        height: 45px !important;
+        display: inline-flex !important;
+        justify-content: center;
+        align-items: center;
+        padding: 0 !important;
+        border-radius: 12px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        background-color: white;
+    }
+
+    .card-header-element a.btn svg {
+        width: 28px !important;
+        height: 28px !important;
+        color: #28a745;
+    }
+}
+
+
+/* ============ FIX POSICIÓN Y VISIBILIDAD DE BOTONES FLOTANTES PARA ≤470px ============ */
+@media (max-width: 470px) {
+    .card-header-element {
+        position: absolute !important;
+        top: 10px;
+        right: 10px;
+        z-index: 50;
+        background: transparent !important;
+    }
+
+    .card-header {
+        position: relative;
+        overflow: visible !important;
+    }
+
+    .card-header-element a.btn {
+        width: 40px !important;
+        height: 40px !important;
+        padding: 0 !important;
+        margin-bottom: 6px;
+        border-radius: 10px !important;
+    }
+
+    .card-header-element a.btn svg {
+        width: 22px !important;
+        height: 22px !important;
+    }
+}
+
+
+/* ============ FIX: que los botones flotantes no oculten el nombre ============ */
+@media (max-width: 470px) {
+    .card-header {
+        padding-top: 60px !important; /* Empuja hacia abajo el contenido como el nombre */
+    }
+
+    .card-title {
+        text-align: center;
+        font-size: 1.3rem !important;
+    }
+
+    .card-header-element {
+        top: 10px;
+        right: 10px;
+        position: absolute !important;
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 10px;
+        background: none;
+    }
+}
+
+
+/* ============ FIX: textos de roles demasiado pegados o grandes en móvil ============ */
+@media (max-width: 576px) {
+    .register-select .row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .register-select .col {
+        flex: 0 0 30%;
+        max-width: 30%;
+        text-align: center;
+    }
+
+    .register-select .col span {
+        display: block;
+        font-size: 0.85rem;
+        margin-top: 5px;
+        word-wrap: break-word;
+    }
+
+    .register-select .col img {
+        width: 100%;
+        max-width: 60px;
+        height: auto;
+    }
+}
+
+
+/* ============ FIX FINAL: desbordamiento de nombres de rol debajo de los íconos ============ */
+@media (max-width: 576px) {
+    .register-select .col {
+        flex: 0 0 30% !important;
+        max-width: 30% !important;
+        text-align: center;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: normal !important;
+    }
+
+    .register-select .col span {
+        display: block;
+        font-size: 0.8rem !important;
+        margin-top: 5px;
+        line-height: 1.1;
+        max-width: 100%;
+        word-break: break-word;
+    }
+
+    .register-select .col img {
+        max-width: 50px !important;
+        height: auto !important;
+        margin: 0 auto;
+        display: block;
+    }
+}
+
+
+/* ============ FIX AJUSTADO: nombres de rol con tamaño legible y sin romper palabras ============ */
+@media (max-width: 576px) {
+    .register-select .col {
+        flex: 0 0 33.33% !important;
+        max-width: 33.33% !important;
+        min-width: 80px;
+        text-align: center;
+    }
+
+    .register-select .col span {
+        font-size: 0.95rem !important;
+        margin-top: 6px;
+        line-height: 1.2;
+        white-space: nowrap !important;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .register-select .col img {
+        max-width: 60px !important;
+        margin: 0 auto;
+        display: block;
+    }
+}
