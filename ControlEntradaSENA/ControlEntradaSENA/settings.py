@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
-import dj_database_url
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -21,10 +20,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
-SECRET_KEY = os.getenv("SECRET_KEY", "clave-insegura")
-DEBUG = os.getenv("DEBUG", "False") == "True"
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = "django-insecure-&9+r5#@%(66*yzwfigz#__l*08bg=yws&pc0ojzmk581t1)wu1"
 
-ALLOWED_HOSTS = ['*']  # Puedes poner tu dominio luego si quieres restringirlo
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
 
 # Application definition
 
@@ -81,7 +81,17 @@ WSGI_APPLICATION = "ControlEntradaSENA.wsgi.application"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(default=os.environ.get("DATABASE_URL"))
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "control-entrada-sena",
+        "USER": "root",
+        "PASSWORD": "",
+        "HOST": "localhost",
+        "PORT": "3306",
+        "OPTIONS": {
+            'sql_mode': 'STRICT_TRANS_TABLES'
+            }
+    }
 }
 
 
