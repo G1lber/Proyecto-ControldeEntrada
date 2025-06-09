@@ -1,24 +1,26 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.http import Http404
-from django.db.models import Subquery
 from administrator.models import Usuarios, Dispositivos, Vehiculos, Ingresos, Salidas, Extras
 from administrator.forms import RegisterUser, RegisterDevice, RegisterVehicle, ExtrasForm
 from datetime import datetime #Fecha y hora
 #Inicio
+from django.db.models import Q, Subquery
+
 def index(request):
     ingresos = Ingresos.objects.exclude(idingreso__in=Subquery(Salidas.objects.values('ingreso')))
     salidas = Salidas.objects.all()
 
     if 'code' in request.GET:
         code = request.GET.get('code')
+        if not code:
+            return redirect('index')
+
         form = ExtrasForm(request.POST or None, request.FILES or None)
 
         try:
             user = get_object_or_404(Usuarios, documento=code)
 
-            vehiculos = Vehiculos.objects.filter(usuario=user.idusuario)
-            dispositivos = Dispositivos.objects.filter(usuario=user.idusuario)
             rol = user.rol
             DocType = user.tipodocumento
             centro = user.centro or None
@@ -26,8 +28,76 @@ def index(request):
             FichaName = ficha.nombre if ficha else None
             jornada = ficha.jornada if ficha else None
 
+            ingreso_activo = Ingresos.objects.filter(usuario=user.idusuario).exclude(
+                idingreso__in=Salidas.objects.values('ingreso')
+            ).first()
+
+            if ingreso_activo:
+                # === MODO SALIDA ===
+
+                # 1. Dispositivos que están "adentro" (ingresaron pero no han salido)
+                ingresos_sin_salida = Ingresos.objects.filter(
+                    usuario=user.idusuario
+                ).exclude(idingreso__in=Salidas.objects.values('ingreso'))
+
+                dispositivos_adentro = set()
+                for ingreso in ingresos_sin_salida:
+                    for d in [ingreso.dispositivo_id, ingreso.dispositivo2_id, ingreso.dispositivo3_id]:
+                        if d:
+                            dispositivos_adentro.add(d)
+
+                # 2. Dispositivos nuevos nunca usados
+                dispositivos_usados = Ingresos.objects.values_list(
+                    'dispositivo_id', 'dispositivo2_id', 'dispositivo3_id'
+                )
+                usados_ids = set()
+                for grupo in dispositivos_usados:
+                    usados_ids.update(filter(None, grupo))
+
+                dispositivos_nuevos = Dispositivos.objects.filter(
+                    usuario=user.idusuario
+                ).exclude(iddispositivo__in=usados_ids)
+
+                # 3. Unir dispositivos adentro + nuevos
+                dispositivos = Dispositivos.objects.filter(
+                    Q(iddispositivo__in=dispositivos_adentro) |
+                    Q(iddispositivo__in=dispositivos_nuevos.values_list('iddispositivo', flat=True))
+                ).distinct()
+                status = 'Salida'
+
+            else:
+                # === MODO INGRESO ===
+
+                # 1. Dispositivos que ya salieron (están disponibles para ingresar)
+                dispositivos_salidos = Salidas.objects.values_list(
+                    'dispositivo_id', 'dispositivo2_id', 'dispositivo3_id'
+                )
+                salidos_ids = set()
+                for grupo in dispositivos_salidos:
+                    salidos_ids.update(filter(None, grupo))
+
+                # 2. Dispositivos nuevos nunca usados
+                dispositivos_usados = Ingresos.objects.values_list(
+                    'dispositivo_id', 'dispositivo2_id', 'dispositivo3_id'
+                )
+                usados_ids = set()
+                for grupo in dispositivos_usados:
+                    usados_ids.update(filter(None, grupo))
+
+                dispositivos_nuevos = Dispositivos.objects.filter(
+                    usuario=user.idusuario
+                ).exclude(iddispositivo__in=usados_ids)
+
+                # 3. Unir salidos + nuevos
+                dispositivos = Dispositivos.objects.filter(
+                    Q(iddispositivo__in=salidos_ids) |
+                    Q(iddispositivo__in=dispositivos_nuevos.values_list('iddispositivo', flat=True)),
+                    usuario=user.idusuario
+                ).distinct()
+                status = 'Ingreso'
+
+            # === Procesar POST (imagen / archivo extra)
             if request.method == 'POST':
-                # Procesar imagen del usuario si está en el POST
                 imagen = request.FILES.get('imagen')
                 if imagen:
                     if user.imagen:
@@ -39,27 +109,23 @@ def index(request):
                     user.save()
                     return redirect(f"/?code={code}")
 
-                # Procesar archivo extra si está en el POST (por ejemplo, id_extra)
                 foto_extra = request.FILES.get('id_extra')
-                if foto_extra:
-                    ingreso_activo = Ingresos.objects.filter(usuario=user.idusuario).exclude(idingreso__in=Salidas.objects.values('ingreso')).first()
-                    if ingreso_activo:
-                        extension = foto_extra.name.split('.')[-1].lower()
-                        filename = f"{code}.{extension}"
-                        foto_extra.name = filename
+                if foto_extra and ingreso_activo:
+                    extension = foto_extra.name.split('.')[-1].lower()
+                    filename = f"{code}.{extension}"
+                    foto_extra.name = filename
+                    Extras.objects.create(
+                        descripcion="Foto extra subida",
+                        foto=foto_extra,
+                        ingreso=ingreso_activo
+                    )
 
-                        Extras.objects.create(
-                            descripcion="Foto extra subida",  # o pon otro texto o saca de un input si tienes
-                            foto=foto_extra,
-                            ingreso=ingreso_activo
-                        )
-
-
-            ingreso_activo = Ingresos.objects.filter(usuario=user.idusuario).exclude(idingreso__in=Salidas.objects.values('ingreso')).first()
             extras_ingreso = ingreso_activo.extras.all() if ingreso_activo else []
-
-            salida = ingreso_activo
-            dispositivo_salida = Dispositivos.objects.filter(usuario=user.idusuario, documento__isnull=False).first()
+            vehiculos = Vehiculos.objects.filter(usuario=user.idusuario)
+            dispositivo_salida = Dispositivos.objects.filter(
+                usuario=user.idusuario,
+                documento__isnull=False
+            ).first()
 
             return render(request, 'index.html', {
                 'title': user,
@@ -74,9 +140,9 @@ def index(request):
                 'dispositivos': dispositivos,
                 'extra': form,
                 'extras_ingreso': extras_ingreso,
-                'salida': salida,
+                'salida': ingreso_activo,
                 'dispositivo_salida': dispositivo_salida,
-                'status': 'Salida',
+                'status': status,
             })
 
         except Http404:

@@ -318,30 +318,41 @@
                         <label for="names">Dispositivos</label>  
                         <!-- Zona select -->                           
                         <div class="select-form device">
-                            <!-- Select -->
+                            <label for="dispositivo">Dispositivos disponibles:</label>
                             <div class="select-btn" onclick="openSelect(this)">
                                 <span class="btn-text">Seleccionar Dispositivos</span>
                                 <span class="arrow-dwn">
                                     <i class="fa-solid fa-chevron-down"></i>
                                 </span>
-                            </div>      
-                            <!-- Lista -->                  
+                            </div>
+
                             <ul class="list-items">
                                 {% if dispositivos %}
                                     {% for dispositivo in dispositivos %}
-                                    <!-- Item -->
-                                    <li class="item item-device" value="{{dispositivo.iddispositivo}}">
-                                        <span class="checkbox">
-                                            <i class="fa-solid fa-check check-icon"></i>
-                                        </span>
-                                        <span class="item-text">{{dispositivo}}</span>
-                                    </li>
+                                        <li class="item item-device" value="{{ dispositivo.iddispositivo }}">
+                                            <span class="checkbox">
+                                                <i class="fa-solid fa-check check-icon"></i>
+                                            </span>
+                                            <span class="item-text">
+                                                {{ dispositivo }}
+                                                {% if status == "Salida" %}
+                                                    <span class="badge badge-primary">Ingresado</span>
+                                                {% elif status == "Ingreso" %}
+                                                    <span class="badge badge-success">Disponible</span>
+                                                {% endif %}
+                                            </span>
+                                        </li>
                                     {% endfor %}
-                                {% else %} 
-                                    <span class="item-text">Ningun dispositivo registrado</span>
-                                {% endif %}                                       
+                                {% else %}
+                                    <li class="item disabled">
+                                        <span class="item-text text-muted">No hay dispositivos disponibles</span>
+                                    </li>
+                                {% endif %}
                             </ul>
-                        </div>                                             
+                        </div>
+
+                        <p class="text-muted small">Modo actual: <strong>{{ status }}</strong> — {{ dispositivos|length }} dispositivos encontrados.</p>
+                                
                     </div>
                 </div>
                 <div class="row">
