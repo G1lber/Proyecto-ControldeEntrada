@@ -178,6 +178,7 @@ def access(request, code):
 
         dispositivos = request.POST.get('devices', '')
         dispositivos = dispositivos.split(',')
+        dispositivos_ids = [int(i) for i in dispositivos if i.isdigit()]
 
         dispositivo = Dispositivos.objects.get(iddispositivo=dispositivos[0]) if len(dispositivos) > 0 and dispositivos[0] else None
         dispositivo2 = Dispositivos.objects.get(iddispositivo=dispositivos[1]) if len(dispositivos) > 1 and dispositivos[1] else None
@@ -185,6 +186,15 @@ def access(request, code):
 
         descripcion = request.POST.get('descripcion')
         foto = request.FILES.get('foto')
+
+        # Marcar como dentro solo los dispositivos nuevos que hayan sido seleccionados
+        if request.POST.get('nuevo_dispositivo') == 'true':
+            for d in [dispositivo, dispositivo2, dispositivo3]:
+                if d and d.iddispositivo in dispositivos_ids:
+                    EstadoDispositivo.objects.update_or_create(
+                        dispositivo=d,
+                        defaults={'estado': 'dentro'}
+                    )
 
         if ingreso:
             # SALIDA
@@ -199,6 +209,7 @@ def access(request, code):
             )
             status = "Salida"
 
+            # Marcar como fuera los dispositivos seleccionados
             for d in [dispositivo, dispositivo2, dispositivo3]:
                 if d:
                     EstadoDispositivo.objects.update_or_create(
@@ -206,6 +217,7 @@ def access(request, code):
                         defaults={'estado': 'fuera'}
                     )
 
+            # Mover extras seleccionados a la salida (sin duplicar)
             extras_ids = request.POST.getlist('extras_to_move')
             for extra_id in extras_ids:
                 try:
@@ -216,6 +228,7 @@ def access(request, code):
                 except Extras.DoesNotExist:
                     continue
 
+            # Nuevo extra en salida
             if descripcion or foto:
                 Extras.objects.create(
                     descripcion=descripcion,
@@ -248,6 +261,7 @@ def access(request, code):
             )
             status = "Ingreso"
 
+            # Marcar como dentro los dispositivos seleccionados
             for d in [dispositivo, dispositivo2, dispositivo3]:
                 if d:
                     EstadoDispositivo.objects.update_or_create(
@@ -336,24 +350,33 @@ def registerdevice(request, code):
     doc = request.GET.get('doc')
 
     users = Usuarios.objects.get(documento=code)
-    #Usuario predeterminado
     initial_data = {'usuario': users.idusuario}
 
     form = RegisterDevice(request.POST or None, request.FILES or None, initial=initial_data)
     form.fields['documento'].required = bool(doc)
-    
-    if request.method == 'POST' and form.is_valid():
-        form.save()
-        messages.info(request, "success-device")
-        return redirect(f'/?code={code}')
 
-    return render(request, 'register/registerdevice.html',{
+    if request.method == 'POST' and form.is_valid():
+        dispositivo = form.save()
+
+        # Detectar si el usuario tiene un ingreso activo
+        tiene_ingreso_pendiente = Ingresos.objects.filter(
+            usuario=users.idusuario
+        ).exclude(idingreso__in=Salidas.objects.values('ingreso')).exists()
+
+        estado = 'dentro' if tiene_ingreso_pendiente else 'fuera'
+
+        EstadoDispositivo.objects.update_or_create(
+            dispositivo=dispositivo,
+            defaults={'estado': estado}
+        )
+
+        messages.info(request, "success-device")
+        return redirect(f'/?code={code}&nuevo_dispositivo=true')
+
+    return render(request, 'register/registerdevice.html', {
         'title': 'Registrar Dispositivo',
         'form': form,
         'doc': doc
     })
-
-
-
 
 
