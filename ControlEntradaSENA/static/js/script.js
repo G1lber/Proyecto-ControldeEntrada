@@ -413,45 +413,42 @@ if (camaraModal) {
   
 }
 
-//SELECT DISPOSITIVOS Y VEHICULOS
-function openSelect(btn) {
-  btn.classList.toggle("open");
-}
+  function openSelect(btn) {
+    btn.classList.toggle("open");
+  }
 
-//Form de vehiculo y dispositivos
-const vehicleInput = document.getElementById('vehicle');
-const devicesInput = document.getElementById('devices');
 
-//Seleccionar dispositivos
-const deviceItems = document.querySelectorAll(".item-device");
-//Texto select dispositivos
-const btnText = document.querySelector(".device .btn-text");
+  window.openSelect = openSelect;
 
-//Iterar sobre cada dispositivo
-deviceItems.forEach(item => {
+  const vehicleInput = document.getElementById('vehicle');
+  const devicesInput = document.getElementById('devices');
 
-  item.addEventListener("click", () => {
-    // Cambiar el estado de la clase 'checked' del elemento clicado
-    item.classList.toggle("checked");
+  const deviceItems = document.querySelectorAll(".item-device");
+  const btnText = document.querySelector(".device .btn-text");
 
-    // Obtener todos los elementos con la clase 'checked'
-    const checkedItems = document.querySelectorAll(".item-device.checked");
-    // Obtener los valores de los elementos con la clase 'checked'
-    const valuesChecks = [...checkedItems].map(checkedItem => checkedItem.getAttribute("value"));
+  deviceItems.forEach(item => {
+    item.addEventListener("click", () => {
+      item.classList.toggle("checked");
 
-    // Asignar los valores al campo de entrada oculto
-    devicesInput.value = valuesChecks.join(",");
+      const checkedItems = document.querySelectorAll(".item-device.checked");
+      const valuesChecks = [...checkedItems].map(checkedItem =>
+        checkedItem.getAttribute("value")
+      );
 
-    // Cambiar el texto del select segun la cantidad de dispositivos seleccionados
-    if (checkedItems && checkedItems.length > 1) {
-      btnText.innerText = `${checkedItems.length} Seleccionados`;
-    } else if (checkedItems && checkedItems.length > 0) {
-      btnText.innerText = checkedItems[0].innerText;
-    } else {
-      btnText.innerText = "Seleccionar Dispositivos";
-    }
+      devicesInput.value = valuesChecks.join(",");
+
+      if (checkedItems.length > 1) {
+        btnText.innerText = `${checkedItems.length} Seleccionados`;
+      } else if (checkedItems.length === 1) {
+        btnText.innerText = checkedItems[0].innerText;
+      } else {
+        btnText.innerText = "Seleccionar Dispositivos";
+      }
+    });
   });
-})
+
+
+
 
 //Seleccionar vehiculos
 const vehicleItems = document.querySelectorAll(".item-vehicle");

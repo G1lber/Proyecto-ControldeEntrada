@@ -316,7 +316,6 @@
                     <!-- Dispositivos -->
                     <div class="col">
                         <label for="names">Dispositivos</label>  
-                        <!-- Zona select -->                           
                         <div class="select-form device">
                             <label for="dispositivo">Dispositivos disponibles:</label>
                             <div class="select-btn" onclick="openSelect(this)">
@@ -336,7 +335,7 @@
                                             <span class="item-text">
                                                 {{ dispositivo }}
                                                 {% if status == "Salida" %}
-                                                    <span class="badge badge-primary">Ingresado</span>
+                                                    <span class="badge badge-primary">Ingresado (aún dentro)</span>
                                                 {% elif status == "Ingreso" %}
                                                     <span class="badge badge-success">Disponible</span>
                                                 {% endif %}
@@ -351,9 +350,10 @@
                             </ul>
                         </div>
 
-                        <p class="text-muted small">Modo actual: <strong>{{ status }}</strong> — {{ dispositivos|length }} dispositivos encontrados.</p>
-                                
+                        <p class="text-muted small">Modo actual: <strong>{{ status }}</strong> — {{ dispositivos|length }} dispositivo{{ dispositivos|length|pluralize }} encontrados.</p>
                     </div>
+
+
                 </div>
                 <div class="row">
                     <div class="col-12 text-center">
@@ -366,6 +366,7 @@
                     <div id="extrasContainer" class="col-12 mt-3 d-none">
                         <form id="form-access" method="POST" enctype="multipart/form-data" action="{% url 'access' code=users.documento %}">
                             {% csrf_token %}
+                             <input type="hidden" name="modo" value="{{ status }}">
                             <div class="form-group">
                                 {{ extra.descripcion.label_tag }}
                                 {{ extra.descripcion }}
@@ -426,6 +427,8 @@
                
                     <input id="vehicle" type="hidden" name="vehicle" value="">
                     <input id="devices" type="hidden" name="devices" value="">      
+                   
+
                     <button type="submit" class="btn accept">{% if salida %}Salir{% else %}Ingresar{% endif %}</button>
                 </form> 
             </div>                          

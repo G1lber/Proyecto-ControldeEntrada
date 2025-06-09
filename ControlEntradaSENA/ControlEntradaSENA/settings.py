@@ -83,9 +83,9 @@ WSGI_APPLICATION = "ControlEntradaSENA.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "agro2019_control-entrada-sena",
-        "USER": "agro2019_control-entrada-sena",
-        "PASSWORD": "e_gate2025",
+        "NAME": "control-entrada-sena",
+        "USER": "root",
+        "PASSWORD": "root",
         "HOST": "localhost",
         "PORT": "3306",
         "OPTIONS": {

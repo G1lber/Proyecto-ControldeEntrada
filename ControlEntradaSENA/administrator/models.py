@@ -39,7 +39,13 @@ class Dispositivos(models.Model):
 
     def __str__(self):
         return f"{self.tipo} {self.marca}: #{self.sn[:5]}"
+class EstadoDispositivo(models.Model):
+    dispositivo = models.OneToOneField('Dispositivos', on_delete=models.CASCADE, primary_key=True)
+    estado = models.CharField(max_length=10, choices=[('dentro', 'Dentro'), ('fuera', 'Fuera')])
+    actualizado = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        db_table = 'estado_dispositivo'
 
 class DispositivosMarca(models.Model):
     idmarcadispositivo = models.AutoField(db_column='IdMarcaDispositivo', primary_key=True)  # Field name made lowercase.
