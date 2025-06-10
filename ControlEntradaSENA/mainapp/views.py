@@ -7,6 +7,9 @@ from datetime import datetime #Fecha y hora
 #Inicio
 from django.db.models import Q, Subquery
 from django.utils.timezone import now
+from django.db import transaction
+from django.views.decorators.cache import never_cache
+
 
 def determinar_modo(user):
     dispositivos_usuario = Dispositivos.objects.filter(usuario=user.idusuario)
@@ -40,6 +43,7 @@ def determinar_modo(user):
 
     return dispositivos.distinct(), status, ingreso_activo
 
+@never_cache
 def index(request):
     ingresos = Ingresos.objects.exclude(idingreso__in=Subquery(Salidas.objects.values('ingreso')))
     salidas = Salidas.objects.all()
@@ -61,7 +65,10 @@ def index(request):
 
             dispositivos, status, ingreso_activo = determinar_modo(user)
 
-            extras_ingreso = ingreso_activo.extras.all() if ingreso_activo else []
+            extras_ingreso = Extras.objects.filter(
+                    salida__isnull=True,
+                    ingreso__usuario=user
+            )
             dispositivo_salida = Dispositivos.objects.filter(usuario=user.idusuario, documento__isnull=False).first()
 
             return render(request, 'index.html', {
@@ -166,125 +173,131 @@ def idispositivos(request):
 
 def access(request, code):
     users = get_object_or_404(Usuarios, documento=code)
-    date = datetime.now().strftime("%Y-%m-%d")
-    hour = datetime.now().strftime("%H:%M:%S")
+    date = now().date()
+    hour = now().time()
 
-    ingreso = Ingresos.objects.filter(usuario=users.idusuario).exclude(idingreso__in=Salidas.objects.values('ingreso')).first()
+    ingreso = Ingresos.objects.filter(usuario=users.idusuario).exclude(
+        idingreso__in=Salidas.objects.values('ingreso')
+    ).first()
     extras_ingreso = ingreso.extras.all() if ingreso else []
 
     if request.method == 'POST':
         idvehiculo = request.POST.get('vehicle')
-        vehiculo = Vehiculos.objects.get(idvehiculo=idvehiculo) if idvehiculo else None
+        vehiculo = Vehiculos.objects.filter(idvehiculo=idvehiculo).first() if idvehiculo else None
 
-        dispositivos = request.POST.get('devices', '')
-        dispositivos = dispositivos.split(',')
-        dispositivos_ids = [int(i) for i in dispositivos if i.isdigit()]
+        dispositivos_raw = request.POST.get('devices', '')
+        dispositivos_ids = [int(i) for i in dispositivos_raw.split(',') if i.isdigit()]
+        dispositivos = Dispositivos.objects.filter(iddispositivo__in=dispositivos_ids)
 
-        dispositivo = Dispositivos.objects.get(iddispositivo=dispositivos[0]) if len(dispositivos) > 0 and dispositivos[0] else None
-        dispositivo2 = Dispositivos.objects.get(iddispositivo=dispositivos[1]) if len(dispositivos) > 1 and dispositivos[1] else None
-        dispositivo3 = Dispositivos.objects.get(iddispositivo=dispositivos[2]) if len(dispositivos) > 2 and dispositivos[2] else None
+        dispositivo = dispositivos[0] if len(dispositivos) > 0 else None
+        dispositivo2 = dispositivos[1] if len(dispositivos) > 1 else None
+        dispositivo3 = dispositivos[2] if len(dispositivos) > 2 else None
 
         descripcion = request.POST.get('descripcion')
         foto = request.FILES.get('foto')
 
-        # Marcar como dentro solo los dispositivos nuevos que hayan sido seleccionados
-        if request.POST.get('nuevo_dispositivo') == 'true':
-            for d in [dispositivo, dispositivo2, dispositivo3]:
-                if d and d.iddispositivo in dispositivos_ids:
-                    EstadoDispositivo.objects.update_or_create(
-                        dispositivo=d,
-                        defaults={'estado': 'dentro'}
+        try:
+            with transaction.atomic():
+                if ingreso:
+                    # SALIDA
+                    salida = Salidas.objects.create(
+                        fecha=date,
+                        ingreso=ingreso,
+                        vehiculo=vehiculo,
+                        dispositivo=dispositivo,
+                        dispositivo2=dispositivo2,
+                        dispositivo3=dispositivo3,
+                        horasalida=hour
                     )
+                    status = "Salida"
 
-        if ingreso:
-            # SALIDA
-            salida = Salidas.objects.create(
-                fecha=date,
-                ingreso=ingreso,
-                vehiculo=vehiculo,
-                dispositivo=dispositivo,
-                dispositivo2=dispositivo2,
-                dispositivo3=dispositivo3,
-                horasalida=hour
-            )
-            status = "Salida"
+                    # Marcar dispositivos como fuera
+                    for d in [dispositivo, dispositivo2, dispositivo3]:
+                        if d:
+                            EstadoDispositivo.objects.update_or_create(
+                                dispositivo=d,
+                                defaults={'estado': 'fuera'}
+                            )
 
-            # Marcar como fuera los dispositivos seleccionados
-            for d in [dispositivo, dispositivo2, dispositivo3]:
-                if d:
-                    EstadoDispositivo.objects.update_or_create(
-                        dispositivo=d,
-                        defaults={'estado': 'fuera'}
+                    # Mover extras seleccionados a la salida
+                    extras_ids = request.POST.getlist('extras_to_move')
+                    for extra_id in extras_ids:
+                        extra_obj = Extras.objects.filter(id=extra_id, ingreso=ingreso, salida__isnull=True).first()
+                        if extra_obj:
+                            extra_obj.ingreso = None
+                            extra_obj.salida = salida
+                            extra_obj.save()
+
+                    # Nuevo extra en salida
+                    if descripcion or foto:
+                        Extras.objects.create(
+                            descripcion=descripcion,
+                            foto=foto,
+                            salida=salida
+                        )
+
+                    extras_salida = salida.extras.all()
+
+                    return render(request, 'access.html', {
+                        'title': f'{status} usuario',
+                        'users': users,
+                        'ingreso': ingreso,
+                        'salida': salida,
+                        'status': status,
+                        'extras_salida': extras_salida,
+                        'extras_ingreso': [],
+                    })
+
+                else:
+                    # INGRESO
+                    ingreso = Ingresos.objects.create(
+                        fecha=date,
+                        usuario=users,
+                        vehiculo=vehiculo,
+                        dispositivo=dispositivo,
+                        dispositivo2=dispositivo2,
+                        dispositivo3=dispositivo3,
+                        horaingreso=hour
                     )
+                    status = "Ingreso"
 
-            # Mover extras seleccionados a la salida (sin duplicar)
-            extras_ids = request.POST.getlist('extras_to_move')
-            for extra_id in extras_ids:
-                try:
-                    extra_obj = Extras.objects.get(id=extra_id, ingreso=ingreso)
-                    extra_obj.salida = salida
-                    extra_obj.ingreso = None
-                    extra_obj.save()
-                except Extras.DoesNotExist:
-                    continue
+                    # Marcar dispositivos como dentro
+                    for d in [dispositivo, dispositivo2, dispositivo3]:
+                        if d:
+                            EstadoDispositivo.objects.update_or_create(
+                                dispositivo=d,
+                                defaults={'estado': 'dentro'}
+                            )
 
-            # Nuevo extra en salida
-            if descripcion or foto:
-                Extras.objects.create(
-                    descripcion=descripcion,
-                    foto=foto,
-                    salida=salida
-                )
+                    # Reasociar extras pendientes sin salida del usuario a este nuevo ingreso
+                    extras_pendientes = Extras.objects.filter(
+                        salida__isnull=True,
+                        ingreso__usuario=users
+                    ).exclude(ingreso=ingreso)
+                    for extra in extras_pendientes:
+                        extra.ingreso = ingreso
+                        extra.save()
 
-            extras_salida = salida.extras.all()
+                    # Crear nuevo extra en ingreso
+                    if descripcion or foto:
+                        Extras.objects.create(
+                            descripcion=descripcion,
+                            foto=foto,
+                            ingreso=ingreso
+                        )
 
-            return render(request, 'access.html', {
-                'title': f'{status} usuario',
-                'users': users,
-                'ingreso': ingreso,
-                'salida': salida,
-                'status': status,
-                'extras_salida': extras_salida,
-                'extras_ingreso': [],
-            })
+                    extras_ingreso = ingreso.extras.all()
 
-        else:
-            # INGRESO
-            ingreso = Ingresos.objects.create(
-                fecha=date,
-                usuario=users,
-                vehiculo=vehiculo,
-                dispositivo=dispositivo,
-                dispositivo2=dispositivo2,
-                dispositivo3=dispositivo3,
-                horaingreso=hour
-            )
-            status = "Ingreso"
-
-            # Marcar como dentro los dispositivos seleccionados
-            for d in [dispositivo, dispositivo2, dispositivo3]:
-                if d:
-                    EstadoDispositivo.objects.update_or_create(
-                        dispositivo=d,
-                        defaults={'estado': 'dentro'}
-                    )
-
-            if descripcion or foto:
-                Extras.objects.create(
-                    descripcion=descripcion,
-                    foto=foto,
-                    ingreso=ingreso
-                )
-
-            extras_ingreso = ingreso.extras.all()
-
-            return render(request, 'access.html', {
-                'title': f'{status} usuario',
-                'users': users,
-                'ingreso': ingreso,
-                'status': status,
-                'extras_ingreso': extras_ingreso,
-            })
+                    return render(request, 'access.html', {
+                        'title': f'{status} usuario',
+                        'users': users,
+                        'ingreso': ingreso,
+                        'status': status,
+                        'extras_ingreso': extras_ingreso,
+                    })
+        except Exception as e:
+            # Puedes loguear el error o notificar
+            print("Error en transacción:", e)
 
     return render(request, 'access.html', {
         'title': 'Acceso usuario',

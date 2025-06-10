@@ -147,6 +147,17 @@
         dir: 'ltr'
     } );
     </script>
+
+    <script>
+    history.pushState(null, null, location.href);
+    window.addEventListener('popstate', function (event) {
+        history.pushState(null, null, location.href);
+    });
+    </script>
+
+
+
+
 </body>
 
 </html>
