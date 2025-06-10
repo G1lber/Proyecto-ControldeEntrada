@@ -2,7 +2,7 @@
 {% load static %}
 {% block title %}  {{title}} {% endblock %}
 
-{%block content %}
+{% block content %}
 <div id="ingreso">
     <div class="card">
         <div class="card_header">
@@ -17,9 +17,9 @@
         <div class="card_body">
             <p>
                 {% if status == "Ingreso" %}
-                    {{users.nombres}} haz aceptado tu ingreso
+                    {{users.nombres}} has aceptado tu ingreso
                 {% else %}
-                    {{users.nombres}} haz aceptado tu salida
+                    {{users.nombres}} has aceptado tu salida
                 {% endif %}
             </p>
         </div>        
@@ -27,15 +27,26 @@
 </div>
 
 <script>
-    setTimeout(function() {
-      window.location.href = "{% url 'index' %}";
-    }, 1000);
-</script>
-<script>
-    window.history.pushState(null, "", window.location.href);
-    window.onpopstate = function () {
-        window.history.pushState(null, "", window.location.href);
-    };
+  // Bloquea el botón atrás (esto funciona solo si no haces redirect antes)
+  history.pushState(null, null, location.href);
+  window.onpopstate = function () {
+    // Opcional: puedes redirigir a inicio o mostrar alerta
+    alert("No puedes volver atrás");
+    history.go(1);
+  };
+
+  // Si se viene del historial (tipo 'back'), forzar reload
+  if (performance.navigation.type === 2) {
+    location.href = "{% url 'index' %}";
+  }
+
+  // Redirige automáticamente al index luego de un tiempo
+  setTimeout(function() {
+    window.location.href = "{% url 'index' %}";
+  }, 1000);
 </script>
 
+
+
 {% endblock %}
+

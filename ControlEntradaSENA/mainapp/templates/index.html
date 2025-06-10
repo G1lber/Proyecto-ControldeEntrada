@@ -4,6 +4,7 @@
 
 {% block content %}
 
+
 <!-- VISTA: ESCANEA TU CARNET-->
 {% if not users %} <!-- Si aun no se escanea -->
 <article id="ingreso" class="scan">
@@ -443,12 +444,6 @@
         const container = document.getElementById('extrasContainer');
         container.classList.toggle('d-none');
     });
-</script>
-<script>
-    window.history.pushState(null, "", window.location.href);
-    window.onpopstate = function () {
-        window.history.pushState(null, "", window.location.href);
-    };
 </script>
 
 {% endif %}

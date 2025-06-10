@@ -8,7 +8,7 @@ from datetime import datetime #Fecha y hora
 from django.db.models import Q, Subquery
 from django.utils.timezone import now
 from django.db import transaction
-from django.views.decorators.cache import never_cache
+
 
 
 def determinar_modo(user):
@@ -43,7 +43,6 @@ def determinar_modo(user):
 
     return dispositivos.distinct(), status, ingreso_activo
 
-@never_cache
 def index(request):
     ingresos = Ingresos.objects.exclude(idingreso__in=Subquery(Salidas.objects.values('ingreso')))
     salidas = Salidas.objects.all()
@@ -236,16 +235,11 @@ def access(request, code):
                             salida=salida
                         )
 
-                    extras_salida = salida.extras.all()
-
+                    # ✅ Mostrar página de confirmación sin redirección (para evitar historial)
                     return render(request, 'access.html', {
                         'title': f'{status} usuario',
                         'users': users,
-                        'ingreso': ingreso,
-                        'salida': salida,
                         'status': status,
-                        'extras_salida': extras_salida,
-                        'extras_ingreso': [],
                     })
 
                 else:
@@ -286,17 +280,14 @@ def access(request, code):
                             ingreso=ingreso
                         )
 
-                    extras_ingreso = ingreso.extras.all()
-
+                    # ✅ Mostrar página de confirmación sin redirección (para evitar historial)
                     return render(request, 'access.html', {
                         'title': f'{status} usuario',
                         'users': users,
-                        'ingreso': ingreso,
                         'status': status,
-                        'extras_ingreso': extras_ingreso,
                     })
+
         except Exception as e:
-            # Puedes loguear el error o notificar
             print("Error en transacción:", e)
 
     return render(request, 'access.html', {
