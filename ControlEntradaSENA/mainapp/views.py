@@ -47,6 +47,8 @@ def index(request):
     ingresos = Ingresos.objects.exclude(idingreso__in=Subquery(Salidas.objects.values('ingreso')))
     salidas = Salidas.objects.all()
 
+    status = request.GET.get("status")  # Captura si viene de ingreso/salida
+
     if 'code' in request.GET:
         code = request.GET.get('code')
         form = ExtrasForm(request.POST or None, request.FILES or None)
@@ -62,11 +64,11 @@ def index(request):
             FichaName = ficha.nombre if ficha else None
             jornada = ficha.jornada if ficha else None
 
-            dispositivos, status, ingreso_activo = determinar_modo(user)
+            dispositivos, modo_status, ingreso_activo = determinar_modo(user)
 
             extras_ingreso = Extras.objects.filter(
-                    salida__isnull=True,
-                    ingreso__usuario=user
+                salida__isnull=True,
+                ingreso__usuario=user
             )
             dispositivo_salida = Dispositivos.objects.filter(usuario=user.idusuario, documento__isnull=False).first()
 
@@ -85,7 +87,7 @@ def index(request):
                 'extras_ingreso': extras_ingreso,
                 'salida': ingreso_activo,
                 'dispositivo_salida': dispositivo_salida,
-                'status': status,
+                'status': modo_status,  # status real del usuario
             })
 
         except Http404:
@@ -94,7 +96,8 @@ def index(request):
     return render(request, 'index.html', {
         'title': 'Inicio',
         'ingresos': ingresos,
-        'salidas': salidas
+        'salidas': salidas,
+        'status': status  # status de ingreso/salida para el JS si aplica
     })
 
 
@@ -210,7 +213,6 @@ def access(request, code):
                     )
                     status = "Salida"
 
-                    # Marcar dispositivos como fuera
                     for d in [dispositivo, dispositivo2, dispositivo3]:
                         if d:
                             EstadoDispositivo.objects.update_or_create(
@@ -218,7 +220,6 @@ def access(request, code):
                                 defaults={'estado': 'fuera'}
                             )
 
-                    # Mover extras seleccionados a la salida
                     extras_ids = request.POST.getlist('extras_to_move')
                     for extra_id in extras_ids:
                         extra_obj = Extras.objects.filter(id=extra_id, ingreso=ingreso, salida__isnull=True).first()
@@ -227,7 +228,6 @@ def access(request, code):
                             extra_obj.salida = salida
                             extra_obj.save()
 
-                    # Nuevo extra en salida
                     if descripcion or foto:
                         Extras.objects.create(
                             descripcion=descripcion,
@@ -235,7 +235,6 @@ def access(request, code):
                             salida=salida
                         )
 
-                    # ✅ Mostrar página de confirmación sin redirección (para evitar historial)
                     return render(request, 'access.html', {
                         'title': f'{status} usuario',
                         'users': users,
@@ -255,7 +254,6 @@ def access(request, code):
                     )
                     status = "Ingreso"
 
-                    # Marcar dispositivos como dentro
                     for d in [dispositivo, dispositivo2, dispositivo3]:
                         if d:
                             EstadoDispositivo.objects.update_or_create(
@@ -263,7 +261,6 @@ def access(request, code):
                                 defaults={'estado': 'dentro'}
                             )
 
-                    # Reasociar extras pendientes sin salida del usuario a este nuevo ingreso
                     extras_pendientes = Extras.objects.filter(
                         salida__isnull=True,
                         ingreso__usuario=users
@@ -272,7 +269,6 @@ def access(request, code):
                         extra.ingreso = ingreso
                         extra.save()
 
-                    # Crear nuevo extra en ingreso
                     if descripcion or foto:
                         Extras.objects.create(
                             descripcion=descripcion,
@@ -280,7 +276,6 @@ def access(request, code):
                             ingreso=ingreso
                         )
 
-                    # ✅ Mostrar página de confirmación sin redirección (para evitar historial)
                     return render(request, 'access.html', {
                         'title': f'{status} usuario',
                         'users': users,

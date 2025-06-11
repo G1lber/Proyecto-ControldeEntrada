@@ -147,6 +147,19 @@
         dir: 'ltr'
     } );
     </script>
+    {% if status == "Ingreso" or status == "Salida" %}
+<script>
+  // 🔒 Bloquea el botón "atrás"
+  history.pushState(null, null, location.href);
+  window.onpopstate = function () {
+    alert("No puedes volver atrás.");
+    history.go(1);
+  };
+
+  // 🧹 Limpia la URL para evitar que se repita la lógica al refrescar
+  history.replaceState(null, null, window.location.pathname);
+</script>
+{% endif %}
 
 
 
