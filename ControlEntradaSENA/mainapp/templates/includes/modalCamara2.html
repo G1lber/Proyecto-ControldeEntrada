@@ -19,11 +19,11 @@
                       </svg>
                 </button>
                 <!-- Form enviar file foto -->
-                <form id="form-access" method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <input type="file" name="imagen" id="user-file" style="display: none">    
+
                     <!-- Boton guardar foto -->                       
-                    <button type="submit" class="btn btn-green btn-picture" id="user-savepicture-btn" onclick="saveImage()" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-green btn-picture" id="user-savepicture-btn" onclick="saveImage('usuario')" data-bs-dismiss="modal">
+              
+
                         <svg xmlns="http://www.w3.org/2000/svg" width="100%" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
                             <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
                           </svg>
@@ -35,7 +35,7 @@
                           <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
                       </svg>
                     </button>
-                </form>
+      
                 <div id="contador" style="
                   position: absolute;
                   top: 50%;

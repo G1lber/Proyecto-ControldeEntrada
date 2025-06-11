@@ -268,150 +268,150 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 });
+const btncamAccess = document.getElementById('user-picture-btn');
+const btnExtra = document.getElementById('extra-btn');
+const btnSaveUser = document.getElementById('user-savepicture-btn');
 
 //CAMARA
+function iniciarCamara(tipo = 'user') {
+  const prefix = tipo === 'extra' ? 'extra' : 'user';
+  const video = document.getElementById(`${prefix}-cam`);
+  const canvas = document.getElementById(`${prefix}-picture`);
+  const btnTake = document.getElementById(`${prefix}-takepicture-btn`);
+  const btnSave = document.getElementById(`${prefix}-savepicture-btn`);
+  const btnRepeat = document.getElementById(`${prefix}-repeatpicture-btn`);
+  const contadorElemento = document.getElementById(`contador-${prefix}` || 'contador');
 
-// Obtener referencia al elemento de video y al canvas
-const camaraModal = document.getElementById('camaraModal');
-if (camaraModal) {
-  const btncamAccess = document.getElementById('user-picture-btn');
-  const btnSave = document.getElementById('user-savepicture-btn');
-  const btnRepeat = document.getElementById('user-repeatpicture-btn');
-  const btnTake = document.getElementById('user-takepicture-btn');
-  let video = document.getElementById('user-cam');
-  let canvas = document.getElementById('user-picture');
-  let context = canvas.getContext('2d');
-
-  canvas.width = 640;
-  canvas.height = 680;
-  const contadorElemento = document.getElementById('contador');
-
-  function iniciarCuentaRegresiva(duracionSegundos, callback) {
-    let tiempoRestante = duracionSegundos;
-    contadorElemento.style.display = 'block';
-    contadorElemento.textContent = tiempoRestante;
-
-    const intervalo = setInterval(() => {
-      tiempoRestante--;
-      if (tiempoRestante > 0) {
-        contadorElemento.textContent = tiempoRestante;
-      } else {
-        clearInterval(intervalo);
-        contadorElemento.style.display = 'none';
-        callback(); // Llama a captureImage() u otra función
-      }
-    }, 1000);
-  }
-
-  btncamAccess.addEventListener('click', () => {
-  navigator.mediaDevices.getUserMedia({ video: true, width: 640, height: 680 })
+  navigator.mediaDevices.getUserMedia({ video: true })
     .then(function (stream) {
       video.srcObject = stream;
       video.play();
 
       const videoTrack = stream.getVideoTracks()[0];
 
-      camaraModal.addEventListener('hidden.bs.modal', function () {
+      const modal = document.getElementById(`camaraModal${tipo === 'extra' ? 'Extra' : ''}`);
+      modal.addEventListener('hidden.bs.modal', function () {
         videoTrack.stop();
         video.srcObject = null;
-      });
+        repeatImage(tipo);
+      }, { once: true });
 
-      // MOSTRAR VIDEO y OCULTAR CANVAS (por si quedó de antes)
       canvas.style.display = 'none';
       video.style.display = 'block';
+      btnTake.style.display = 'block';
+      btnSave.style.display = 'none';
+      btnRepeat.style.display = 'none';
 
-      // Iniciar cuenta regresiva y luego tomar la foto automáticamente
-      iniciarCuentaRegresiva(4, () => {
-        captureImage();
-        // saveImage(); // <- descomenta si también quieres que se guarde sola
-      });
-
+      iniciarCuentaRegresiva(4, () => captureImage(tipo));
     })
-    .catch(function (error) {
-      console.log('Error al acceder a la webcam:', error);
-      });
-  });
-
-
-
-  // Función para capturar la imagen
-  function captureImage() {
-    btnTake.style.display = 'none';
-    video.style.display = 'none';
-    canvas.style.display = 'block';
-
-    btnRepeat.style.display = 'block';
-    btnSave.style.display = 'block';
-
-    // Dibujar el cuadro actual del video en el canvas
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-  }
-
-  // Función para convertir la imagen base64 en un objeto de archivo
-  function dataURLtoFile(dataUrl, filename) {
-    const arr = dataUrl.split(',');
-    const mime = arr[0].match(/:(.*?);/)[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new File([u8arr], filename, { type: mime });
-  }
-
-  function repeatImage() {
-    btnRepeat.style.display = 'none';
-    btnSave.style.display = 'none';
-    btnTake.style.display = 'block';
-
-    canvas.style.display = 'none';
-    video.style.display = 'block';
-  }
-
-  function saveImage() {
-    // Verifica que canvas exista
-    if (!canvas) {
-      console.error('No se encontró el canvas.');
-      return;
-    }
-  
-    // Obtener la imagen en formato base64 desde el canvas
-    const imageData = canvas.toDataURL('image/png');
-    const capturedImage = imageData;
-  
-    // Generar un archivo desde la imagen base64
-    const file = dataURLtoFile(capturedImage, 'captured_image.png');
-  
-    // Crear una instancia de DataTransfer
-    const dataTransfer = new DataTransfer();
-    dataTransfer.items.add(file);
-  
-    // Lista de posibles IDs de campos file
-    const fileIds = ['device-file', 'user-file', 'vehicle-file', 'id_extra'];
-  
-    let applied = false;
-  
-    fileIds.forEach(id => {
-      const fileInput = document.getElementById(id);
-      if (fileInput) {
-        fileInput.files = dataTransfer.files;
-  
-        // Disparar evento de cambio para activar cualquier lógica asociada
-        const changeEvent = new Event('change');
-        fileInput.dispatchEvent(changeEvent);
-  
-        console.log(`Imagen asignada a ${id}`);
-        applied = true;
-      }
-    });
-  
-    if (!applied) {
-      console.warn('⚠️ No se encontró ningún input file válido.');
-    }
-  }
-  
+    .catch(error => console.log("Error al acceder a cámara:", error));
 }
+
+function iniciarCuentaRegresiva(duracionSegundos, callback) {
+  const contador = document.querySelector('[id^=contador-]');
+  let tiempoRestante = duracionSegundos;
+  contador.style.display = 'block';
+  contador.textContent = tiempoRestante;
+
+  const intervalo = setInterval(() => {
+    tiempoRestante--;
+    if (tiempoRestante > 0) {
+      contador.textContent = tiempoRestante;
+    } else {
+      clearInterval(intervalo);
+      contador.style.display = 'none';
+      callback();
+    }
+  }, 1000);
+}
+
+function captureImage(tipo = 'user') {
+  const prefix = tipo === 'extra' ? 'extra' : 'user';
+  const video = document.getElementById(`${prefix}-cam`);
+  const canvas = document.getElementById(`${prefix}-picture`);
+  const context = canvas.getContext('2d');
+  const btnTake = document.getElementById(`${prefix}-takepicture-btn`);
+  const btnSave = document.getElementById(`${prefix}-savepicture-btn`);
+  const btnRepeat = document.getElementById(`${prefix}-repeatpicture-btn`);
+
+  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+  canvas.style.display = 'block';
+  video.style.display = 'none';
+  btnTake.style.display = 'none';
+  btnRepeat.style.display = 'block';
+
+  if (tipo === 'extra') {
+    saveImage('id_extra');
+  } else {
+    btnSave.style.display = 'block'; // espera clic en guardar
+  }
+}
+
+function repeatImage(tipo = 'user') {
+  const prefix = tipo === 'extra' ? 'extra' : 'user';
+  const video = document.getElementById(`${prefix}-cam`);
+  const canvas = document.getElementById(`${prefix}-picture`);
+  const btnTake = document.getElementById(`${prefix}-takepicture-btn`);
+  const btnSave = document.getElementById(`${prefix}-savepicture-btn`);
+  const btnRepeat = document.getElementById(`${prefix}-repeatpicture-btn`);
+
+  btnRepeat.style.display = 'none';
+  btnSave.style.display = 'none';
+  btnTake.style.display = 'block';
+
+  canvas.style.display = 'none';
+  video.style.display = 'block';
+}
+
+function saveImage(tipoDestino = 'usuario') {
+  const prefix = tipoDestino === 'extra' ? 'extra' : 'user';
+  const canvas = document.getElementById(`${prefix}-picture`);
+  const imageData = canvas.toDataURL('image/png');
+  const file = dataURLtoFile(imageData, 'captured_image.png');
+  const dataTransfer = new DataTransfer();
+  dataTransfer.items.add(file);
+
+  const fileInput = document.getElementById('foto-capturada');
+  const tipoInput = document.getElementById('tipo-captura');
+
+  if (fileInput && tipoInput) {
+    fileInput.files = dataTransfer.files;
+    tipoInput.value = tipoDestino;
+
+    // Vista previa (solo usuario)
+    if (tipoDestino === 'usuario') {
+      const previewImg = document.getElementById('user-preview-img');
+      if (previewImg) {
+        previewImg.src = imageData;
+      }
+    }
+
+    console.log(`📸 Imagen asignada correctamente a ${tipoDestino}`);
+  } else {
+    console.warn('❌ No se encontraron los inputs #foto-capturada o #tipo-captura');
+  }
+}
+
+
+
+function dataURLtoFile(dataUrl, filename) {
+  const arr = dataUrl.split(',');
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  const u8arr = new Uint8Array(bstr.length);
+  for (let i = 0; i < bstr.length; i++) {
+    u8arr[i] = bstr.charCodeAt(i);
+  }
+  return new File([u8arr], filename, { type: mime });
+}
+
+
+// EVENTOS DE BOTONES
+btncamAccess?.addEventListener('click', () => iniciarCamara('user'));
+btnExtra?.addEventListener('click', () => iniciarCamara('extra'));
+btnSaveUser?.addEventListener('click', () => saveImage('user-file'));
+
 
   function openSelect(btn) {
     btn.classList.toggle("open");

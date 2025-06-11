@@ -197,6 +197,7 @@ def access(request, code):
 
         descripcion = request.POST.get('descripcion')
         foto = request.FILES.get('foto')
+        foto_tipo = request.POST.get('foto_tipo', 'extra')
 
         try:
             with transaction.atomic():
@@ -228,7 +229,14 @@ def access(request, code):
                             extra_obj.salida = salida
                             extra_obj.save()
 
-                    if descripcion or foto:
+                    if foto and foto_tipo == 'usuario':
+                        if users.imagen:
+                            users.imagen.delete()
+                        extension = foto.name.split('.')[-1].lower()
+                        filename = f"{users.documento}.{extension}"
+                        foto.name = filename
+                        users.imagen.save(filename, foto, save=True)
+                    elif descripcion or foto:
                         Extras.objects.create(
                             descripcion=descripcion,
                             foto=foto,
@@ -269,7 +277,14 @@ def access(request, code):
                         extra.ingreso = ingreso
                         extra.save()
 
-                    if descripcion or foto:
+                    if foto and foto_tipo == 'usuario':
+                        if users.imagen:
+                            users.imagen.delete()
+                        extension = foto.name.split('.')[-1].lower()
+                        filename = f"{users.documento}.{extension}"
+                        foto.name = filename
+                        users.imagen.save(filename, foto, save=True)
+                    elif descripcion or foto:
                         Extras.objects.create(
                             descripcion=descripcion,
                             foto=foto,
@@ -292,7 +307,6 @@ def access(request, code):
         'ingreso': ingreso,
         'extras_ingreso': extras_ingreso,
     })
-
 #Registrar usuario
 def registeruser(request, code):
     rol = request.GET.get('rol') #Obtener rol a registrar por GET

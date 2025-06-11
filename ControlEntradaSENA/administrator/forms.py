@@ -26,7 +26,7 @@ class RegisterUser(ModelForm):
     rol_hide = forms.ModelChoiceField(queryset=Roles.objects.all(),widget=forms.HiddenInput())
     rol = forms.ModelChoiceField(queryset=Roles.objects.all(), widget=forms.Select(attrs={'class': 'form-select', 'disabled': True}), empty_label="Rol", label="Rol")
     ficha = forms.ModelChoiceField(queryset=Fichas.objects.all(), widget=forms.Select(attrs={'class': 'form-select'}), empty_label="Ficha", label="")
-    imagen = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control', 'id': 'user-file'}), label="Foto de perfil")
+    foto = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control', 'id': 'user-file'}), label="Foto de perfil")
 
     #Validacion de imagen   
     def clean_imagen(self):  # sourcery skip: extract-method

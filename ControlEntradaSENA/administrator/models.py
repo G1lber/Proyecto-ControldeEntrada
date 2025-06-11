@@ -30,7 +30,7 @@ class Dispositivos(models.Model):
     sn = models.CharField(db_column='SnDispositivo', unique=True, max_length=50)  # Field name made lowercase.
     tipo = models.ForeignKey('DispositivosTipo', models.DO_NOTHING, db_column='IdTipoDispositivo')  # Field name made lowercase.
     marca = models.ForeignKey('DispositivosMarca', models.DO_NOTHING, db_column='IdMarcaDispositivo')  # Field name made lowercase.
-    imagen = models.ImageField(db_column='ImagenDispositivo', upload_to="images/devices/", max_length=50, blank=True, null=True)  # Field name made lowercase.
+    imagen = models.ImageField(db_column='ImagenDispositivo', upload_to="devices/", max_length=50, blank=True, null=True)  # Field name made lowercase.
     documento = models.FileField(db_column='DocumentoDispositivo', upload_to="docs/devices/", max_length=50, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
@@ -230,7 +230,7 @@ class Vehiculos(models.Model):
     placa= models.CharField(db_column='PlacaVehiculo', unique=True, null=True, blank=True, max_length=7, default="000-000")  # Field name made lowercase.
     marca = models.ForeignKey('VehiculosMarca', models.DO_NOTHING, db_column='IdMarcaVehiculo')  # Field name made lowercase.
     modelo = models.CharField(db_column='ModeloVehiculo', null=True, blank=True, max_length=4, default=None)  # Field name made lowercase. This field type is a guess.
-    imagen = models.ImageField(db_column='ImagenVehiculo', upload_to="images/vehicles/", max_length=50, blank=True, null=True)  # Field name made lowercase.
+    imagen = models.ImageField(db_column='ImagenVehiculo', upload_to="vehicles/", max_length=50, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -271,7 +271,7 @@ class FichasXAprendiz(models.Model):
     
 class Extras(models.Model):
     descripcion = models.TextField(blank=True, null=True)
-    foto = models.ImageField(upload_to="images/extras/", max_length=100, blank=True, null=True)
+    foto = models.ImageField(upload_to="extras/", max_length=100, blank=True, null=True)
     fecha_registro = models.DateTimeField(auto_now_add=True)
 
     ingreso = models.ForeignKey(
