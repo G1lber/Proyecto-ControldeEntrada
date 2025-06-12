@@ -446,6 +446,7 @@
         const container = document.getElementById('extrasContainer');
         container.classList.toggle('d-none');
     });
+    history.replaceState(null, null, window.location.pathname);
 </script>
 
 {% endif %}

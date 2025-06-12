@@ -27,23 +27,10 @@
 </div>
 
 <script>
-  // Bloquea el botón atrás (esto funciona solo si no haces redirect antes)
-  history.pushState(null, null, location.href);
-  window.onpopstate = function () {
-    // Opcional: puedes redirigir a inicio o mostrar alerta
-    alert("No puedes volver atrás");
-    history.go(1);
-  };
-
-  // Si se viene del historial (tipo 'back'), forzar reload
-  if (performance.navigation.type === 2) {
-    location.href = "{% url 'index' %}";
-  }
-
   // Redirige automáticamente al index luego de un tiempo
   setTimeout(function() {
     window.location.href = "{% url 'index' %}";
-  }, 1000);
+  }, 500);
 </script>
 
 

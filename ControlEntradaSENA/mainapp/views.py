@@ -389,7 +389,8 @@ def registerdevice(request, code):
     return render(request, 'register/registerdevice.html', {
         'title': 'Registrar Dispositivo',
         'form': form,
-        'doc': doc
+        'doc': doc,
+        'users': users
     })
 
 
