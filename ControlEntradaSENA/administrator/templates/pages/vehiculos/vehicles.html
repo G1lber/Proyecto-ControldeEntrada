@@ -40,7 +40,6 @@
           {% endif %}
           <div class="card-body">
               <!-- Card Tabla-->
-              <div class="card card-table">
                   <!-- Seccion Btn de Accion -->
                   <div class="card-table-buttons">                    
                     <!-- Btn Eliminar -->
@@ -52,7 +51,8 @@
                     </button>
                          
                   </div>
-                  <table class="table table-striped">
+                  <div class="table-responsive" >
+                      <table class="table table-striped table-hover">
                       <thead>
                         <tr>
                           <th scope="col">Propietario</th>
@@ -110,7 +110,9 @@
                         {% endfor %}
                       </tbody>
                   </table>
-              </div>
+                  </div>
+                  
+              
             </div>
         </section>
         <!-- Modal -->

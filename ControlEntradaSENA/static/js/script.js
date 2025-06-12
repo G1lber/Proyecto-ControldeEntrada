@@ -387,9 +387,9 @@ function saveImage(tipoDestino = 'usuario') {
       }
     }
 
-    console.log(`📸 Imagen asignada correctamente a ${tipoDestino}`);
+    console.log(`Imagen asignada correctamente a ${tipoDestino}`);
   } else {
-    console.warn('❌ No se encontraron los inputs #foto-capturada o #tipo-captura');
+    console.warn('No se encontraron los inputs #foto-capturada o #tipo-captura');
   }
 }
 
@@ -410,7 +410,7 @@ function dataURLtoFile(dataUrl, filename) {
 // EVENTOS DE BOTONES
 btncamAccess?.addEventListener('click', () => iniciarCamara('user'));
 btnExtra?.addEventListener('click', () => iniciarCamara('extra'));
-btnSaveUser?.addEventListener('click', () => saveImage('user-file'));
+
 
 
   function openSelect(btn) {

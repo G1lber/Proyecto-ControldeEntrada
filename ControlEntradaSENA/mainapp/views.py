@@ -52,7 +52,8 @@ def index(request):
     if 'code' in request.GET:
         code = request.GET.get('code')
         form = ExtrasForm(request.POST or None, request.FILES or None)
-
+        if code =="" or code is None: 
+            return redirect('index')
         try:
             user = get_object_or_404(Usuarios, documento=code)
 
@@ -277,6 +278,7 @@ def access(request, code):
                         extra.ingreso = ingreso
                         extra.save()
 
+                    # FOTO USUARIO
                     if foto and foto_tipo == 'usuario':
                         if users.imagen:
                             users.imagen.delete()
@@ -284,7 +286,9 @@ def access(request, code):
                         filename = f"{users.documento}.{extension}"
                         foto.name = filename
                         users.imagen.save(filename, foto, save=True)
-                    elif descripcion or foto:
+
+                    # FOTO EXTRA
+                    elif (foto and foto_tipo == 'extra') or descripcion:
                         Extras.objects.create(
                             descripcion=descripcion,
                             foto=foto,

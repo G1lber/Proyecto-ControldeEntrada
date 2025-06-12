@@ -176,7 +176,7 @@
 
     <header>
         <!-- Titulo -->
-        <h1 class="header-title">
+        <h1 class="header-title2">
             {% if not salida %}
                 Ingreso
             {% elif salida %}
@@ -418,6 +418,8 @@
 
             </div>            
         </div>
+            <!-- Modal Camara -->
+    {% include 'includes/modalCamara3.html'%}
         <footer class="card-footer">
             <div class="row w-100 text-center">
                 <div class="col">
@@ -438,8 +440,7 @@
         </footer>
     </section>
 </article>
-    <!-- Modal Camara -->
-    {% include 'includes/modalCamara3.html'%}
+
  {% comment %} EXTRAS {% endcomment %}
 <script>
     document.getElementById('toggleExtrasBtn').addEventListener('click', function () {

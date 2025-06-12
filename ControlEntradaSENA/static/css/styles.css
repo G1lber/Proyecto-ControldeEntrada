@@ -77,6 +77,20 @@ header.layout .header-admin img {
     width: 100%;
 }
 
+.header-title {
+    position: absolute;
+    top: 0;
+    left: 20px;
+    height: var(--header-height); /* consistente con el header */
+    display: flex;
+    align-items: center;
+}
+
+.header-title img {
+    height: 40px; /* 👈 Tamaño controlado */
+    width: auto;
+}
+
 /*=====================================================================================*/
 
 /*
@@ -214,7 +228,7 @@ header.layout .header-admin img {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 85%;
+    width: 90%;
     height: auto;
     margin: 60px auto;
     padding: 30px 50px;
@@ -418,7 +432,11 @@ header.layout .header-admin img {
     color: var(--text-color);
     font-weight: bolder;
 }
-
+#ingreso header .header-title2 {
+    text-align: center;
+    color: var(--text-color);
+    font-weight: bolder;
+}
 #ingreso .card .card-footer>* {
     margin: 0 40px;
 }
@@ -1239,6 +1257,7 @@ body {
 
 /* ESTILOS TABLA */
 .card-table {
+    
     overflow-x: auto;
     overflow-y: auto;
     justify-content: normal;
@@ -2097,5 +2116,142 @@ article#ingreso {
         max-width: 60px !important;
         margin: 0 auto;
         display: block;
+    }
+}
+/* Contenedor de tabla con scroll vertical */
+.table-responsive {
+    max-height: 600px;
+    overflow-y: auto;
+    overflow-x: auto;
+    display: block;
+    width: 100%;
+}
+
+/* Sticky para encabezado */
+.table thead th {
+    position: sticky;
+    top: 0;
+    background-color: white; /* Necesario para evitar transparencia al hacer sticky */
+    z-index: 2;
+}
+
+/* Estilos generales para tabla */
+.table {
+    width: 100% !important;
+    table-layout: auto;
+    border-collapse: collapse;
+    white-space: nowrap;
+}
+
+/* Estilo de celdas */
+.table th,
+.table td {
+    padding: 12px 16px;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+/* Hover visible */
+.table tbody tr:hover {
+    background-color: #f1f1f1;
+    transition: background-color 0.2s ease-in-out;
+}
+
+/* Centrado y altura normal para pantallas grandes */
+#login {
+    min-height: 50vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+ 
+
+/* LOGIN AJUSTES  */
+
+/* Tarjeta principal */
+#login .card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 30px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+    width: 100%;
+    max-height: none; 
+    overflow: visible;
+    margin: 40px 0; 
+    border-radius: 12px;
+    background-color: white;
+}
+
+/* Cuerpo: imagen y formulario */
+#login .card-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+}
+
+/* Imagen */
+#login .card-image {
+    flex: 1;
+    max-width: 50%;
+    padding-right: 20px;
+}
+
+#login .card-image img {
+    width: 100%;
+    height: auto;
+}
+
+/* Formulario */
+#login .card-form {
+    flex: 1;
+    max-width: 50%;
+    padding-left: 20px;
+}
+
+/* Botón de volver */
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+}
+
+/* RESPONSIVE: ajustes para pantallas pequeñas */
+@media (max-width: 768px) {
+    #login {
+        align-items: flex-start; /* Ya no centramos verticalmente */
+        padding-top: 40px;
+        padding-bottom: 40px;
+        overflow-y: auto;
+    }
+
+    #login .card {
+        padding: 20px 15px;
+        margin: 0;
+    }
+
+    #login .card-body {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #login .card-image,
+    #login .card-form {
+        max-width: 100%;
+        padding: 0;
+    }
+
+    .back-button {
+        position: relative;
+        margin-bottom: 10px;
+        top: 0;
+        left: 0;
     }
 }
