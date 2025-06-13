@@ -174,6 +174,12 @@ def idispositivos(request):
     })
 #Ingreso y salida
 
+
+from django.shortcuts import render, get_object_or_404
+from django.db import transaction
+from django.utils.timezone import now
+from django.core.files.storage import default_storage
+
 def access(request, code):
     users = get_object_or_404(Usuarios, documento=code)
     date = now().date()
@@ -196,9 +202,9 @@ def access(request, code):
         dispositivo2 = dispositivos[1] if len(dispositivos) > 1 else None
         dispositivo3 = dispositivos[2] if len(dispositivos) > 2 else None
 
-        descripcion = request.POST.get('descripcion')
-        foto = request.FILES.get('foto')
-        foto_tipo = request.POST.get('foto_tipo', 'extra')
+        descripcion = request.POST.get('descripcion', '').strip()
+        foto_usuario = request.FILES.get('foto_usuario')
+        foto_extra = request.FILES.get('foto_extra')
 
         try:
             with transaction.atomic():
@@ -215,6 +221,7 @@ def access(request, code):
                     )
                     status = "Salida"
 
+                    # Cambiar estado de los dispositivos
                     for d in [dispositivo, dispositivo2, dispositivo3]:
                         if d:
                             EstadoDispositivo.objects.update_or_create(
@@ -222,6 +229,7 @@ def access(request, code):
                                 defaults={'estado': 'fuera'}
                             )
 
+                    # Mover extras pendientes a salida
                     extras_ids = request.POST.getlist('extras_to_move')
                     for extra_id in extras_ids:
                         extra_obj = Extras.objects.filter(id=extra_id, ingreso=ingreso, salida__isnull=True).first()
@@ -230,17 +238,20 @@ def access(request, code):
                             extra_obj.salida = salida
                             extra_obj.save()
 
-                    if foto and foto_tipo == 'usuario':
+                    # Guardar imagen de usuario
+                    if foto_usuario:
                         if users.imagen:
                             users.imagen.delete()
-                        extension = foto.name.split('.')[-1].lower()
+                        extension = foto_usuario.name.split('.')[-1].lower()
                         filename = f"{users.documento}.{extension}"
-                        foto.name = filename
-                        users.imagen.save(filename, foto, save=True)
-                    elif descripcion or foto:
+                        foto_usuario.name = filename
+                        users.imagen.save(filename, foto_usuario, save=True)
+
+                    # Guardar extra si hay descripción o imagen
+                    if descripcion or foto_extra:
                         Extras.objects.create(
                             descripcion=descripcion,
-                            foto=foto,
+                            foto=foto_extra,
                             salida=salida
                         )
 
@@ -263,6 +274,7 @@ def access(request, code):
                     )
                     status = "Ingreso"
 
+                    # Cambiar estado de dispositivos
                     for d in [dispositivo, dispositivo2, dispositivo3]:
                         if d:
                             EstadoDispositivo.objects.update_or_create(
@@ -270,6 +282,7 @@ def access(request, code):
                                 defaults={'estado': 'dentro'}
                             )
 
+                    # Reasignar extras pendientes
                     extras_pendientes = Extras.objects.filter(
                         salida__isnull=True,
                         ingreso__usuario=users
@@ -278,35 +291,29 @@ def access(request, code):
                         extra.ingreso = ingreso
                         extra.save()
 
-                    # FOTO USUARIO
-                    if foto and foto_tipo == 'usuario':
+                    # Guardar imagen de usuario
+                    if foto_usuario:
                         if users.imagen:
                             users.imagen.delete()
-                        extension = foto.name.split('.')[-1].lower()
+                        extension = foto_usuario.name.split('.')[-1].lower()
                         filename = f"{users.documento}.{extension}"
-                        foto.name = filename
-                        users.imagen.save(filename, foto, save=True)
+                        foto_usuario.name = filename
+                        users.imagen.save(filename, foto_usuario, save=True)
 
-                    # FOTO EXTRA
-                    elif (foto and foto_tipo == 'extra') or descripcion:
-                        if foto and foto_tipo == 'extra':
-                            extension = foto.name.split('.')[-1].lower()
-
-                            # Contar cuántos extras ya tiene este usuario
+                    # Guardar extra si hay descripción o imagen
+                    if descripcion or foto_extra:
+                        if foto_extra:
+                            extension = foto_extra.name.split('.')[-1].lower()
                             cantidad_extras = Extras.objects.filter(ingreso__usuario=users).count()
                             numero_extra = cantidad_extras + 1
-
-                            # Construir nombre de archivo único
                             filename = f"extras/extra_{users.documento}_{numero_extra}.{extension}"
-
-                            # Eliminar si por alguna razón ya existe
                             if default_storage.exists(filename):
                                 default_storage.delete(filename)
+                            foto_extra.name = filename
 
-                            foto.name = filename
                         Extras.objects.create(
                             descripcion=descripcion,
-                            foto=foto,
+                            foto=foto_extra,
                             ingreso=ingreso
                         )
 
@@ -326,6 +333,7 @@ def access(request, code):
         'ingreso': ingreso,
         'extras_ingreso': extras_ingreso,
     })
+
 #Registrar usuario
 def registeruser(request, code):
     rol = request.GET.get('rol') #Obtener rol a registrar por GET

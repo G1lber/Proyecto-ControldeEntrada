@@ -450,8 +450,12 @@
                     <input id="vehicle" type="hidden" name="vehicle" value="">
                     <input id="devices" type="hidden" name="devices" value="">      
                     <!-- INPUT ÚNICO para la imagen (ya sea usuario o extra) -->
-                    <input type="file" name="foto" id="foto-capturada" style="display: none">
-                    <input type="hidden" name="foto_tipo" id="tipo-captura" value="">
+                    <!-- Campo para guardar foto del usuario -->
+                    <input type="file" name="foto_usuario" id="foto-usuario" style="display: none;">
+
+                    <!-- Campo para guardar foto del extra -->
+                    <input type="file" name="foto_extra" id="foto-extra" style="display: none;">
+
 
                     <button type="submit" class="btn accept">{% if salida %}Salir{% else %}Ingresar{% endif %}</button>
                 </form> 
@@ -492,32 +496,43 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const descripcionInput = document.querySelector('textarea[name="descripcion"]');
-    const fotoInput = document.querySelector('input[name="foto"]');
+    const fileExtraInput = document.getElementById('foto-extra');
     const form = document.getElementById('form-access');
     const fotoErrorAlert = document.getElementById('foto-error-alert');
 
-    if (descripcionInput && fotoInput && form) {
+    if (descripcionInput && fileExtraInput && form) {
         form.addEventListener('submit', function (e) {
             const descripcionTieneTexto = descripcionInput.value.trim() !== '';
-            const hayFotoCargada = fotoInput.files && fotoInput.files.length > 0;
+            const hayFotoExtra = fileExtraInput.files && fileExtraInput.files.length > 0;
 
-            // ✅ Si hay foto pero no hay descripción, mostrar error y evitar envío
-            if (hayFotoCargada && !descripcionTieneTexto) {
-                e.preventDefault(); // Bloquear envío
+            let mostrarError = false;
 
-                // Mostrar alerta
+            // 🔐 Validar solo para "extras"
+            if (descripcionTieneTexto && !hayFotoExtra) {
+                mostrarError = true;
+            }
+
+            if (!descripcionTieneTexto && hayFotoExtra) {
+                mostrarError = true;
+            }
+
+            if (mostrarError) {
+                e.preventDefault();
                 fotoErrorAlert.classList.remove('d-none');
-
-                // Enfocar alerta
                 fotoErrorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
             } else {
-                // Ocultar alerta si todo está bien
                 fotoErrorAlert.classList.add('d-none');
             }
         });
     }
 });
 </script>
+
+
+
+
+
+
 
 
 

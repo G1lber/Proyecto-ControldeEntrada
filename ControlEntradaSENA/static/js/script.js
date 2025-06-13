@@ -272,7 +272,7 @@ const btncamAccess = document.getElementById('user-picture-btn');
 const btnExtra = document.getElementById('extra-btn');
 const btnSaveUser = document.getElementById('user-savepicture-btn');
 
-//CAMARA
+// CAMARA
 function iniciarCamara(tipo = 'user') {
   const prefix = tipo === 'extra' ? 'extra' : 'user';
   const video = document.getElementById(`${prefix}-cam`);
@@ -280,7 +280,7 @@ function iniciarCamara(tipo = 'user') {
   const btnTake = document.getElementById(`${prefix}-takepicture-btn`);
   const btnSave = document.getElementById(`${prefix}-savepicture-btn`);
   const btnRepeat = document.getElementById(`${prefix}-repeatpicture-btn`);
-  const contadorElemento = document.getElementById(`contador-${prefix}` || 'contador');
+  const contadorElemento = document.getElementById(`contador-${prefix}`);
 
   navigator.mediaDevices.getUserMedia({ video: true })
     .then(function (stream) {
@@ -288,8 +288,8 @@ function iniciarCamara(tipo = 'user') {
       video.play();
 
       const videoTrack = stream.getVideoTracks()[0];
-
       const modal = document.getElementById(`camaraModal${tipo === 'extra' ? 'Extra' : ''}`);
+      
       modal.addEventListener('hidden.bs.modal', function () {
         videoTrack.stop();
         video.srcObject = null;
@@ -343,12 +343,8 @@ function captureImage(tipo = 'user') {
   btnTake.style.display = 'none';
   btnRepeat.style.display = 'block';
 
-  // ✅ Mostrar botón de guardar tanto en 'user' como en 'extra'
   btnSave.style.display = 'block';
 }
-
-
-
 
 function repeatImage(tipo = 'user') {
   const prefix = tipo === 'extra' ? 'extra' : 'user';
@@ -375,12 +371,13 @@ function saveImage(tipoDestino = 'usuario') {
   const dataTransfer = new DataTransfer();
   dataTransfer.items.add(file);
 
-  const fileInput = document.getElementById('foto-capturada');
-  const tipoInput = document.getElementById('tipo-captura');
+  // ✅ Usamos inputs separados
+  const fileInput = tipoDestino === 'extra'
+    ? document.getElementById('foto-extra')
+    : document.getElementById('foto-usuario');
 
-  if (fileInput && tipoInput) {
+  if (fileInput) {
     fileInput.files = dataTransfer.files;
-    tipoInput.value = tipoDestino;
 
     if (tipoDestino === 'usuario') {
       const previewImg = document.getElementById('user-preview-img');
@@ -390,19 +387,16 @@ function saveImage(tipoDestino = 'usuario') {
     }
 
     console.log(`📸 Imagen asignada correctamente como ${tipoDestino}`);
-    // Mostrar nombre del archivo o mensaje
-  const fileLabel = document.getElementById(`${prefix}-file-label`);
-  if (fileLabel) {
-    fileLabel.textContent = ' Foto cargada correctamente';
-    fileLabel.classList.add('text-success');
-  }
+
+    const fileLabel = document.getElementById(`${prefix}-file-label`);
+    if (fileLabel) {
+      fileLabel.textContent = ' Foto cargada correctamente';
+      fileLabel.classList.add('text-success');
+    }
   } else {
-    console.warn('⚠️ No se encontró #foto-capturada o #tipo-captura');
+    console.warn('⚠️ No se encontró input file de tipo ' + tipoDestino);
   }
 }
-
-
-
 
 function dataURLtoFile(dataUrl, filename) {
   const arr = dataUrl.split(',');
@@ -415,11 +409,9 @@ function dataURLtoFile(dataUrl, filename) {
   return new File([u8arr], filename, { type: mime });
 }
 
-
 // EVENTOS DE BOTONES
 btncamAccess?.addEventListener('click', () => iniciarCamara('user'));
 btnExtra?.addEventListener('click', () => iniciarCamara('extra'));
-
 
 
   function openSelect(btn) {
