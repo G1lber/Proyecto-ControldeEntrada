@@ -175,10 +175,12 @@ def idispositivos(request):
 #Ingreso y salida
 
 
-from django.shortcuts import render, get_object_or_404
-from django.db import transaction
+
+from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.timezone import now
+from django.db import transaction
 from django.core.files.storage import default_storage
+import json
 
 def access(request, code):
     users = get_object_or_404(Usuarios, documento=code)
@@ -206,6 +208,15 @@ def access(request, code):
         foto_usuario = request.FILES.get('foto_usuario')
         foto_extra = request.FILES.get('foto_extra')
 
+        # ✅ Leer JSON de extras editados
+        extras_editados = []
+        extras_editados_json = request.POST.get('extras_editados_json')
+        if extras_editados_json:
+            try:
+                extras_editados = json.loads(extras_editados_json)
+            except json.JSONDecodeError:
+                print("⚠️ Error al decodificar extras_editados_json")
+
         try:
             with transaction.atomic():
                 if ingreso:
@@ -221,7 +232,6 @@ def access(request, code):
                     )
                     status = "Salida"
 
-                    # Cambiar estado de los dispositivos
                     for d in [dispositivo, dispositivo2, dispositivo3]:
                         if d:
                             EstadoDispositivo.objects.update_or_create(
@@ -229,7 +239,6 @@ def access(request, code):
                                 defaults={'estado': 'fuera'}
                             )
 
-                    # Mover extras pendientes a salida
                     extras_ids = request.POST.getlist('extras_to_move')
                     for extra_id in extras_ids:
                         extra_obj = Extras.objects.filter(id=extra_id, ingreso=ingreso, salida__isnull=True).first()
@@ -238,7 +247,7 @@ def access(request, code):
                             extra_obj.salida = salida
                             extra_obj.save()
 
-                    # Guardar imagen de usuario
+                    # Foto de usuario
                     if foto_usuario:
                         if users.imagen:
                             users.imagen.delete()
@@ -247,7 +256,22 @@ def access(request, code):
                         foto_usuario.name = filename
                         users.imagen.save(filename, foto_usuario, save=True)
 
-                    # Guardar extra si hay descripción o imagen
+                    # ✅ Editar extras existentes
+                    for edit in extras_editados:
+                        extra_id = edit.get("id")
+                        nueva_descripcion = edit.get("descripcion", "").strip()
+                        extra = Extras.objects.filter(id=extra_id, ingreso=ingreso, salida__isnull=True).first()
+                        if extra:
+                            if nueva_descripcion:
+                                extra.descripcion = nueva_descripcion
+                            nueva_foto = request.FILES.get(f"foto_extra_{extra_id}")
+                            if nueva_foto:
+                                if extra.foto:
+                                    extra.foto.delete()
+                                extra.foto = nueva_foto
+                            extra.save()
+
+                    # Nuevo extra
                     if descripcion or foto_extra:
                         Extras.objects.create(
                             descripcion=descripcion,
@@ -274,7 +298,6 @@ def access(request, code):
                     )
                     status = "Ingreso"
 
-                    # Cambiar estado de dispositivos
                     for d in [dispositivo, dispositivo2, dispositivo3]:
                         if d:
                             EstadoDispositivo.objects.update_or_create(
@@ -282,7 +305,6 @@ def access(request, code):
                                 defaults={'estado': 'dentro'}
                             )
 
-                    # Reasignar extras pendientes
                     extras_pendientes = Extras.objects.filter(
                         salida__isnull=True,
                         ingreso__usuario=users
@@ -291,7 +313,7 @@ def access(request, code):
                         extra.ingreso = ingreso
                         extra.save()
 
-                    # Guardar imagen de usuario
+                    # Foto de usuario
                     if foto_usuario:
                         if users.imagen:
                             users.imagen.delete()
@@ -300,7 +322,28 @@ def access(request, code):
                         foto_usuario.name = filename
                         users.imagen.save(filename, foto_usuario, save=True)
 
-                    # Guardar extra si hay descripción o imagen
+                    # ✅ Editar extras existentes
+                    for edit in extras_editados:
+                        extra_id = edit.get("id")
+                        nueva_descripcion = edit.get("descripcion", "").strip()
+                        extra = Extras.objects.filter(id=extra_id, ingreso=ingreso, salida__isnull=True).first()
+                        if extra:
+                            if nueva_descripcion:
+                                extra.descripcion = nueva_descripcion
+                            nueva_foto = request.FILES.get(f"foto_extra_{extra_id}")
+                            if nueva_foto:
+                                if extra.foto:
+                                    extra.foto.delete()
+                                extension = nueva_foto.name.split('.')[-1].lower()
+                                filename = f"extras/extra_{users.documento}_{extra.id}.{extension}"
+                                if default_storage.exists(filename):
+                                    default_storage.delete(filename)
+                                nueva_foto.name = filename
+                                extra.foto = nueva_foto
+
+                            extra.save()
+
+                    # Nuevo extra
                     if descripcion or foto_extra:
                         if foto_extra:
                             extension = foto_extra.name.split('.')[-1].lower()

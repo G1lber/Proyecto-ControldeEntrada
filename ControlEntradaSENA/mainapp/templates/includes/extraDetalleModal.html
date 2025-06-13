@@ -1,0 +1,42 @@
+<!-- Modal para ver/editar extra -->
+<div class="modal fade" id="extraDetalleModal" tabindex="-1" aria-labelledby="extraDetalleLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 rounded-3">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="extraDetalleLabel">Detalle del Extra</h5>
+        <button type="button" class="btn-close bg-light" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+
+      <div class="modal-body">
+        <input type="hidden" id="editExtraId">
+
+        <!-- Descripción editable -->
+        <div class="mb-3">
+          <label for="editDescripcion" class="form-label">Descripción</label>
+          <textarea id="editDescripcion" class="form-control" rows="3"></textarea>
+        </div>
+
+        <!-- Foto actual + cámara -->
+        <div class="mb-3">
+        <label class="form-label">Foto actual</label>
+        <div class="text-center position-relative">
+            <img id="editFotoPreview" class="img-fluid rounded border" style="max-height: 300px;">
+            <video id="editExtraCam" autoplay playsinline class="rounded mt-3" style="max-width: 100%; display: none;"></video>
+            <canvas id="editExtraCanvas" class="rounded mt-3" style="max-width: 100%; display: none;"></canvas>
+        </div>
+
+        <div class="btn-zone mt-3 d-flex flex-wrap justify-content-center gap-3">
+            <button type="button" class="btn btn-green" id="startExtraCamera">Cambiar foto</button>
+            <button type="button" class="btn btn-green" id="takeExtraPhoto" style="display: none;">Tomar foto</button>
+            <button type="button" class="btn btn-green" id="repeatExtraPhoto" style="display: none;">Repetir</button>
+        </div>
+        </div>
+
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-green" id="guardarCambiosExtra">Guardar cambios</button>
+      </div>
+    </div>
+  </div>
+</div>

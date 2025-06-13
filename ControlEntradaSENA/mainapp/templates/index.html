@@ -424,10 +424,17 @@
                                 <div class="extra-info">
                                     <p class="mb-0 fw-semibold text-dark">{{ extra.descripcion }}</p>
                                     {# Botón futuro para modal (opcional) #}
-                         
-                                    <button type="button" class="btn btn-link p-0 text-success" data-bs-toggle="modal" data-bs-target="#modalExtra{{ extra.id }}">
-                                        Ver detalle
-                                    </button>  
+                        
+                                    <button type="button"
+                                            class="btn btn-link text-success ver-detalle-btn"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#extraDetalleModal"
+                                            data-id="{{ extra.id }}"
+                                            data-descripcion="{{ extra.descripcion }}"
+                                            data-foto="{{ extra.foto.url }}">
+                                    Ver detalle 
+                                    </button>
+
 
                                 </div>
                             </div>
@@ -437,6 +444,8 @@
                 </div>
             </div>            
         </div>
+                    <!-- Modal extraEdit -->
+    
             <!-- Modal Camara -->
     {% include 'includes/modalCamara3.html'%}
         <footer class="card-footer">
@@ -456,11 +465,15 @@
                     <!-- Campo para guardar foto del extra -->
                     <input type="file" name="foto_extra" id="foto-extra" style="display: none;">
 
+                    <input type="hidden" name="extras_editados_json" id="extras_editados_json">
+                    <input type="file" name="foto_extra_{{ extra.id }}" style="display: none;">
+
 
                     <button type="submit" class="btn accept">{% if salida %}Salir{% else %}Ingresar{% endif %}</button>
                 </form> 
             </div>                          
         </footer>
+        {% include 'includes/extraDetalleModal.html'%}
     </section>
 </article>
 
@@ -528,7 +541,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
-
+    <script src="{% static 'js/modalExtraEdit.js' %}"></script>
 
 
 
