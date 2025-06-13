@@ -334,6 +334,8 @@ function captureImage(tipo = 'user') {
   const btnSave = document.getElementById(`${prefix}-savepicture-btn`);
   const btnRepeat = document.getElementById(`${prefix}-repeatpicture-btn`);
 
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
   context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
   canvas.style.display = 'block';
@@ -341,12 +343,12 @@ function captureImage(tipo = 'user') {
   btnTake.style.display = 'none';
   btnRepeat.style.display = 'block';
 
-  if (tipo === 'extra') {
-    saveImage('id_extra');
-  } else {
-    btnSave.style.display = 'block'; // espera clic en guardar
-  }
+  // ✅ Mostrar botón de guardar tanto en 'user' como en 'extra'
+  btnSave.style.display = 'block';
 }
+
+
+
 
 function repeatImage(tipo = 'user') {
   const prefix = tipo === 'extra' ? 'extra' : 'user';
@@ -369,6 +371,7 @@ function saveImage(tipoDestino = 'usuario') {
   const canvas = document.getElementById(`${prefix}-picture`);
   const imageData = canvas.toDataURL('image/png');
   const file = dataURLtoFile(imageData, 'captured_image.png');
+
   const dataTransfer = new DataTransfer();
   dataTransfer.items.add(file);
 
@@ -379,7 +382,6 @@ function saveImage(tipoDestino = 'usuario') {
     fileInput.files = dataTransfer.files;
     tipoInput.value = tipoDestino;
 
-    // Vista previa (solo usuario)
     if (tipoDestino === 'usuario') {
       const previewImg = document.getElementById('user-preview-img');
       if (previewImg) {
@@ -387,11 +389,18 @@ function saveImage(tipoDestino = 'usuario') {
       }
     }
 
-    console.log(`Imagen asignada correctamente a ${tipoDestino}`);
+    console.log(`📸 Imagen asignada correctamente como ${tipoDestino}`);
+    // Mostrar nombre del archivo o mensaje
+  const fileLabel = document.getElementById(`${prefix}-file-label`);
+  if (fileLabel) {
+    fileLabel.textContent = ' Foto cargada correctamente';
+    fileLabel.classList.add('text-success');
+  }
   } else {
-    console.warn('No se encontraron los inputs #foto-capturada o #tipo-captura');
+    console.warn('⚠️ No se encontró #foto-capturada o #tipo-captura');
   }
 }
+
 
 
 

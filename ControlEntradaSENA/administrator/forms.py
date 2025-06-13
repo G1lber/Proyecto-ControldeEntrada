@@ -256,6 +256,14 @@ class ExtrasForm(forms.ModelForm):
         model = Extras
         fields = ['descripcion', 'foto']
         widgets = {
-            'descripcion': forms.TextInput(attrs={'class': 'form-control'}),
+            'descripcion': forms.Textarea(attrs={'class': 'form-control'}),
             'foto': forms.ClearableFileInput(attrs={'class': 'form-control', 'id': 'id_extra'}),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        descripcion = cleaned_data.get('descripcion')
+        foto = cleaned_data.get('foto')
+
+        if descripcion and not foto:
+            self.add_error('foto', 'Debe subir una foto si ha escrito una descripción.')

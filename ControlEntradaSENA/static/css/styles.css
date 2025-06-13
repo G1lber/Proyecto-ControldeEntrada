@@ -2255,3 +2255,219 @@ article#ingreso {
         left: 0;
     }
 }
+/*ESTILOS PARA EXTRA*/
+#extra-btn {
+    width: 60px;
+    height: 60px;
+    padding: 0;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+#extra-btn svg {
+    width: 36px;
+    height: 36px;
+}
+
+@media (max-width: 576px) {
+    #extra-btn {
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+    }
+
+    #extra-btn svg {
+        width: 28px;
+        height: 28px;
+    }
+}
+.extra-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.descripcion-extra {
+    flex: 1;
+}
+
+.descripcion-extra textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.btn-extra-foto {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#extra-btn {
+    width: 60px;
+    height: 60px;
+    padding: 0;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5px;
+}
+
+#extra-btn svg {
+    width: 36px;
+    height: 36px;
+}
+
+@media (max-width: 768px) {
+    .extra-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn-extra-foto {
+        align-items: flex-start;
+    }
+
+    #extra-btn {
+        width: 50px;
+        height: 50px;
+    }
+
+    #extra-btn svg {
+        width: 28px;
+        height: 28px;
+    }
+}
+.extras-toggle-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.extras-label {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.btn-extras-toggle {
+    background-color: white;
+    color: var(--bgcolor);
+    border: 2px solid var(--bgcolor);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s ease-in-out;
+    padding: 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.btn-extras-toggle:hover {
+    background-color: var(--bgcolor);
+    color: white;
+}
+
+
+/*Estilos tarjetas extra*/
+.shadow-sm:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+.extra-card {
+    padding: 15px;
+    align-items: flex-start;
+    min-height: 100px;
+    gap: 12px;
+    position: relative;
+    transition: box-shadow 0.3s ease;
+}
+
+.extra-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo checkbox */
+.extra-check {
+    margin-top: 4px;
+    width: 20px;
+    height: 20px;
+    accent-color: var(--bgcolor); /* hace que el check sea verde moderno */
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* En caso que accent-color no se aplique, fallback visual */
+.extra-check:checked {
+    background-color: var(--bgcolor);
+    border-color: var(--bgcolor);
+}
+
+/* Para evitar que el texto se pegue al borde */
+.extra-info {
+    word-break: break-word;
+    white-space: normal;
+    flex: 1;
+}
+
+/* === CAMARA MODAL EXTRAS === */
+#camaraModalExtra .modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 15px;
+}
+
+#camaraModalExtra video,
+#camaraModalExtra canvas {
+  width: 70%;
+  max-width: 500px;
+  border-radius: 20px;
+  margin-top: 20px;
+}
+
+#camaraModalExtra canvas {
+  display: none;
+}
+
+#camaraModalExtra .btn-zone {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+#camaraModalExtra .btn-picture {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 576px) {
+  #camaraModalExtra video,
+  #camaraModalExtra canvas {
+    width: 90%;
+    border-radius: 12px;
+  }
+
+  #camaraModalExtra .btn-picture {
+    width: 60px;
+    height: 60px;
+    font-size: 1.2rem;
+  }
+}
+

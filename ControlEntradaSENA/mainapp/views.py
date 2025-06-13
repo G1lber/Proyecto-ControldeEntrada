@@ -8,7 +8,7 @@ from datetime import datetime #Fecha y hora
 from django.db.models import Q, Subquery
 from django.utils.timezone import now
 from django.db import transaction
-
+from django.core.files.storage import default_storage
 
 
 def determinar_modo(user):
@@ -289,6 +289,21 @@ def access(request, code):
 
                     # FOTO EXTRA
                     elif (foto and foto_tipo == 'extra') or descripcion:
+                        if foto and foto_tipo == 'extra':
+                            extension = foto.name.split('.')[-1].lower()
+
+                            # Contar cuántos extras ya tiene este usuario
+                            cantidad_extras = Extras.objects.filter(ingreso__usuario=users).count()
+                            numero_extra = cantidad_extras + 1
+
+                            # Construir nombre de archivo único
+                            filename = f"extras/extra_{users.documento}_{numero_extra}.{extension}"
+
+                            # Eliminar si por alguna razón ya existe
+                            if default_storage.exists(filename):
+                                default_storage.delete(filename)
+
+                            foto.name = filename
                         Extras.objects.create(
                             descripcion=descripcion,
                             foto=foto,

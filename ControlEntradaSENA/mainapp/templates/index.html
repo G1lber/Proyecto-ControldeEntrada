@@ -356,66 +356,85 @@
 
                 </div>
                 <div class="row">
-                    <div class="col-12 text-center">
-                        <label for="extras" >Extras</label>
-                        <button id="toggleExtrasBtn" class="btn btn-outline-success btn-sm rounded-circle ms-2">
-                            &times;
+                    <div class="col-12 text-center extras-toggle-wrapper mb-3">
+                        <span class="extras-label">Extras</span>
+                        <button id="toggleExtrasBtn" class="btn-extras-toggle" title="Mostrar/Ocultar Extras">
+                            <!-- Icono + (por defecto visible al cargar) -->
+                            <svg id="iconPlus" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 1a.5.5 0 0 1 .5.5V7h5.5a.5.5 0 0 1 0 1H8.5v5.5a.5.5 0 0 1-1 0V8H2a.5.5 0 0 1 0-1h5.5V1.5A.5.5 0 0 1 8 1z"/>
+                            </svg>
+                            <!-- Icono X oculto inicialmente -->
+                            <svg id="iconX" style="display:none;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                            </svg>
                         </button>
                     </div>
-
                     <div id="extrasContainer" class="col-12 mt-3 d-none">
+                        {% for error in extra.foto.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                        <div id="foto-error-alert" class="alert alert-danger d-none" role="alert">
+                            Descripcion y foto necesarios para completar el registro de "Extras".
+                        </div>
+
                         <form id="form-access" method="POST" enctype="multipart/form-data" action="{% url 'access' code=users.documento %}">
                             {% csrf_token %}
                              <input type="hidden" name="modo" value="{{ status }}">
-                            <div class="form-group">
-                                {{ extra.descripcion.label_tag }}
-                                {{ extra.descripcion }}
-                                {% for error in extra.descripcion.errors %}
+                            <div class="form-group row extra-row">
+                                <div class="col descripcion-extra">
+                                    {{ extra.descripcion.label_tag }}
+                                    {{ extra.descripcion }}
+                                    {% for error in extra.descripcion.errors %}
                                     <div class="text-danger">{{ error }}</div>
-                                {% endfor %}
-                            </div>
-                            <div class="form-group">
-                                {{ extra.foto.label_tag }}
-                                {{ extra.foto }}
-                                <button class="btn btn-green" title="Tomar foto" type="button" id="extra-btn" data-bs-toggle="modal" data-bs-target="#camaraModalExtra">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="100%" fill="currentColor" class="bi bi-camera-fill" viewBox="0 0 16 16">
-                                        <path d="M10.5 8.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
-                                        <path d="M2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2zm.5 2a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zm9 2.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0z"/>
-                                    </svg>
-                                </button>
-
-                                {% for error in extra.foto.errors %}
-                                    <div class="text-danger">{{ error }}</div>
-                                {% endfor %}
+                                    {% endfor %}
+                                </div>
+                                <div class="col-auto btn-extra-foto">
+                                    {{ extra.foto.label_tag }}
+                                    <small id="extra-file-label" class="text-muted"></small>
+                                    <button class="btn btn-green" title="Tomar foto" type="button" id="extra-btn" data-bs-toggle="modal" data-bs-target="#camaraModalExtra">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="100%" fill="currentColor" class="bi bi-camera-fill" viewBox="0 0 16 16">
+                                            <path d="M10.5 8.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                                            <path d="M2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2zm.5 2a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zm9 2.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0z"/>
+                                        </svg> 
+                                    </button>
+                                </div>
                             </div>
 
                     </div>
                 </div>
-                <div class="row">
-                    {% if extras_ingreso %}
-                    <h3 class="text-lg font-semibold mt-4">Extras asociados al ingreso</h3>
-                    <p class="text-sm text-gray-600 mb-2">
+                <div class="row w-100">
+                {% if extras_ingreso %}
+                    <div class="col-12 mb-3">
+                    <h3 class="h5 text-success fw-bold">Extras asociados al ingreso</h3>
+                    <p class="text-muted mb-3">
                         {% if status == "Salida" %}
                         Selecciona los extras que deseas sacar a la salida:
                         {% else %}
                         Extras asociados a ingreso (anterior).
                         {% endif %}
                     </p>
-                    <div class="space-y-2">
-                        {% for extra in extras_ingreso %}
-                            <br>
-                            <label class="flex items-center space-x-2">
-                                {% if status == "Salida" %}
-                                <input type="checkbox" name="extras_to_move" value="{{ extra.id }}" class="form-checkbox">
-                                {% endif %}
-                                <span>{{ extra.descripcion }}</span>
-                            </label>
-                        {% endfor %}
                     </div>
-                    {% endif %}
+
+                    {% for extra in extras_ingreso %}
+                        <div class="col-12 col-sm-6 col-md-4 mb-3">
+                            <div class="extra-card d-flex bg-white rounded border shadow-sm w-100">
+                                {% if status == "Salida" %}
+                                <input type="checkbox" name="extras_to_move" value="{{ extra.id }}" class="extra-check">
+                                {% endif %}
+                                <div class="extra-info">
+                                    <p class="mb-0 fw-semibold text-dark">{{ extra.descripcion }}</p>
+                                    {# Botón futuro para modal (opcional) #}
+                         
+                                    <button type="button" class="btn btn-link p-0 text-success" data-bs-toggle="modal" data-bs-target="#modalExtra{{ extra.id }}">
+                                        Ver detalle
+                                    </button>  
+
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
                 </div>
-
-
             </div>            
         </div>
             <!-- Modal Camara -->
@@ -442,6 +461,8 @@
 </article>
 
  {% comment %} EXTRAS {% endcomment %}
+
+ {% comment %} para activar los extras {% endcomment %}
 <script>
     document.getElementById('toggleExtrasBtn').addEventListener('click', function () {
         const container = document.getElementById('extrasContainer');
@@ -449,6 +470,58 @@
     });
     history.replaceState(null, null, window.location.pathname);
 </script>
+{% comment %} estilos y animasciones de extras {% endcomment %}
+<script>
+  const toggleBtn = document.getElementById('toggleExtrasBtn');
+  const iconPlus = document.getElementById('iconPlus');
+  const iconX = document.getElementById('iconX');
+  const extrasContainer = document.getElementById('extrasContainer');
+
+  toggleBtn.addEventListener('click', () => {
+    const isOpen = extrasContainer.style.display === 'block';
+
+    // Alternar visibilidad del contenedor
+    extrasContainer.style.display = isOpen ? 'none' : 'block';
+
+    // Alternar iconos
+    iconPlus.style.display = isOpen ? 'inline' : 'none';
+    iconX.style.display = isOpen ? 'none' : 'inline';
+  });
+</script>
+{% comment %} volver obligatorio la foto de los extras {% endcomment %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const descripcionInput = document.querySelector('textarea[name="descripcion"]');
+    const fotoInput = document.querySelector('input[name="foto"]');
+    const form = document.getElementById('form-access');
+    const fotoErrorAlert = document.getElementById('foto-error-alert');
+
+    if (descripcionInput && fotoInput && form) {
+        form.addEventListener('submit', function (e) {
+            const descripcionTieneTexto = descripcionInput.value.trim() !== '';
+            const hayFotoCargada = fotoInput.files && fotoInput.files.length > 0;
+
+            // ✅ Si hay foto pero no hay descripción, mostrar error y evitar envío
+            if (hayFotoCargada && !descripcionTieneTexto) {
+                e.preventDefault(); // Bloquear envío
+
+                // Mostrar alerta
+                fotoErrorAlert.classList.remove('d-none');
+
+                // Enfocar alerta
+                fotoErrorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                // Ocultar alerta si todo está bien
+                fotoErrorAlert.classList.add('d-none');
+            }
+        });
+    }
+});
+</script>
+
+
+
+
 
 {% endif %}
 
