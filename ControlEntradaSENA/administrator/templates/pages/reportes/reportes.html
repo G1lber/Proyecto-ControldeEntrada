@@ -16,7 +16,7 @@
             </header>
             <button type="button" class="btn btn-green add">
                 <a class="links" href="{% url 'informe_estadistico' %}">
-                Reporte Estadistico
+                Reporte Estadístico
                 </a>
             </button>   
           <!-- Seccion Search -->
@@ -24,7 +24,7 @@
             <form method="get" class="input-box search">
               <input 
                 type="text" 
-                placeholder="Numero de documento " 
+                placeholder="Número de documento " 
                 id="search" 
                 name="search" 
                 value="{{ request.GET.search|default:'' }}"
@@ -72,7 +72,7 @@
                           <th scope="col">Num doc</th>
                           <th scope="col">Nombre</th>
                           <th scope="col">Rol</th>
-                          <th scope="col">Numero Ficha</th>
+                          <th scope="col">Número Ficha</th>
                           <th scope="col">Ingreso</th>
                           <th scope="col">Salida</th>
                         </tr>
