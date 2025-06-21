@@ -91,17 +91,29 @@ def users(request):
 
 #Registrar usuario
 def register_user(request, rol):
-    initial = {'rol': rol}
-    form = RegisterUser(request.POST or None, request.FILES or None, initial=initial)
+    initial_data = {'rol': rol, 'rol_hide': rol}
 
-    form.fields['centro'].required = False if rol == 3 else True
-    form.fields['ficha'].required = False if rol != 2 else True
-
+    # ✅ Inyectar imagen correctamente
     if request.method == 'POST':
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Se ha registrado correctamente")
-            return redirect('users')
+        request.FILES._mutable = True
+        if 'foto_usuario' in request.FILES:
+            request.FILES['imagen'] = request.FILES['foto_usuario']
+
+    # ✅ Siempre crear el form con usuario_actual
+    form = RegisterUser(
+        request.POST or None,
+        request.FILES or None,
+        initial=initial_data,
+        usuario_actual=request.user  # 🔥 clave
+    )
+
+    form.fields['centro'].required = rol != "3"
+    form.fields['ficha'].required = rol == "2"
+
+    if request.method == 'POST' and form.is_valid():
+        user = form.save()
+        messages.info(request, "success-user")
+        return redirect('index')
 
     return render(request, 'pages/usuarios/register.html', {
         'title': 'Registrar usuario',

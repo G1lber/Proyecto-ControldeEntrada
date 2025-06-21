@@ -15,53 +15,88 @@ class RegisterUser(ModelForm):
         model = Usuarios
         fields = "__all__"
 
-    #Campos
+    # Campos personalizados
     nombres = forms.CharField(widget=forms.TextInput(attrs={'maxlength': '50', 'autofocus': True}))
     apellidos = forms.CharField(widget=forms.TextInput(attrs={'maxlength': '50'}))
-    tipodocumento = forms.ModelChoiceField(queryset=DocumentoTipo.objects.all(), widget=forms.Select(attrs={'class': 'form-select'}), empty_label="Tipo de documento", label="")
-    documento = forms.CharField(widget=forms.TextInput(attrs={'onkeypress': 'return valideNumber(event)', 'readonly': True}))
-    telefono = forms.CharField(widget=forms.TextInput(attrs={'maxlength': '10', 'onkeypress': 'return valideNumber(event)'}))
-    correo = forms.EmailField(widget=forms.TextInput(attrs={'maxlength': '50','class': 'form-control'}))
-    centro = forms.ModelChoiceField(queryset=Centros.objects.all(), widget=forms.Select(attrs={'class': 'form-select'}), empty_label="Centro", label="")
-    rol_hide = forms.ModelChoiceField(queryset=Roles.objects.all(),widget=forms.HiddenInput())
-    rol = forms.ModelChoiceField(queryset=Roles.objects.all(), widget=forms.Select(attrs={'class': 'form-select', 'disabled': True}), empty_label="Rol", label="Rol")
-    ficha = forms.ModelChoiceField(queryset=Fichas.objects.all(), widget=forms.Select(attrs={'class': 'form-select'}), empty_label="Ficha", label="")
-    foto = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control', 'id': 'user-file'}), label="Foto de perfil")
+    tipodocumento = forms.ModelChoiceField(
+        queryset=DocumentoTipo.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        empty_label="Tipo de documento",
+        label=""
+    )
+    documento = forms.CharField(  # 🔧 sin readonly aquí
+        widget=forms.TextInput(attrs={
+            'onkeypress': 'return valideNumber(event)'
+        })
+    )
+    telefono = forms.CharField(widget=forms.TextInput(attrs={
+        'maxlength': '10',
+        'onkeypress': 'return valideNumber(event)'
+    }))
+    correo = forms.EmailField(widget=forms.TextInput(attrs={
+        'maxlength': '50',
+        'class': 'form-control'
+    }))
+    centro = forms.ModelChoiceField(
+        queryset=Centros.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        empty_label="Centro",
+        label=""
+    )
+    rol_hide = forms.ModelChoiceField(queryset=Roles.objects.all(), widget=forms.HiddenInput())
+    rol = forms.ModelChoiceField(
+        queryset=Roles.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-select', 'disabled': True}),
+        empty_label="Rol",
+        label="Rol"
+    )
+    ficha = forms.ModelChoiceField(
+        queryset=Fichas.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        empty_label="Ficha",
+        label=""
+    )
 
-    #Validacion de imagen   
-    def clean_imagen(self):  # sourcery skip: extract-method
-        imagen_form = self.cleaned_data.get('imagen', False)
-        imagen_instance = self.instance.imagen
-        imagen = imagen_form or imagen_instance
+    def __init__(self, *args, **kwargs):
+        self.usuario_actual = kwargs.pop('usuario_actual', None)  # ✅ extraer desde kwargs
+        super().__init__(*args, **kwargs)
 
-        documento_instance = self.instance.documento
+        # Solo permitir editar documento si es superusuario
+        if not (self.usuario_actual and self.usuario_actual.is_superuser):
+            self.fields['documento'].widget.attrs['readonly'] = True
+        else:
+            self.fields['documento'].widget.attrs.pop('readonly', None)
+
+    # ✅ Validación de imagen obligatoria y renombrada
+    def clean_imagen(self):
+        imagen_form = self.cleaned_data.get('imagen')
         documento_form = self.cleaned_data.get('documento')
+        documento_instance = self.instance.documento
 
-        if imagen:
-            # Verifica que la extensión del archivo sea .jpg, .png o jpeg
-            extension = imagen.name.split('.')[-1].lower()
-            if extension not in ['jpg', 'png', 'jpeg']:
-                raise ValidationError("El archivo debe estar en formato JPG o PNG.")    
-            # Elimina la imagen anterior del usuario
-            self.instance.imagen.delete()            
-            # Usa el valor del campo 'documento' del formulario si está presente, de lo contrario, usa el del instance
-            documento = documento_form or documento_instance            
-            # Genera el nombre del archivo de imagen y actualiza el atributo 'name' de la imagen
-            filename = f"{documento}.{extension}"
-            imagen.name = filename
+        if not imagen_form:
+            raise ValidationError("Este campo es obligatorio.")
 
-        return imagen
-    
-    #Validar nombre
+        extension = imagen_form.name.split('.')[-1].lower()
+        if extension not in ['jpg', 'png', 'jpeg']:
+            raise ValidationError("El archivo debe estar en formato JPG o PNG.")
+
+        if self.instance.imagen:
+            self.instance.imagen.delete()
+
+        documento = documento_form or documento_instance
+        filename = f"{documento}.{extension}"
+        imagen_form.name = filename
+
+        return imagen_form
+
+    # ✅ Validación de nombres y apellidos
     def clean_nombres(self):
         nombre = self.cleaned_data.get('nombres')
         return nombre.title()
-    
+
     def clean_apellidos(self):
         apellido = self.cleaned_data.get('apellidos')
         return apellido.title()
-        
-
 
 #Formulario para registro de dispositivo         
 class RegisterDevice(ModelForm):

@@ -190,8 +190,10 @@
                 <div class="form-group row">
                     <!-- Campo imagen -->
                     <div class="col-10">
-                        <label>{{form.imagen.label}}</label>
-                        {{form.imagen}}
+                        <label>Foto</label>
+                            <!-- Modal Camara -->
+                    {% include '../includes/modalCamara.html' %}
+                    <input class="form-control" type="file" name="foto_usuario" id="foto-usuario" >
                     </div>
                     <!-- Boton tomar foto --> 
                     <div class="col mt-4">
@@ -204,8 +206,7 @@
                     <button class="form-btn btn btn-primary" type="submit">Enviar</button>
                 </div>
             </form>
-            <!-- Modal Camara -->
-            {% include '../includes/modalCamara.html' %}
+
         </div>
     </section>
 </article>
