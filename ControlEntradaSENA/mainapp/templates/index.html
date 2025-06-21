@@ -45,10 +45,10 @@
                         <th scope="row">{{ingreso.idingreso}}</th>
                         <th>{{ingreso.fecha}}</th>
                         <th>{{ingreso.usuario}}</th>
-                        <th>{% if ingreso.dispositivo %}{{ingreso.dispositivo}}{% else %}Ninguno{% endif %}</th>
-                        <th>{% if ingreso.dispositivo2 %}{{ingreso.dispositivo2}}{% else %}Ninguno{% endif %}</th>
-                        <th>{% if ingreso.dispositivo3 %}{{ingreso.dispositivo3}}{% else %}Ninguno{% endif %}</th>
-                        <th>{% if ingreso.vehiculo %}{{ingreso.vehiculo}}{% else %}Ninguno{% endif %}</th>
+                        <th>{% if ingreso.dispositivo %}{{ingreso.dispositivo}}{% else %}Ningúno{% endif %}</th>
+                        <th>{% if ingreso.dispositivo2 %}{{ingreso.dispositivo2}}{% else %}Ningúno{% endif %}</th>
+                        <th>{% if ingreso.dispositivo3 %}{{ingreso.dispositivo3}}{% else %}Ningúno{% endif %}</th>
+                        <th>{% if ingreso.vehiculo %}{{ingreso.vehiculo}}{% else %}Ningúno{% endif %}</th>
                         <th>{{ingreso.horaingreso}}</th>
                       </tr>
                     {% endfor %}
@@ -97,10 +97,10 @@
                         <td>{{salida.fecha}}</td>
                         <td>{{salida.ingreso.idingreso}}</td>
                         <td>{{salida.ingreso.usuario}}</td>
-                        <td>{% if salida.dispositivo %}{{salida.dispositivo}}{% else %}Ninguno{% endif %}</td>
-                        <td>{% if salida.dispositivo %}{{salida.dispositivo2}}{% else %}Ninguno{% endif %}</td>
-                        <td>{% if salida.dispositivo %}{{salida.dispositivo3}}{% else %}Ninguno{% endif %}</td>
-                        <td>{% if salida.vehiculo %}{{salida.vehiculo}}{% else %}Ninguno{% endif %}</td>
+                        <td>{% if salida.dispositivo %}{{salida.dispositivo}}{% else %}Ningúno{% endif %}</td>
+                        <td>{% if salida.dispositivo %}{{salida.dispositivo2}}{% else %}Ningúno{% endif %}</td>
+                        <td>{% if salida.dispositivo %}{{salida.dispositivo3}}{% else %}Ningúno{% endif %}</td>
+                        <td>{% if salida.vehiculo %}{{salida.vehiculo}}{% else %}Ningúno{% endif %}</td>
                         <td>{{salida.ingreso.horaingreso}}</td>
                         <td>{{salida.horasalida}}</td>
                       </tr>
@@ -280,7 +280,7 @@
                             <div class="select-form vehicle">
                                 <!-- Select -->
                                 <div class="select-btn open">
-                                    {% if salida.vehiculo %}{{ salida.vehiculo }}{% else %}Ninguno{% endif %}
+                                    {% if salida.vehiculo %}{{ salida.vehiculo }}{% else %}Ningúno{% endif %}
                                 </div>      
                                 <!-- Item -->                  
                                 <input type="hidden" class="item-selected" value="{{salida.vehiculos.idvehiculo}}">
@@ -308,7 +308,7 @@
                                     </li>
                                     {% endfor %} 
                                 {% else %} 
-                                    <span class="item-text">Ningun vehiculo registrado</span>
+                                    <span class="item-text">Ningún vehiculo registrado</span>
                                 {% endif %}                                                          
                             </ul>
                         </div>
@@ -374,7 +374,7 @@
                             <div class="text-danger">{{ error }}</div>
                         {% endfor %}
                         <div id="foto-error-alert" class="alert alert-danger d-none" role="alert">
-                            Descripcion y foto necesarios para completar el registro de "Extras".
+                            Descripción y foto necesarios para completar el registro de "Extras".
                         </div>
 
                         <form id="form-access" method="POST" enctype="multipart/form-data" action="{% url 'access' code=users.documento %}">
