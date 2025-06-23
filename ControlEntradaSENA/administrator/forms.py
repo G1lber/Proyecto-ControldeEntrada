@@ -192,7 +192,7 @@ class RegisterVehicle(ModelForm):
         if tipo_vehiculo_id:
            self.fields['marca'].queryset = VehiculosMarca.objects.filter(tipo_id=tipo_vehiculo_id)
         else:
-            self.fields['marca'].queryset = VehiculosMarca.objects.none()
+            self.fields['marca'].queryset = VehiculosMarca.objects.all()
 
         # Reglas de roles
         if rol == 'instructor':
