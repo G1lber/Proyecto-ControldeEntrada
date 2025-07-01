@@ -86,160 +86,145 @@ if (registerAlert) {
 //Resolucion del dispositivo
 let pageWidth = window.innerWidth;
 let pageHeight = window.innerHeight;
+const contenedor = document.getElementById('contenedor');
+const teclado = contenedor ? (contenedor.dataset.teclado === 'true') : true;
 
-//Si se tiene la resolucion del totem
-if (pageWidth >= 1080 && pageHeight >= 1800) {
-  const keyboard = document.querySelector('.keyboard'); //Keyboard
-  let keys = document.querySelectorAll('.keys'); //Teclas
-  let letters = Array.from(keys).filter(key => !key.classList.contains("special_key") && !key.classList.contains("disabled")); //Letras
-  const inputs = document.querySelectorAll('input'); //Inputs
-  let activeInput = null; //Input activo
+if (teclado) {
+  //Si se tiene la resolucion del totem
+  if (pageWidth >= 420  && pageHeight >= 420) {
+    const keyboard = document.querySelector('.keyboard'); // Teclado
+    const keys = document.querySelectorAll('.keys'); // Todas las teclas
+    const letters = Array.from(keys).filter(key =>
+      !key.classList.contains("special_key") &&
+      !key.classList.contains("disabled")
+    ); // Solo letras
 
-  //Para cada input le agrego un evento click
-  inputs.forEach(input => {
-    input.addEventListener('click', function () {
-      activeInput = input; // Input actual
-      keyboard.classList.add('active'); //Abrir teclado
-    });
-    if (input.hasAttribute('autofocus')) { //Si tiene el atributo autofocus
-      keyboard.classList.add('active'); //Abrir teclado
-    }
-  });
+    const inputs = document.querySelectorAll('input'); // Inputs
+    let activeInput = null; // Input actualmente seleccionado
 
-  //Para cada key le agrego un evento click
-  keys.forEach(key => {
-    key.setAttribute('keyname', key.textContent); //Agrego el atributo keyname con el nombre de la tecla
-    if (!key.classList.contains("caps_lock_key") && !key.classList.contains("shift_left")) {
-      key.addEventListener('click', function () {
-        KeyClick(key, activeInput) //Funcion para agregar una letra al input
-      })
-    }
-  })
+    // Activar teclado al hacer clic en un input
+    inputs.forEach(input => {
+      input.addEventListener('click', function () {
+        activeInput = input;
+        keyboard.classList.add('active');
+      });
 
-  //Tecla enter
-  const enterKey = document.querySelector('.enter_key').addEventListener('click', function () {
-    EnterKey(activeInput);
-  });
-
-  //Tecla backspace
-  const backspaceKey = document.querySelector('.backspace_key')
-  backspaceKey.addEventListener('mousedown', function () {//Si se mantiene presionada la tecla
-    BackspaceKeyDown(activeInput)
-  });
-
-  backspaceKey.addEventListener('mouseup', function () {//Si se suelta la tecla
-    BackspaceKeyUp(activeInput);
-  });
-
-  //Tecla espacio
-  const spaceKey = document.querySelector('.space_key').addEventListener('click', function () {
-    SpaceKey(activeInput);
-  });
-
-  //Tecla Bloq mayus
-  const caps_lock_key = document.querySelector('.caps_lock_key')
-  caps_lock_key.addEventListener('click', function () {
-    BloqMayusKey();
-  });
-
-  //Tecla shift
-  const shift_left = document.querySelector('.shift_left')
-  shift_left.addEventListener('click', function () {
-    ShiftKey();
-  });
-
-  //FUNCIONES
-
-  function mayusLetters(letter) {
-    letter.innerText = letter.innerText.toUpperCase(); //Letras en mayuscula
-  }
-
-  function normalLetters(letter) {
-    letter.innerText = letter.getAttribute('keyname'); //Letras en minuscula
-  }
-
-  //Funcion para agregar una letra al input
-  function KeyClick(key, input) {
-    let onlynumbers = input.classList.contains("onlynumbers") //Verificar si el input tiene la clase solo numeros
-
-    key.classList.add('active'); //Agrego la clase active
-    setTimeout(() => { //Despues de 200ms remuevo la clase active
-      key.classList.remove('active')
-    }, 200);
-
-    // sourcery skip: merge-nested-ifs
-    if (letters.includes(key)) {
-      if (!onlynumbers || (onlynumbers && !isNaN(key.innerText))) { //Si el campo no tiene la clase solonumeros || Si el campo es de solo numeros y la key es un numero
-        input.value += key.innerText;
+      if (input.hasAttribute('autofocus')) {
+        activeInput = input;
+        keyboard.classList.add('active');
       }
-    }
+    });
 
-  }
+    // Evento para cada tecla
+    keys.forEach(key => {
+      key.setAttribute('keyname', key.textContent);
 
-  //Funcion para agregar un enter
-  function EnterKey(input) {
-    let form = input.closest('form'); //Formulario actual
-    form.submit(); //Envio el formulario
-  }
-
-  //Funcion para agregar un espacio al input
-  function BackspaceKeyDown(input) {
-    backspaceKey.classList.add('active');
-    actionInterval = setInterval(() => { //Cada 70ms remuevo el ultimo caracter del input
-      input.value = input.value.slice(0, -1);
-    }, 60);
-  }
-
-  function BackspaceKeyUp() {
-    backspaceKey.classList.remove('active');
-    clearInterval(actionInterval);//Paro el intervalo
-  }
-
-  //Funcion para agregar un espacio al input
-  function SpaceKey(input) {
-    input.value += ' ';
-  }
-
-  //Funcion para bloquear mayusculas
-  function BloqMayusKey() {
-    caps_lock_key.classList.toggle("active");
-
-    letters.forEach(letter => { //Para cada letra
-      if (caps_lock_key.classList.contains('active')) { //Si bloq mayus esta activa
-        mayusLetters(letter);
-        letter.addEventListener("click", function () {
-          letters.forEach(function (letter) {
-            mayusLetters(letter);
-          })
+      if (!key.classList.contains("caps_lock_key") && !key.classList.contains("shift_left")) {
+        key.addEventListener('click', function () {
+          KeyClick(key, activeInput);
         });
-      } else {
-        normalLetters(letter); //Si no volver a la normalidad
       }
     });
-  };
 
+    // Enter
+    document.querySelector('.enter_key').addEventListener('click', function () {
+      EnterKey(activeInput);
+    });
 
-  //Funcion shift
-  function ShiftKey() {
-    shift_left.classList.toggle('active');
+    // Backspace (solo clic, sin mantener)
+    const backspaceKey = document.querySelector('.backspace_key');
+    backspaceKey.addEventListener('click', function () {
+      if (activeInput && activeInput.value.length > 0) {
+        activeInput.value = activeInput.value.slice(0, -1); // Borra solo un carácter
+      }
+    });
 
-    letters.forEach(letter => { //Para cada letra
-      if (shift_left.classList.contains('active')) {
-        mayusLetters(letter);
-        letter.addEventListener("click", function () {
-          letters.forEach(letter => {
-            normalLetters(letter);
+    // Espacio
+    document.querySelector('.space_key').addEventListener('click', function () {
+      SpaceKey(activeInput);
+    });
+
+    // Bloq Mayús
+    const caps_lock_key = document.querySelector('.caps_lock_key');
+    caps_lock_key.addEventListener('click', function () {
+      BloqMayusKey();
+    });
+
+    // Shift
+    const shift_left = document.querySelector('.shift_left');
+    shift_left.addEventListener('click', function () {
+      ShiftKey();
+    });
+
+    // FUNCIONES
+
+    function mayusLetters(letter) {
+      letter.innerText = letter.innerText.toUpperCase();
+    }
+
+    function normalLetters(letter) {
+      letter.innerText = letter.getAttribute('keyname');
+    }
+
+    function KeyClick(key, input) {
+      if (!input) return;
+      const onlynumbers = input.classList.contains("onlynumbers");
+
+      key.classList.add('active');
+      setTimeout(() => {
+        key.classList.remove('active');
+      }, 200);
+
+      if (letters.includes(key)) {
+        if (!onlynumbers || (!isNaN(key.innerText))) {
+          input.value += key.innerText;
+        }
+      }
+    }
+
+    function EnterKey(input) {
+      if (!input) return;
+      const form = input.closest('form');
+      if (form) form.submit();
+    }
+
+    function SpaceKey(input) {
+      if (!input) return;
+      input.value += ' ';
+    }
+
+    function BloqMayusKey() {
+      caps_lock_key.classList.toggle("active");
+
+      letters.forEach(letter => {
+        if (caps_lock_key.classList.contains('active')) {
+          mayusLetters(letter);
+        } else {
+          normalLetters(letter);
+        }
+      });
+    }
+
+    function ShiftKey() {
+      shift_left.classList.toggle('active');
+
+      letters.forEach(letter => {
+        if (shift_left.classList.contains('active')) {
+          mayusLetters(letter);
+          letter.addEventListener("click", function once() {
+            letters.forEach(normalLetters);
+            shift_left.classList.remove('active');
+            letter.removeEventListener("click", once); // solo una vez
           });
-          shift_left.classList.remove('active'); //Remover la clase active 
-        });
-      } else {
-        normalLetters(letter);
-      }
-    });
+        } else {
+          normalLetters(letter);
+        }
+      });
+    }
   }
+} 
 
 
-}
 
 //BARCODE CAMARA
 const barcodeCam = document.getElementById('barcode-cam'); //Zona de la camara
@@ -517,7 +502,7 @@ if (card) {
     card.classList.remove('select');
   });
 }
-
+  
 // Eliminar filas con Checks
 document.addEventListener('DOMContentLoaded', function () {
   const generalDeleteForm = document.getElementById('delete-form');

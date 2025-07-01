@@ -3,7 +3,8 @@
 {% block title %} {{title}} {% endblock %}
 
 {% block content %}
-
+<!--Para inicio escaneo del carnet-->
+<div id="contenedor" data-teclado="false"></div>
 
 <!-- VISTA: ESCANEA TU CARNET-->
 {% if not users %} <!-- Si aun no se escanea -->
@@ -118,7 +119,7 @@
 
     <!-- Card escaneo -->
     <script src="{% static 'js/teclado_virtual.js' %}"></script>
-    <section class="card">
+    <section class="card" >
     <header class="card-header">
         <h1 class="card-title">Escanea tu carnet</h1>
     </header>
@@ -403,6 +404,7 @@
                     </div>
                 </div>
                 <div class="row w-100">
+                    <div id="keyboard-container" class="d-none"></div>
                 {% if extras_ingreso %}
                     <div class="col-12 mb-3">
                     <h3 class="h5 text-success fw-bold">Extras asociados al ingreso</h3>
@@ -422,7 +424,7 @@
                                 <input type="checkbox" name="extras_to_move" value="{{ extra.id }}" class="extra-check">
                                 {% endif %}
                                 <div class="extra-info">
-                                    <p class="mb-0 fw-semibold text-dark">{{ extra.descripcion }}</p>
+                                    <p class="mb-0 fw-semibold text-dark" id="code-input" >{{ extra.descripcion }}</p>
                                     {# Botón futuro para modal (opcional) #}
                         
                                     <button type="button"
@@ -476,6 +478,7 @@
         {% include 'includes/extraDetalleModal.html'%}
     </section>
 </article>
+
 
  {% comment %} EXTRAS {% endcomment %}
 
