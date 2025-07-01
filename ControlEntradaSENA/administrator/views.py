@@ -60,7 +60,7 @@ def adminpanel(request):
 ######
 
 #Lista usuarios
-@login_required(login_url="admin")
+@login_required(login_url="login")
 def users(request):
     users = Usuarios.objects.all().prefetch_related('dispositivos_set').prefetch_related('vehiculos_set')
     
@@ -151,7 +151,7 @@ def edit_user(request, id):
 ###
 
 # Lista de dispositivos
-@login_required(login_url="admin")
+@login_required(login_url="login")
 def dispositivo(request):
     devices = Dispositivos.objects.all() 
     query = request.GET.get('search', '')
@@ -200,7 +200,7 @@ def delete_dispotivos(request, id):
 ###
 
 #Sanciones
-@login_required(login_url="admin")
+@login_required(login_url="login")
 def sanciones(request):
     sanciones = Sanciones.objects.all()
     
@@ -210,7 +210,7 @@ def sanciones(request):
     })
 
 # Crear Fichas
-@login_required(login_url="admin")
+@login_required(login_url="login")
 def crear_fichas(request):
     if request.method == 'POST':
         post_data = request.POST.copy()  # hacemos copia para modificarlo
@@ -234,7 +234,7 @@ def crear_fichas(request):
     })
 
 #Fichas
-@login_required(login_url="admin")
+@login_required(login_url="login")
 def fichas(request):
     search_query = request.GET.get('search', '')
     fichas = Fichas.objects.all()
@@ -373,7 +373,7 @@ def edit_sanciones(request, id):
 
 
 #Vehicles
-@login_required(login_url="admin")
+@login_required(login_url="login")
 def vehicles(request):
     search_query = request.GET.get('search', '')  # Obtiene el término de búsqueda desde la URL
     print(f"Search query: {search_query}")  # Para verificar que estamos recibiendo la búsqueda
@@ -433,7 +433,7 @@ def delete_vehiculo(request, id):
 
 
 #acerda de
-@login_required(login_url="admin")
+@login_required(login_url="login")
 def about(request):
 
     return render(request, 'pages/acerca/about.html', {
@@ -442,7 +442,7 @@ def about(request):
 
 
 #Reportes
-@login_required(login_url="admin")
+@login_required(login_url="login")
 def reportes(request):
     search_query = request.GET.get('search', '')  # Obtiene el término de búsqueda desde la URL
     print(f"Search query: {search_query}")  # Para verificar que estamos recibiendo la búsqueda
