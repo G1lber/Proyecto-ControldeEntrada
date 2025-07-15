@@ -384,15 +384,31 @@ def registeruser(request, code):
     form = RegisterUser(request.POST or None, request.FILES or None, initial=initial_data)
 
     form.fields['centro'].required = rol != "3"
-    form.fields['ficha'].required = rol == "2"
+
+    if rol == "1":
+        form.fields['ficha'].required = False
+        form.fields['ficha'].widget.attrs['disabled'] = True  
+    elif rol == "2":
+        form.fields['ficha'].required = True
+    else:
+        form.fields['ficha'].required = False
 
     if request.method == 'POST':
-        # Asignar imagen manualmente al cleaned_data
-        request.FILES._mutable = True  # Por seguridad
+        request.FILES._mutable = True
         if 'foto_usuario' in request.FILES:
-            request.FILES['imagen'] = request.FILES['foto_usuario']  # 🚨 Clave: copiarlo como si fuera el original
+            request.FILES['imagen'] = request.FILES['foto_usuario']
 
+        # Crea nuevo form con datos POST
         form = RegisterUser(request.POST, request.FILES, initial=initial_data)
+        
+       
+        form.fields['centro'].required = rol != "3"
+        if rol == "1":
+            form.fields['ficha'].required = False
+        elif rol == "2":
+            form.fields['ficha'].required = True
+        else:
+            form.fields['ficha'].required = False
 
         if form.is_valid():
             user = form.save()
@@ -404,6 +420,7 @@ def registeruser(request, code):
         'rol': rol,
         'form': form
     })
+
 
 
 #Registrar vehiculo

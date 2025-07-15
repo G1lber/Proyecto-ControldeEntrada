@@ -1,4 +1,4 @@
-//FUNCIONES
+// FUNCIONES
 
 // Funcion solo numeros
 function valideNumber(evt) {
@@ -488,20 +488,23 @@ if (btn && menu) {
 }
 
 //Animacion admin | Cambiar entre tabla select y form
-const btnRegister = document.getElementById('btn-register-users');
-const btnBack = document.getElementById('btn-back');
-const rol = document.querySelector('.select-rol');
-const card = document.querySelector('.users');
+document.addEventListener('DOMContentLoaded', () => {
+    const btnRegister = document.getElementById('btn-register-users');
+    const btnBack = document.getElementById('btn-back');
+    const card = document.querySelector('.users');
+    if (card && btnRegister && btnBack) {
+        btnRegister.addEventListener('click', () => {
+            console.log("Click en registrar");
+            card.classList.add('select');
+        });
 
-if (card) {
-  btnRegister.addEventListener('click', () => {
-    card.classList.add('select');
-  });
+        btnBack.addEventListener('click', () => {
+            console.log("Click en volver");
+            card.classList.remove('select');
+        });
+    }
+});
 
-  btnBack.addEventListener('click', () => {
-    card.classList.remove('select');
-  });
-}
   
 // Eliminar filas con Checks
 document.addEventListener('DOMContentLoaded', function () {
