@@ -131,7 +131,9 @@
                     </div>
                     <!-- Boton tomar foto --> 
                     <div class="col mt-4">
-                        <button class="btn btn-green" type="button" id="user-picture-btn" data-bs-toggle="modal" data-bs-target="#camaraModal">Tomar foto</button>
+                        <button class="btn btn-green" type="button" id="vehicle-picture-btn" onclick="iniciarCamara('vehiculo')" data-bs-toggle="modal" data-bs-target="#camaraModalVehiculo">
+                        Tomar foto
+                        </button>
                     </div>
                     
                 </div> 
@@ -140,7 +142,7 @@
                 </div>
             </form>
              <!-- Modal Camara -->
-             {% include '../includes/modalCamara.html' %}
+             {% include '../includes/modalCamaraVehiculo.html' %}
         </div>
     </section>
 </article>

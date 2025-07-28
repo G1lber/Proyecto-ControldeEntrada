@@ -2471,3 +2471,57 @@ article#ingreso {
   }
 }
 
+
+/* === Dispositivo === */
+#camaraModalDispositivo #device-cam,
+#camaraModalDispositivo #device-picture,
+/* === Vehículo === */
+#camaraModalVehiculo #vehicle-cam,
+#camaraModalVehiculo #vehicle-picture {
+    /* width: 100% !important;
+    border-radius: 30px !important; */
+    width: 70%;
+    border-radius: 100px;
+    margin-top: 30px;
+    margin:0 auto
+}
+
+/* Botones */
+
+#camaraModalDispositivo .btn-zone,
+#camaraModalVehiculo .btn-zone {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 15px;
+}
+
+/* SVG de los botones */
+
+#camaraModalDispositivo .btn-picture svg,
+#camaraModalVehiculo .btn-picture svg {
+    width: 2rem;
+    height: 2rem;
+}
+
+/* Canvas oculto por defecto */
+
+#device-picture,
+#vehicle-picture {
+    display: none;
+}
+
+/* Estilos del contador */
+
+#contador-extra-device,
+#contador-extra-vehicle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 5rem;
+    color: red;
+    font-weight: bold;
+    display: none;
+    z-index: 1000;
+}

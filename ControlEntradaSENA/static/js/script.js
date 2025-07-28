@@ -258,8 +258,12 @@ const btnExtra = document.getElementById('extra-btn');
 const btnSaveUser = document.getElementById('user-savepicture-btn');
 
 // CAMARA
-function iniciarCamara(tipo = 'user') {
-  const prefix = tipo === 'extra' ? 'extra' : 'user';
+function iniciarCamara(tipo = 'usuario') {
+  const prefix = tipo === 'extra' ? 'extra' :
+                 tipo === 'dispositivo' ? 'device' :
+                 tipo === 'vehiculo' ? 'vehicle' :
+                 'user';
+                 
   const video = document.getElementById(`${prefix}-cam`);
   const canvas = document.getElementById(`${prefix}-picture`);
   const btnTake = document.getElementById(`${prefix}-takepicture-btn`);
@@ -273,8 +277,14 @@ function iniciarCamara(tipo = 'user') {
       video.play();
 
       const videoTrack = stream.getVideoTracks()[0];
-      const modal = document.getElementById(`camaraModal${tipo === 'extra' ? 'Extra' : ''}`);
-      
+
+      let modalID = 'camaraModal';
+      if (tipo === 'extra') modalID = 'camaraModalExtra';
+      else if (tipo === 'dispositivo') modalID = 'camaraModalDispositivo';
+      else if (tipo === 'vehiculo') modalID = 'camaraModalVehiculo';
+
+      const modal = document.getElementById(modalID);
+
       modal.addEventListener('hidden.bs.modal', function () {
         videoTrack.stop();
         video.srcObject = null;
@@ -283,11 +293,11 @@ function iniciarCamara(tipo = 'user') {
 
       canvas.style.display = 'none';
       video.style.display = 'block';
-      btnTake.style.display = 'block';
-      btnSave.style.display = 'none';
-      btnRepeat.style.display = 'none';
+      if (btnTake) btnTake.style.display = 'block';
+      if (btnSave) btnSave.style.display = 'none';
+      if (btnRepeat) btnRepeat.style.display = 'none';
 
-      iniciarCuentaRegresiva(4, () => captureImage(tipo));
+      if (contadorElemento) iniciarCuentaRegresiva(4, () => captureImage(tipo));
     })
     .catch(error => console.log("Error al acceder a cámara:", error));
 }
@@ -310,62 +320,100 @@ function iniciarCuentaRegresiva(duracionSegundos, callback) {
   }, 1000);
 }
 
-function captureImage(tipo = 'user') {
-  const prefix = tipo === 'extra' ? 'extra' : 'user';
+// Captura la imagen
+function captureImage(tipo = 'usuario') {
+  const prefix = tipo === 'extra' ? 'extra' :
+                 tipo === 'dispositivo' ? 'device' :
+                 tipo === 'vehiculo' ? 'vehicle' :
+                 'user';
+
   const video = document.getElementById(`${prefix}-cam`);
   const canvas = document.getElementById(`${prefix}-picture`);
-  const context = canvas.getContext('2d');
   const btnTake = document.getElementById(`${prefix}-takepicture-btn`);
   const btnSave = document.getElementById(`${prefix}-savepicture-btn`);
   const btnRepeat = document.getElementById(`${prefix}-repeatpicture-btn`);
 
+  if (!video || !canvas) {
+    console.warn(`⚠️ No se encontró video o canvas para tipo: ${tipo}`);
+    return;
+  }
+
+  const context = canvas.getContext('2d');
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
   context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-  canvas.style.display = 'block';
-  video.style.display = 'none';
-  btnTake.style.display = 'none';
-  btnRepeat.style.display = 'block';
-
-  btnSave.style.display = 'block';
+  video.style.display = "none";
+  canvas.style.display = "block";
+  if (btnTake) btnTake.style.display = "none";
+  if (btnSave) btnSave.style.display = "block";
+  if (btnRepeat) btnRepeat.style.display = "block";
 }
 
-function repeatImage(tipo = 'user') {
-  const prefix = tipo === 'extra' ? 'extra' : 'user';
+// Repetir toma
+function repeatImage(tipo = 'usuario') {
+  const prefix = tipo === 'extra' ? 'extra' :
+                 tipo === 'dispositivo' ? 'device' :
+                 tipo === 'vehiculo' ? 'vehicle' :
+                 'user';
+
   const video = document.getElementById(`${prefix}-cam`);
   const canvas = document.getElementById(`${prefix}-picture`);
   const btnTake = document.getElementById(`${prefix}-takepicture-btn`);
   const btnSave = document.getElementById(`${prefix}-savepicture-btn`);
   const btnRepeat = document.getElementById(`${prefix}-repeatpicture-btn`);
 
-  btnRepeat.style.display = 'none';
-  btnSave.style.display = 'none';
-  btnTake.style.display = 'block';
+  if (!video || !canvas) {
+    console.warn(`⚠️ No se encontró video o canvas para tipo: ${tipo}`);
+    return;
+  }
 
-  canvas.style.display = 'none';
-  video.style.display = 'block';
+  canvas.style.display = "none";
+  video.style.display = "block";
+  if (btnTake) btnTake.style.display = "block";
+  if (btnSave) btnSave.style.display = "none";
+  if (btnRepeat) btnRepeat.style.display = "none";
 }
 
+// Guardar imagen en input file
 function saveImage(tipoDestino = 'usuario') {
-  const prefix = tipoDestino === 'extra' ? 'extra' : 'user';
+  const prefix = tipoDestino === 'extra' ? 'extra' :
+                 tipoDestino === 'dispositivo' ? 'device' :
+                 tipoDestino === 'vehiculo' ? 'vehicle' :
+                 'user';
+
   const canvas = document.getElementById(`${prefix}-picture`);
+  if (!canvas) {
+    console.error(`❌ No se encontró canvas para tipo: ${tipoDestino}`);
+    return;
+  }
+
   const imageData = canvas.toDataURL('image/png');
   const file = dataURLtoFile(imageData, 'captured_image.png');
 
   const dataTransfer = new DataTransfer();
   dataTransfer.items.add(file);
 
-  // ✅ Usamos inputs separados
   const fileInput = tipoDestino === 'extra'
     ? document.getElementById('foto-extra')
-    : document.getElementById('foto-usuario');
+    : tipoDestino === 'dispositivo'
+      ? document.getElementById('device-file')
+      : tipoDestino === 'vehiculo'
+        ? document.getElementById('vehicle-file')
+        : document.getElementById('foto-usuario');
 
   if (fileInput) {
     fileInput.files = dataTransfer.files;
 
-    if (tipoDestino === 'usuario') {
-      const previewImg = document.getElementById('user-preview-img');
+    // Mostrar vista previa si existe
+    const previewId = tipoDestino === 'usuario'
+      ? 'user-preview-img'
+      : tipoDestino === 'vehiculo'
+        ? 'vehicle-preview-img'
+        : null;
+
+    if (previewId) {
+      const previewImg = document.getElementById(previewId);
       if (previewImg) {
         previewImg.src = imageData;
       }
