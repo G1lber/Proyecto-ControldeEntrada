@@ -122,6 +122,7 @@
     <section class="card" >
     <header class="card-header">
         <h1 class="card-title">Escanea tu carnet</h1>
+        <button type="button" onclick="cambiarModo()">Cambiar a ingreso de serial</button>
     </header>
     <div class="card-body">
         <div class="card-barra"></div>
@@ -133,6 +134,8 @@
         <div class="row">
             <div class="col">
                 <form method="get" id="code-form">
+                    <label id="input-label" for="code-input">Ingresar documento</label>
+
                     <input
                         id="code-input"
                         class="form-control autofocus onlynumbers"
@@ -545,15 +548,41 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
     <script src="{% static 'js/modalExtraEdit.js' %}"></script>
+    {% endif %}
+<script>
+let modo = 'documento';
 
+function cambiarModo() {
+    const input = document.getElementById("code-input");
+    const label = document.getElementById("input-label");
+    const boton = event.target;  // el botón que disparó el evento
 
-
-
-
-
-
-
-
-{% endif %}
+    if (modo === 'documento') {
+        // Cambiar a serial
+        modo = 'serial';
+        label.textContent = "Ingresar serial del equipo";
+        input.name = "serial";
+        input.placeholder = "Ej: ABC123456";
+        input.pattern = ".*"; // permitir letras y números
+        input.inputMode = "text";
+        input.classList.remove("onlynumbers");
+        input.removeAttribute("onkeypress");    
+        input.value = "";
+        boton.textContent = "Cambiar a ingreso de documento";
+    } else {
+        // Cambiar a documento
+        modo = 'documento';
+        label.textContent = "Ingresar documento";
+        input.name = "code";
+        input.placeholder = "Ej: 123456789";
+        input.pattern = "[0-9]*";
+        input.inputMode = "numeric";
+        input.classList.add("onlynumbers");
+        input.setAttribute("onkeypress", "return valideNumber(event)");
+        input.value = "";
+        boton.textContent = "Cambiar a ingreso de serial";
+    }
+}
+</script>
 
 {% endblock %}

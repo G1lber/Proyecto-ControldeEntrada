@@ -2525,3 +2525,36 @@ article#ingreso {
     display: none;
     z-index: 1000;
 }
+
+.btn-icon {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.btn-icon:hover {
+    transform: scale(1.05);
+}
+
+.icon-pc {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
+/* Opcional: si quieres que se ajuste en pantallas pequeñas */
+@media (max-width: 576px) {
+    .icon-pc {
+        width: 22px;
+        height: 22px;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+    }
+}
