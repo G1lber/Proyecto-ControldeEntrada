@@ -2558,3 +2558,107 @@ article#ingreso {
         font-size: 1.2rem;
     }
 }
+
+/*PARA EL BOTON DE MODO PC*/
+.btn-icon {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.btn-icon:hover {
+    transform: scale(1.05);
+}
+
+.icon-pc {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
+/* Opcional: si quieres que se ajuste en pantallas pequeñas */
+@media (max-width: 576px) {
+    .icon-pc {
+        width: 22px;
+        height: 22px;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+    }
+}
+/* Agrupa el ícono y el título centrado */
+.title-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+/* Botón del ícono */
+.btn-icon {
+    background: transparent;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.btn-icon:hover svg {
+    transform: scale(1.1);
+    fill: #1b8238;
+}
+
+/* Responsivo para pantallas pequeñas */
+@media (max-width: 576px) {
+    .title-wrapper {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .btn-icon svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+    }
+}
+/* Icono en la esquina izquierda */
+.btn-icon-left {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.btn-icon-left:hover svg {
+    transform: scale(1.1);
+    fill: #1b8238;
+}
+
+/* Asegura que el título esté centrado sin afectar por el ícono */
+.card-header {
+    position: relative;
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

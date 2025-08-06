@@ -3,8 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const keyboardContainer = document.getElementById("keyboard-container");
   let keyboard;
 
-  function showKeyboard() {
-    keyboardContainer.style.display = "block";
+  function initKeyboard() {
     if (!keyboard) {
       keyboard = new SimpleKeyboard.default({
         onChange: inputChanged => {
@@ -29,21 +28,26 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
     }
-    keyboard.setInput(input.value);
   }
 
-  input.addEventListener("focus", showKeyboard);
+  function showKeyboardIfDocumento() {
+    if (typeof modo !== 'undefined' && modo === "documento") {
+      initKeyboard();
+      keyboardContainer.style.display = "block";
+      keyboard.setInput(input.value);
+    } else {
+      keyboardContainer.style.display = "none";
+    }
+  }
+
+  input.addEventListener("focus", showKeyboardIfDocumento);
 
   input.addEventListener("mousedown", (e) => {
+    if (typeof modo === 'undefined' || modo !== "documento") return;
     e.preventDefault();
     input.focus();
-    showKeyboard();
+    showKeyboardIfDocumento();
   });
-
-  // Quitamos el preventDefault aquí para que el evento se propague y pueda cerrar el teclado
-  // keyboardContainer.addEventListener("mousedown", e => {
-  //   e.preventDefault();
-  // });
 
   document.addEventListener("mousedown", (event) => {
     const target = event.target;

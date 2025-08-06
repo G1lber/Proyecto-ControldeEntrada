@@ -48,12 +48,12 @@ def index(request):
     salidas = Salidas.objects.all()
 
     status = request.GET.get("status")  # Captura si viene de ingreso/salida
+    serial = request.GET.get("serial")
+    code = request.GET.get("code")
 
-    if 'code' in request.GET:
-        code = request.GET.get('code')
+    # Si viene el código (documento)
+    if code:
         form = ExtrasForm(request.POST or None, request.FILES or None)
-        if code =="" or code is None: 
-            return redirect('index')
         try:
             user = get_object_or_404(Usuarios, documento=code)
 
@@ -88,19 +88,79 @@ def index(request):
                 'extras_ingreso': extras_ingreso,
                 'salida': ingreso_activo,
                 'dispositivo_salida': dispositivo_salida,
-                'status': modo_status,  # status real del usuario
+                'status': modo_status,
             })
 
         except Http404:
             return redirect('registeruser', code=code)
 
+    elif serial:
+        serial = serial.strip()
+        try:
+            dispositivo = get_object_or_404(Dispositivos, sn=serial)
+            usuario = dispositivo.usuario
+            form = ExtrasForm(request.POST or None, request.FILES or None)
+            try:
+                user = get_object_or_404(Usuarios, documento=usuario.documento)
+
+                vehiculos = Vehiculos.objects.filter(usuario=user.idusuario)
+                rol = user.rol
+                DocType = user.tipodocumento
+                centro = user.centro or None
+                ficha = user.ficha or None
+                FichaName = ficha.nombre if ficha else None
+                jornada = ficha.jornada if ficha else None
+
+                dispositivos, modo_status, ingreso_activo = determinar_modo(user)
+
+                extras_ingreso = Extras.objects.filter(
+                    salida__isnull=True,
+                    ingreso__usuario=user
+                )
+                dispositivo_salida = Dispositivos.objects.filter(usuario=user.idusuario, documento__isnull=False).first()
+
+                return render(request, 'index.html', {
+                    'title': user,
+                    'users': user,
+                    'DocType': DocType,
+                    'centro': centro,
+                    'rol': rol,
+                    'ficha': ficha,
+                    'FichaName': FichaName,
+                    'jornada': jornada,
+                    'vehiculos': vehiculos,
+                    'dispositivos': dispositivos,
+                    'extra': form,
+                    'extras_ingreso': extras_ingreso,
+                    'salida': ingreso_activo,
+                    'dispositivo_salida': dispositivo_salida,
+                    'status': modo_status,
+                })
+            except Http404:
+                return render(request, 'index.html', {
+                    'title': 'Inicio',
+                    'ingresos': ingresos,
+                    'salidas': salidas,
+                    'status': status,
+                    'mensaje': "Usuario no encontrado con el dispositivo vinculado, ingrese con el numero de documento"
+                })
+            
+        except Http404:
+            return render(request, 'index.html', {
+                'title': 'Inicio',
+                'ingresos': ingresos,
+                'salidas': salidas,
+                'status': status,
+                'mensaje': "Dispositivo no encontrado, Ingrese con el numero de documento"
+            })
+
+    # Página inicial
     return render(request, 'index.html', {
         'title': 'Inicio',
         'ingresos': ingresos,
         'salidas': salidas,
-        'status': status  # status de ingreso/salida para el JS si aplica
+        'status': status
     })
-
 
 def idispositivos(request):
     # sourcery skip: extract-method, use-fstring-for-concatenation

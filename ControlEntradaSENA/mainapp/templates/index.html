@@ -12,118 +12,26 @@
 
     <!-- Alerta despues de registro -->
     <div class="registerAlert" data-status="{% if messages %}{% for message in messages %}{{message}}{% endfor %}{% endif %}"></div>
-
-    {% comment %} <section class="btn-zone">
-        <!-- Boton modal ingresos -->
-        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#AccessModal">
-            Ingresos
-        </button>        
-        <!-- Modal ingresos -->
-        <div class="modal fade" id="AccessModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Ingresos</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body" style="overflow:scroll">
-                <table class="table-access table table-responsive table-striped">
-                    <thead>
-                      <tr>
-                        <th scope="col">Id</th>
-                        <th scope="col">Fecha</th>
-                        <th scope="col">Usuario</th>
-                        <th scope="col">Dispositivo 1</th>
-                        <th scope="col">Dispositivo 2</th>
-                        <th scope="col">Dispositivo 3</th>
-                        <th scope="col">Vehiculo</th>
-                        <th scope="col">Hora Ingreso</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                    {% for ingreso in ingresos %}
-                      <tr>
-                        <th scope="row">{{ingreso.idingreso}}</th>
-                        <th>{{ingreso.fecha}}</th>
-                        <th>{{ingreso.usuario}}</th>
-                        <th>{% if ingreso.dispositivo %}{{ingreso.dispositivo}}{% else %}Ningúno{% endif %}</th>
-                        <th>{% if ingreso.dispositivo2 %}{{ingreso.dispositivo2}}{% else %}Ningúno{% endif %}</th>
-                        <th>{% if ingreso.dispositivo3 %}{{ingreso.dispositivo3}}{% else %}Ningúno{% endif %}</th>
-                        <th>{% if ingreso.vehiculo %}{{ingreso.vehiculo}}{% else %}Ningúno{% endif %}</th>
-                        <th>{{ingreso.horaingreso}}</th>
-                      </tr>
-                    {% endfor %}
-                    </tbody>
-                  </table>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-              </div>
-            </div>
-          </div>
+    {% if mensaje %}
+        <div class="alert alert-danger" role="alert"  id="mensaje-alerta">
+            {{ mensaje }}
         </div>
-
-        <!-- Boton modal salidas-->
-        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#ExitModal">
-            Salidas
-        </button>        
-        <!-- Modal salidas-->
-        <div class="modal fade" id="ExitModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Salidas</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body" style="overflow:scroll">
-                <table class="table-access table table-responsive table-striped">
-                    <thead>
-                      <tr>
-                        <th scope="col">Id</th>
-                        <th scope="col">Fecha</th>
-                        <th scope="col">Ingreso</th> 
-                        <th scope="col">Usuario</th>
-                        <th scope="col">Dispositivo 1</th>
-                        <th scope="col">Dispositivo 2</th>
-                        <th scope="col">Dispositivo 3</th>
-                        <th scope="col">Vehiculo</th>
-                        <th scope="col">Hora Ingreso</th>
-                        <th scope="col">Hora Salida</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                    {% for salida in salidas %}
-                      <tr>
-                        <th scope="row">{{salida.idsalida}}</th>
-                        <td>{{salida.fecha}}</td>
-                        <td>{{salida.ingreso.idingreso}}</td>
-                        <td>{{salida.ingreso.usuario}}</td>
-                        <td>{% if salida.dispositivo %}{{salida.dispositivo}}{% else %}Ningúno{% endif %}</td>
-                        <td>{% if salida.dispositivo %}{{salida.dispositivo2}}{% else %}Ningúno{% endif %}</td>
-                        <td>{% if salida.dispositivo %}{{salida.dispositivo3}}{% else %}Ningúno{% endif %}</td>
-                        <td>{% if salida.vehiculo %}{{salida.vehiculo}}{% else %}Ningúno{% endif %}</td>
-                        <td>{{salida.ingreso.horaingreso}}</td>
-                        <td>{{salida.horasalida}}</td>
-                      </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-              </div>
-            </div>
-          </div>
-        </div>
-    </section> {% endcomment %}
-
+    {% endif %}
     <!-- Card escaneo -->
-    <script src="{% static 'js/teclado_virtual.js' %}"></script>
+
     <section class="card" >
-    <header class="card-header">
-        <h1 class="card-title">Escanea tu carnet</h1>
-        <button type="button" onclick="cambiarModo()">Cambiar a ingreso de serial</button>
+    <header class="card-header position-relative text-center">
+        <!-- Botón con icono SVG en la esquina -->
+        <button type="button" class="btn btn-icon-left" onclick="cambiarModo()" id="btn-pc-mode" title="Modo PC">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="#26B14C" class="bi bi-pc" viewBox="0 0 16 16">
+                <path d="M5 13h6v1H5v-1Z"/>
+                <path d="M2 2a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H2Zm0 1h12v7H2V3Z"/>
+            </svg>
+        </button>
+        <!-- Título centrado -->
+        <h1 class="card-title mb-0">Escanea tu carnet</h1>
     </header>
+
     <div class="card-body">
         <div class="card-barra"></div>
         <div class="card-code">
@@ -407,7 +315,8 @@
                     </div>
                 </div>
                 <div class="row w-100">
-                    <div id="keyboard-container" class="d-none"></div>
+                {% comment %} Teclado para extras {% endcomment %}
+                {% comment %} <div id="keyboard-container" class="d-none"></div> {% endcomment %}
                 {% if extras_ingreso %}
                     <div class="col-12 mb-3">
                     <h3 class="h5 text-success fw-bold">Extras asociados al ingreso</h3>
@@ -547,15 +456,17 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
-    <script src="{% static 'js/modalExtraEdit.js' %}"></script>
+<script src="{% static 'js/modalExtraEdit.js' %}"></script>
     {% endif %}
+
+{% comment %} Para cambiar el input documento o pc {% endcomment %}
 <script>
 let modo = 'documento';
 
 function cambiarModo() {
     const input = document.getElementById("code-input");
     const label = document.getElementById("input-label");
-    const boton = event.target;  // el botón que disparó el evento
+    const keyboardContainer = document.getElementById("keyboard-container"); // ocultar si cambia a serial
 
     if (modo === 'documento') {
         // Cambiar a serial
@@ -563,12 +474,17 @@ function cambiarModo() {
         label.textContent = "Ingresar serial del equipo";
         input.name = "serial";
         input.placeholder = "Ej: ABC123456";
-        input.pattern = ".*"; // permitir letras y números
+        input.pattern = ".*";
         input.inputMode = "text";
         input.classList.remove("onlynumbers");
-        input.removeAttribute("onkeypress");    
+        input.removeAttribute("onkeypress");
+        input.removeAttribute("maxlength");
+        input.removeAttribute("minlength");
         input.value = "";
-        boton.textContent = "Cambiar a ingreso de documento";
+
+        // ❌ Ocultar teclado si se cambia a modo serial
+        keyboardContainer.style.display = "none";
+
     } else {
         // Cambiar a documento
         modo = 'documento';
@@ -579,10 +495,25 @@ function cambiarModo() {
         input.inputMode = "numeric";
         input.classList.add("onlynumbers");
         input.setAttribute("onkeypress", "return valideNumber(event)");
+        input.setAttribute("maxlength", "10");
+        input.setAttribute("minlength", "6");
         input.value = "";
-        boton.textContent = "Cambiar a ingreso de serial";
     }
 }
-</script>
 
+</script>
+{% comment %} PARA ALERTA DE DISPOSITIVO {% endcomment %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const alerta = document.getElementById('mensaje-alerta');
+    if (alerta) {
+      setTimeout(() => {
+        alerta.classList.remove('show');
+        alerta.classList.add('fade');
+        setTimeout(() => alerta.remove(), 500);
+      }, 4000);
+    }
+  });
+</script>
+<script src="{% static 'js/teclado_virtual.js' %}"></script>
 {% endblock %}
