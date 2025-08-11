@@ -9,7 +9,7 @@ from django.db.models import Q, Subquery
 from django.utils.timezone import now
 from django.db import transaction
 from django.core.files.storage import default_storage
-
+from django.http import JsonResponse
 
 def determinar_modo(user):
     dispositivos_usuario = Dispositivos.objects.filter(usuario=user.idusuario)
@@ -435,7 +435,26 @@ def access(request, code):
         'status': None,
         'ingreso': ingreso,
         'extras_ingreso': extras_ingreso,
+        "code":code
     })
+
+#Para el input de dispositivos
+
+
+def buscar_serial(request):
+    if request.method == "POST":
+        serial = request.POST.get("serial")
+        if not serial:
+            return JsonResponse({"error": "Serial no proporcionado"}, status=400)
+        
+        dispositivo = Dispositivos.objects.filter(sn=serial).first()
+        if dispositivo:
+            return JsonResponse({
+                "usuario_id": dispositivo.usuario.idusuario,
+                "code": dispositivo.usuario.documento
+            })
+        else:
+            return JsonResponse({"error": "No encontrado"}, status=404)
 
 #Registrar usuario
 def registeruser(request, code):

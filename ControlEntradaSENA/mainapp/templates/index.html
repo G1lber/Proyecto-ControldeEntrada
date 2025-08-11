@@ -230,12 +230,20 @@
                     <div class="col">
                         <div class="select-form device">
                             <label for="dispositivo">Dispositivos disponibles:</label>
-                            <div class="select-btn" onclick="openSelect(this)">
+                            {% comment %} Este es el select para dispositivos antiguo {% endcomment %}
+                            {% comment %} <div class="select-btn" onclick="openSelect(this)">
                                 <span class="btn-text">Seleccionar Dispositivos</span>
                                 <span class="arrow-dwn">
                                     <i class="fa-solid fa-chevron-down"></i>
                                 </span>
+                            </div> {% endcomment %}
+                            <div class="input-dispositivo select-btn">
+                                <input id="serialInput" class="form-control" type="text" placeholder="Coloque serial" />
+                                <span id="statusIcon" style="margin-left: 8px;"></span>
                             </div>
+                               <input type="hidden" id="usuarioId" value="{{ request.user.id|default:'' }}">
+                                 <input type="hidden" id="code" value="{{ code }}">
+
 
                             <ul class="list-items">
                                 {% if dispositivos %}
@@ -448,7 +456,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 e.preventDefault();
                 fotoErrorAlert.classList.remove('d-none');
                 fotoErrorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            } else {
+            } else {    
                 fotoErrorAlert.classList.add('d-none');
             }
         });
@@ -516,4 +524,76 @@ function cambiarModo() {
   });
 </script>
 <script src="{% static 'js/teclado_virtual.js' %}"></script>
-{% endblock %}
+{% comment %} para el input de dispositivos {% endcomment %}
+<script>document.addEventListener("DOMContentLoaded", function () {
+    const serialInput = document.getElementById("serialInput");
+    const usuarioIdInput = document.getElementById("usuarioId");
+    const icon = document.getElementById("statusIcon");
+    const codeInput = document.getElementById("code");
+
+    if (!serialInput || !usuarioIdInput || !icon || !codeInput) return;
+
+    serialInput.addEventListener("blur", async function () {
+        console.log("Blur activado");
+
+        const serial = serialInput.value.trim();
+        const usuario_id = usuarioIdInput.value;
+        const code = codeInput.value;
+
+        console.log("Datos a enviar:", { serial, usuario_id, code });
+
+        if (!serial) {
+            icon.innerHTML = "";
+            return;
+        }
+
+        try {
+            const res = await fetch(`/buscar_serial/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie("csrftoken"),
+                },
+                body: JSON.stringify({ serial, usuario_id }),
+            });
+
+            console.log("Respuesta HTTP:", res.status);
+
+            if (!res.ok) {
+                icon.innerHTML = '<i class="bi bi-exclamation-triangle-fill text-warning"></i>';
+                return;
+            }
+
+            const data = await res.json();
+            console.log("Datos JSON:", data);
+
+            if (data.encontrado) {
+                icon.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i>';
+            } else {
+                icon.innerHTML = '<i class="bi bi-x-circle-fill text-danger"></i>';
+            }
+
+        } catch (error) {
+            console.error("Error en fetch:", error);
+            icon.innerHTML = '<i class="bi bi-exclamation-triangle-fill text-warning"></i>';
+        }
+    });
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            const cookies = document.cookie.split(";");
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+});
+
+</script>
+{% endblock %}                      

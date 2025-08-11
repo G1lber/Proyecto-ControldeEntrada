@@ -10,4 +10,8 @@ urlpatterns = [
     path("<str:code>/registeruser/", views.registeruser, name="registeruser"),
     path("<str:code>/registervehicle/", views.registervehicle, name="registervehicle"),
     path("<str:code>/registerdevice/", views.registerdevice, name="registerdevice"),
+    path("buscar_serial/", views.buscar_serial, name="buscar_serial"),
+
+
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
