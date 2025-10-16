@@ -67,6 +67,17 @@ class RegisterUser(ModelForm):
         else:
             self.fields['documento'].widget.attrs.pop('readonly', None)
 
+        # ✅ Si el rol es 1 o 3, ficha no obligatoria
+        rol_obj = None
+        if getattr(self.instance, 'rol', None):
+            rol_obj = getattr(self.instance.rol, 'idrol', None)
+        elif 'rol' in self.initial and self.initial['rol']:
+            rol_value = self.initial['rol']
+            rol_obj = getattr(rol_value, 'idrol', rol_value)
+
+        if rol_obj in [1, 3]:
+            self.fields['ficha'].required = False
+
     # ✅ Validación de imagen obligatoria y renombrada
     def clean_imagen(self):
         imagen_form = self.cleaned_data.get('imagen')
@@ -97,6 +108,33 @@ class RegisterUser(ModelForm):
     def clean_apellidos(self):
         apellido = self.cleaned_data.get('apellidos')
         return apellido.title()
+
+    # ✅ Validación final: ficha obligatoria solo si rol ≠ 1 o 3
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # Detectar el rol desde el formulario o el input oculto del HTML
+        rol = cleaned_data.get('rol') or cleaned_data.get('rol_hide')
+
+        # Si viene como número desde el input <input type="hidden" name="rol">
+        if not rol and 'rol' in self.data:
+            try:
+                rol_id = int(self.data.get('rol'))
+            except (TypeError, ValueError):
+                rol_id = None
+        else:
+            rol_id = getattr(rol, 'idrol', None)
+
+        ficha = cleaned_data.get('ficha')
+
+        # Solo exigir ficha si el rol NO es instructor (1) ni visitante (3)
+        if rol_id not in [1, 3] and not ficha:
+            self.add_error('ficha', "La ficha es obligatoria para este rol.")
+        else:
+            # Si el rol es 1 o 3, permitir ficha vacía
+            self.fields['ficha'].required = False
+
+        return cleaned_data
 
 #Formulario para registro de dispositivo         
 class RegisterDevice(ModelForm):

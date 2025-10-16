@@ -113,7 +113,7 @@ def register_user(request, rol):
     if request.method == 'POST' and form.is_valid():
         user = form.save()
         messages.info(request, "success-user")
-        return redirect('index')
+        return redirect('users')
 
     return render(request, 'pages/usuarios/register.html', {
         'title': 'Registrar usuario',

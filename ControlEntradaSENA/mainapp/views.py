@@ -380,11 +380,18 @@ def access(request, code):
 #Registrar usuario
 def registeruser(request, code):
     rol = request.GET.get('rol')
-    initial_data = {'rol': rol, 'rol_hide': rol , 'documento': code}
+    initial_data = {'rol': rol, 'rol_hide': rol, 'documento': code}
     form = RegisterUser(request.POST or None, request.FILES or None, initial=initial_data)
 
-    form.fields['centro'].required = rol != "3"
-    form.fields['ficha'].required = rol == "2"
+    # 🔧 Convertir rol a entero para comparar correctamente
+    try:
+        rol_int = int(rol)
+    except (TypeError, ValueError):
+        rol_int = None
+
+    # 🔧 Ajustar requerimientos según el rol (con números, no cadenas)
+    form.fields['centro'].required = rol_int != 3  # Visitante no requiere centro
+    form.fields['ficha'].required = rol_int == 2   # Solo Aprendiz requiere ficha
 
     if request.method == 'POST':
         # Asignar imagen manualmente al cleaned_data
@@ -393,6 +400,10 @@ def registeruser(request, code):
             request.FILES['imagen'] = request.FILES['foto_usuario']  # 🚨 Clave: copiarlo como si fuera el original
 
         form = RegisterUser(request.POST, request.FILES, initial=initial_data)
+
+        # 🔧 Aplicar la misma lógica de requerimientos dentro del POST también
+        form.fields['centro'].required = rol_int != 3
+        form.fields['ficha'].required = rol_int == 2
 
         if form.is_valid():
             user = form.save()
@@ -404,7 +415,6 @@ def registeruser(request, code):
         'rol': rol,
         'form': form
     })
-
 
 #Registrar vehiculo
 def registervehicle(request, code):
