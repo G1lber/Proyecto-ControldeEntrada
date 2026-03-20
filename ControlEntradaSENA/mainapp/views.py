@@ -237,11 +237,10 @@ def idispositivos(request):
 
 
 from django.shortcuts import render, get_object_or_404, redirect
-from django.utils.timezone import now
 from django.db import transaction
+from django.utils.timezone import now
 from django.core.files.storage import default_storage
 import json
-
 def access(request, code):
     users = get_object_or_404(Usuarios, documento=code)
     date = now().date()
@@ -256,19 +255,30 @@ def access(request, code):
         idvehiculo = request.POST.get('vehicle')
         vehiculo = Vehiculos.objects.filter(idvehiculo=idvehiculo).first() if idvehiculo else None
 
+        # devices viene como "12,25,30" desde el hidden #devices
         dispositivos_raw = request.POST.get('devices', '')
-        dispositivos_ids = [int(i) for i in dispositivos_raw.split(',') if i.isdigit()]
-        dispositivos = Dispositivos.objects.filter(iddispositivo__in=dispositivos_ids)
+        # Convertir a ints y quitar duplicados respetando orden
+        dispositivos_ids = []
+        for token in [t.strip() for t in dispositivos_raw.split(',') if t.strip()]:
+            if token.isdigit():
+                val = int(token)
+                if val not in dispositivos_ids:
+                    dispositivos_ids.append(val)
 
-        dispositivo = dispositivos[0] if len(dispositivos) > 0 else None
-        dispositivo2 = dispositivos[1] if len(dispositivos) > 1 else None
-        dispositivo3 = dispositivos[2] if len(dispositivos) > 2 else None
+        # Traer instancias existentes (map id -> instancia) y respetar el orden original
+        dispositivos_qs = Dispositivos.objects.filter(iddispositivo__in=dispositivos_ids)
+        dispositivos_map = {d.iddispositivo: d for d in dispositivos_qs}
+        ordered_dispositivos = [dispositivos_map[i] for i in dispositivos_ids if i in dispositivos_map]
+
+        dispositivo = ordered_dispositivos[0] if len(ordered_dispositivos) > 0 else None
+        dispositivo2 = ordered_dispositivos[1] if len(ordered_dispositivos) > 1 else None
+        dispositivo3 = ordered_dispositivos[2] if len(ordered_dispositivos) > 2 else None
 
         descripcion = request.POST.get('descripcion', '').strip()
         foto_usuario = request.FILES.get('foto_usuario')
         foto_extra = request.FILES.get('foto_extra')
 
-        # ✅ Leer JSON de extras editados
+        # Leer extras editados JSON
         extras_editados = []
         extras_editados_json = request.POST.get('extras_editados_json')
         if extras_editados_json:
@@ -292,6 +302,7 @@ def access(request, code):
                     )
                     status = "Salida"
 
+                    # Actualizar estado de dispositivos: fuera
                     for d in [dispositivo, dispositivo2, dispositivo3]:
                         if d:
                             EstadoDispositivo.objects.update_or_create(
@@ -299,6 +310,7 @@ def access(request, code):
                                 defaults={'estado': 'fuera'}
                             )
 
+                    # Mover extras seleccionados
                     extras_ids = request.POST.getlist('extras_to_move')
                     for extra_id in extras_ids:
                         extra_obj = Extras.objects.filter(id=extra_id, ingreso=ingreso, salida__isnull=True).first()
@@ -307,7 +319,7 @@ def access(request, code):
                             extra_obj.salida = salida
                             extra_obj.save()
 
-                    # Foto de usuario
+                    # Guardar foto usuario (si viene)
                     if foto_usuario:
                         if users.imagen:
                             users.imagen.delete()
@@ -316,7 +328,7 @@ def access(request, code):
                         foto_usuario.name = filename
                         users.imagen.save(filename, foto_usuario, save=True)
 
-                    # ✅ Editar extras existentes
+                    # Editar extras existentes (fotos)
                     for edit in extras_editados:
                         extra_id = edit.get("id")
                         nueva_descripcion = edit.get("descripcion", "").strip()
@@ -331,7 +343,7 @@ def access(request, code):
                                 extra.foto = nueva_foto
                             extra.save()
 
-                    # Nuevo extra
+                    # Nuevo extra en salida
                     if descripcion or foto_extra:
                         Extras.objects.create(
                             descripcion=descripcion,
@@ -358,6 +370,7 @@ def access(request, code):
                     )
                     status = "Ingreso"
 
+                    # Actualizar estado de dispositivos: dentro
                     for d in [dispositivo, dispositivo2, dispositivo3]:
                         if d:
                             EstadoDispositivo.objects.update_or_create(
@@ -365,6 +378,7 @@ def access(request, code):
                                 defaults={'estado': 'dentro'}
                             )
 
+                    # Asociar extras pendientes al ingreso actual
                     extras_pendientes = Extras.objects.filter(
                         salida__isnull=True,
                         ingreso__usuario=users
@@ -382,7 +396,7 @@ def access(request, code):
                         foto_usuario.name = filename
                         users.imagen.save(filename, foto_usuario, save=True)
 
-                    # ✅ Editar extras existentes
+                    # Editar extras existentes en ingreso
                     for edit in extras_editados:
                         extra_id = edit.get("id")
                         nueva_descripcion = edit.get("descripcion", "").strip()
@@ -400,10 +414,9 @@ def access(request, code):
                                     default_storage.delete(filename)
                                 nueva_foto.name = filename
                                 extra.foto = nueva_foto
-
                             extra.save()
 
-                    # Nuevo extra
+                    # Nuevo extra en ingreso
                     if descripcion or foto_extra:
                         if foto_extra:
                             extension = foto_extra.name.split('.')[-1].lower()
@@ -427,7 +440,9 @@ def access(request, code):
                     })
 
         except Exception as e:
-            print("Error en transacción:", e)
+            # imprime traceback para debug
+            import traceback
+            print("Error en transacción:", traceback.format_exc())
 
     return render(request, 'access.html', {
         'title': 'Acceso usuario',
@@ -435,26 +450,74 @@ def access(request, code):
         'status': None,
         'ingreso': ingreso,
         'extras_ingreso': extras_ingreso,
-        "code":code
+        "code": code
     })
 
 #Para el input de dispositivos
 
 
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+
+@csrf_exempt
 def buscar_serial(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "Método no permitido"}, status=405)
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "JSON inválido"}, status=400)
+
+    serial = data.get("serial", "").strip()
+    usuario_id = data.get("usuario_id")  # en tu template guardas el documento del usuario
+
+    if not serial:
+        return JsonResponse({"error": "Serial no proporcionado"}, status=400)
+    if not usuario_id:
+        return JsonResponse({"error": "usuario_id vacío"}, status=400)
+
+    # Ajusta el filtro según lo que envías: documento o id. Aquí usas documento:
+    dispositivo = Dispositivos.objects.filter(sn=serial, usuario__documento=usuario_id).first()
+
+    if dispositivo:
+        return JsonResponse({
+            "encontrado": True,
+            "id": dispositivo.iddispositivo,
+            "sn": dispositivo.sn
+        })
+    else:
+        return JsonResponse({"encontrado": False})
+
+@csrf_exempt
+def buscar_serial_lista(request):
     if request.method == "POST":
-        serial = request.POST.get("serial")
-        if not serial:
-            return JsonResponse({"error": "Serial no proporcionado"}, status=400)
-        
-        dispositivo = Dispositivos.objects.filter(sn=serial).first()
-        if dispositivo:
+        try:
+            data = json.loads(request.body)
+            serial = data.get("serial", "")
+            usuario_id = data.get("usuario_id", "")
+
+            if not serial:
+                return JsonResponse({"error": "Serial no proporcionado"}, status=400)
+
+            # Buscar dispositivos que coincidan y pertenezcan al usuario
+            resultados = Dispositivos.objects.filter(
+                sn__icontains=serial,
+                usuario__documento=usuario_id
+            )
+
             return JsonResponse({
-                "usuario_id": dispositivo.usuario.idusuario,
-                "code": dispositivo.usuario.documento
+                "resultados": [
+                    {"id": d.iddispositivo, "sn": d.sn}
+                    for d in resultados
+                ]
             })
-        else:
-            return JsonResponse({"error": "No encontrado"}, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "JSON inválido"}, status=400)
+
+    return JsonResponse({"error": "Método no permitido"}, status=405)
 
 #Registrar usuario
 def registeruser(request, code):

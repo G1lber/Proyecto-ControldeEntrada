@@ -238,12 +238,21 @@
                                 </span>
                             </div> {% endcomment %}
                             <div class="input-dispositivo select-btn">
-                                <input id="serialInput" class="form-control" type="text" placeholder="Coloque serial" />
-                                <span id="statusIcon" style="margin-left: 8px;"></span>
+                                <div class="position-relative mb-3">
+                                    <input type="text" id="serialInput" class="form-control" placeholder="Buscar serial...">
+                                    <div id="autocompleteList" class="list-group position-absolute w-100" style="z-index: 1000;"></div>
+                                </div>
                             </div>
-                               <input type="hidden" id="usuarioId" value="{{ request.user.id|default:'' }}">
-                                 <input type="hidden" id="code" value="{{ code }}">
+                            <input type="hidden" id="usuarioId" value="{{users.documento}}">
+                            <input type="hidden" id="devices" name="devices" value="">
+                            <input type="hidden" id="devicesInput" name="devices">
+                            <div class="col">
+                                <!-- Mensajes -->
+                                <div id="mensajeError" class="text-danger mb-2" style="display:none;"></div>
 
+                                <!-- Lista de dispositivos seleccionados -->
+                                <div id="dispositivosSeleccionados" class="list-group mb-3"></div>
+                            </div>
 
                             <ul class="list-items">
                                 {% if dispositivos %}
@@ -524,60 +533,98 @@ function cambiarModo() {
   });
 </script>
 <script src="{% static 'js/teclado_virtual.js' %}"></script>
+
+
 {% comment %} para el input de dispositivos {% endcomment %}
-<script>document.addEventListener("DOMContentLoaded", function () {
+<script>
+document.addEventListener("DOMContentLoaded", function () {
     const serialInput = document.getElementById("serialInput");
-    const usuarioIdInput = document.getElementById("usuarioId");
-    const icon = document.getElementById("statusIcon");
-    const codeInput = document.getElementById("code");
+    const usuarioId = document.getElementById("usuarioId").value;
+    const list = document.getElementById("autocompleteList");
+    const selectedDevicesContainer = document.getElementById("dispositivosSeleccionados");
+    const devicesInput = document.getElementById("devicesInput");
 
-    if (!serialInput || !usuarioIdInput || !icon || !codeInput) return;
+    let selectedDevices = []; // [{id: 1, sn: "PRUEBA"}, ...]
 
-    serialInput.addEventListener("blur", async function () {
-        console.log("Blur activado");
+    serialInput.addEventListener("input", async function () {
+        const query = serialInput.value.trim();
+        list.innerHTML = "";
 
-        const serial = serialInput.value.trim();
-        const usuario_id = usuarioIdInput.value;
-        const code = codeInput.value;
+        if (query.length < 2) return;
 
-        console.log("Datos a enviar:", { serial, usuario_id, code });
+        const res = await fetch(`/buscar_serial_lista/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken"),
+            },
+            body: JSON.stringify({ serial: query, usuario_id: usuarioId }),
+        });
 
-        if (!serial) {
-            icon.innerHTML = "";
+        const data = await res.json();
+
+        data.resultados.forEach(item => {
+            const option = document.createElement("a");
+            option.href = "#";
+            option.className = "list-group-item list-group-item-action";
+            option.textContent = item.sn;
+            option.onclick = (e) => {
+                e.preventDefault();
+                addDevice(item.id, item.sn);
+                serialInput.value = "";
+                list.innerHTML = "";
+            };
+            list.appendChild(option);
+        });
+    });
+
+    serialInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && list.firstChild) {
+            e.preventDefault();
+            const firstOption = list.firstChild;
+            const id = firstOption.getAttribute("data-id");
+            const sn = firstOption.textContent;
+            addDevice(id, sn);
+            serialInput.value = "";
+            list.innerHTML = "";
+        }
+    });
+
+    function addDevice(id, sn) {
+        // Evitar duplicados
+        if (selectedDevices.some(d => d.id === id)) {
+            alert("Este dispositivo ya fue agregado.");
             return;
         }
 
-        try {
-            const res = await fetch(`/buscar_serial/`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": getCookie("csrftoken"),
-                },
-                body: JSON.stringify({ serial, usuario_id }),
-            });
+        selectedDevices.push({ id, sn });
+        updateSelectedDevices();
+    }
 
-            console.log("Respuesta HTTP:", res.status);
+    function removeDevice(id) {
+        selectedDevices = selectedDevices.filter(d => d.id !== id);
+        updateSelectedDevices();
+    }
 
-            if (!res.ok) {
-                icon.innerHTML = '<i class="bi bi-exclamation-triangle-fill text-warning"></i>';
-                return;
-            }
+    function updateSelectedDevices() {
+        selectedDevicesContainer.innerHTML = "";
+        selectedDevices.forEach(d => {
+            const badge = document.createElement("span");
+            badge.className = "badge bg-primary m-1 p-2";
+            badge.textContent = d.sn;
 
-            const data = await res.json();
-            console.log("Datos JSON:", data);
+            const removeBtn = document.createElement("button");
+            removeBtn.className = "btn-close btn-close-white ms-2";
+            removeBtn.style.fontSize = "0.7rem";
+            removeBtn.onclick = () => removeDevice(d.id);
 
-            if (data.encontrado) {
-                icon.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i>';
-            } else {
-                icon.innerHTML = '<i class="bi bi-x-circle-fill text-danger"></i>';
-            }
+            badge.appendChild(removeBtn);
+            selectedDevicesContainer.appendChild(badge);
+        });
 
-        } catch (error) {
-            console.error("Error en fetch:", error);
-            icon.innerHTML = '<i class="bi bi-exclamation-triangle-fill text-warning"></i>';
-        }
-    });
+        // Actualizar input oculto con IDs separados por coma
+        devicesInput.value = selectedDevices.map(d => d.id).join(",");
+    }
 
     function getCookie(name) {
         let cookieValue = null;
